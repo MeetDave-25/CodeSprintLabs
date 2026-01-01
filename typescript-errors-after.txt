@@ -1,0 +1,1 @@
+﻿components/layout/Header.tsx(38,12): error TS2367: This comparison appears to be unintentional because the types '"student"' and '"admin"' have no overlap.
