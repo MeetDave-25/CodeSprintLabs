@@ -79,6 +79,7 @@ export default function InternshipDetailPage() {
     }, [isAuthenticated, internshipId]);
 
     const fetchProfileResume = async () => {
+        // Fetch profile resume data
         try {
             const response = await api.get('/student/profile');
             const profile = response.data.profile;
