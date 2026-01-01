@@ -47,6 +47,9 @@ coverage/
 *.tmp
 *.temp
 
+# Sample data (sensitive documents)
+Sample_data/
+
 # Backend specific (Laravel) - these are also in backend/.gitignore
 backend/codesprintlab-api/.env
 backend/codesprintlab-api/vendor/
