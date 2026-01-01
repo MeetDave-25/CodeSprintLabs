@@ -95,8 +95,6 @@ export default function InternshipDetailPage() {
             console.error('Error fetching profile resume:', error);
         }
     };
-        }
-    }, [isAuthenticated, internshipId]);
 
     const fetchInternship = async () => {
         try {
