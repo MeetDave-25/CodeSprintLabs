@@ -50,8 +50,16 @@ export default function RegisterPage() {
             });
 
             if (response.data) {
-                // Redirect to verify email page
-                router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`);
+                // TEMPORARILY MODIFIED - Direct login after registration (OTP disabled)
+                // If token is returned, login directly
+                if (response.data.token) {
+                    localStorage.setItem('token', response.data.token);
+                    // Redirect to student dashboard
+                    window.location.href = '/student/dashboard';
+                } else {
+                    // Fallback: Redirect to verify email page (when OTP is re-enabled)
+                    router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`);
+                }
             }
         } catch (err: any) {
             console.error(err);

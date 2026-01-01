@@ -20,7 +20,8 @@ import {
     ChevronRight,
     UserCheck,
     ClipboardCheck,
-    UserMinus
+    UserMinus,
+    UsersRound
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -41,6 +42,7 @@ const sidebarLinks = [
     { href: '/admin/payments', label: 'Payments', icon: CreditCard },
     { href: '/admin/certificates', label: 'Certificates', icon: Award },
     { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
+    { href: '/admin/team', label: 'Team Members', icon: UsersRound },
     { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

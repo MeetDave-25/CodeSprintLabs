@@ -1,47 +1,82 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Target, Users, Award, Zap, ArrowRight, CheckCircle, User } from 'lucide-react';
+import { Target, Users, Award, Zap, ArrowRight, CheckCircle, User, Linkedin, Github, Twitter } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Button from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
+import api from '@/lib/api';
+
+interface TeamMember {
+    _id: string;
+    name: string;
+    role: string;
+    bio?: string;
+    image?: string;
+    linkedin?: string;
+    github?: string;
+    twitter?: string;
+    gradient: string;
+}
 
 export default function AboutPage() {
+    const [team, setTeam] = useState<TeamMember[]>([]);
+    const [loadingTeam, setLoadingTeam] = useState(true);
+
+    useEffect(() => {
+        fetchTeamMembers();
+    }, []);
+
+    const fetchTeamMembers = async () => {
+        try {
+            const response = await api.get('/team');
+            setTeam(response.data.members || []);
+        } catch (error) {
+            console.error('Error fetching team:', error);
+            // Fallback to default team if API fails
+            setTeam([
+                {
+                    _id: '1',
+                    name: 'Rajesh Kumar',
+                    role: 'Founder & CEO',
+                    bio: '15+ years in tech education and software development',
+                    gradient: 'from-purple-600 to-pink-600',
+                },
+                {
+                    _id: '2',
+                    name: 'Priya Sharma',
+                    role: 'Head of Curriculum',
+                    bio: 'Former Google engineer with passion for teaching',
+                    gradient: 'from-blue-500 to-cyan-500',
+                },
+                {
+                    _id: '3',
+                    name: 'Amit Patel',
+                    role: 'Lead Instructor',
+                    bio: 'Full-stack developer and mentor to 1000+ students',
+                    gradient: 'from-green-500 to-emerald-500',
+                },
+                {
+                    _id: '4',
+                    name: 'Sneha Reddy',
+                    role: 'Student Success Manager',
+                    bio: 'Dedicated to helping students achieve their goals',
+                    gradient: 'from-orange-500 to-red-500',
+                },
+            ]);
+        } finally {
+            setLoadingTeam(false);
+        }
+    };
+
     const stats = [
         { label: 'Active Students', value: '10,000+', icon: Users },
         { label: 'Courses Offered', value: '50+', icon: Target },
         { label: 'Certificates Issued', value: '5,000+', icon: Award },
         { label: 'Success Rate', value: '95%', icon: Zap },
-    ];
-
-    const team = [
-        {
-            name: 'Rajesh Kumar',
-            role: 'Founder & CEO',
-            bio: '15+ years in tech education and software development',
-            gradient: 'from-purple-600 to-pink-600',
-        },
-        {
-            name: 'Priya Sharma',
-            role: 'Head of Curriculum',
-            bio: 'Former Google engineer with passion for teaching',
-            gradient: 'from-blue-500 to-cyan-500',
-        },
-        {
-            name: 'Amit Patel',
-            role: 'Lead Instructor',
-            bio: 'Full-stack developer and mentor to 1000+ students',
-            gradient: 'from-green-500 to-emerald-500',
-        },
-        {
-            name: 'Sneha Reddy',
-            role: 'Student Success Manager',
-            bio: 'Dedicated to helping students achieve their goals',
-            gradient: 'from-orange-500 to-red-500',
-        },
     ];
 
     const values = [
@@ -222,30 +257,88 @@ export default function AboutPage() {
                         </p>
                     </motion.div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {team.map((member, index) => (
-                            <motion.div
-                                key={member.name}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <Card hover3d className="h-full">
-                                    <div className={`h-48 bg-gradient-to-br ${member.gradient} rounded-t-xl flex items-center justify-center`}>
-                                        <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
-                                            <User size={48} className="text-white" />
-                                        </div>
-                                    </div>
+                    {loadingTeam ? (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[1, 2, 3, 4].map((i) => (
+                                <Card key={i}>
+                                    <div className="h-48 bg-white/5 animate-pulse rounded-t-xl"></div>
                                     <CardHeader>
-                                        <CardTitle>{member.name}</CardTitle>
-                                        <div className="text-purple-400 font-semibold mb-2">{member.role}</div>
-                                        <CardDescription>{member.bio}</CardDescription>
+                                        <div className="h-5 bg-white/5 rounded w-3/4 mb-2 animate-pulse"></div>
+                                        <div className="h-4 bg-white/5 rounded w-1/2 animate-pulse"></div>
                                     </CardHeader>
                                 </Card>
-                            </motion.div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {team.map((member, index) => (
+                                <motion.div
+                                    key={member._id}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
+                                    <Card hover3d className="h-full">
+                                        <div className={`h-48 bg-gradient-to-br ${member.gradient} rounded-t-xl flex items-center justify-center`}>
+                                            {member.image ? (
+                                                <img
+                                                    src={member.image}
+                                                    alt={member.name}
+                                                    className="w-24 h-24 rounded-full object-cover border-4 border-white/20"
+                                                />
+                                            ) : (
+                                                <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
+                                                    <User size={48} className="text-white" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <CardHeader>
+                                            <CardTitle>{member.name}</CardTitle>
+                                            <div className="text-purple-400 font-semibold mb-2">{member.role}</div>
+                                            {member.bio && <CardDescription>{member.bio}</CardDescription>}
+                                            
+                                            {/* Social Links */}
+                                            {(member.linkedin || member.github || member.twitter) && (
+                                                <div className="flex gap-3 mt-4 pt-4 border-t border-white/10">
+                                                    {member.linkedin && (
+                                                        <a
+                                                            href={member.linkedin}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-gray-400 hover:text-blue-400 transition-colors"
+                                                        >
+                                                            <Linkedin size={18} />
+                                                        </a>
+                                                    )}
+                                                    {member.github && (
+                                                        <a
+                                                            href={member.github}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-gray-400 hover:text-white transition-colors"
+                                                        >
+                                                            <Github size={18} />
+                                                        </a>
+                                                    )}
+                                                    {member.twitter && (
+                                                        <a
+                                                            href={member.twitter}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-gray-400 hover:text-blue-400 transition-colors"
+                                                        >
+                                                            <Twitter size={18} />
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </CardHeader>
+                                    </Card>
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 

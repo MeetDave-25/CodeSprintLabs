@@ -50,6 +50,9 @@ Route::get('/internships/{id}', [App\Http\Controllers\InternshipController::clas
 Route::get('/courses', [App\Http\Controllers\CourseController::class, 'index']);
 Route::get('/courses/{id}', [App\Http\Controllers\CourseController::class, 'show']);
 
+// Public Team Members (for About page)
+Route::get('/team', [App\Http\Controllers\TeamController::class, 'index']);
+
 // Protected routes for all authenticated users
 Route::middleware('auth:api')->group(function () {
     
@@ -263,5 +266,18 @@ Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
         Route::post('/admins', [App\Http\Controllers\Admin\SettingsController::class, 'createAdmin']);
         Route::delete('/admins/{id}', [App\Http\Controllers\Admin\SettingsController::class, 'deleteAdmin']);
         Route::get('/activity-logs', [App\Http\Controllers\Admin\SettingsController::class, 'activityLogs']);
+    });
+
+    // Team Management
+    Route::prefix('team')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\TeamController::class, 'index']);
+        Route::get('/stats', [App\Http\Controllers\Admin\TeamController::class, 'stats']);
+        Route::post('/', [App\Http\Controllers\Admin\TeamController::class, 'store']);
+        Route::get('/{id}', [App\Http\Controllers\Admin\TeamController::class, 'show']);
+        Route::put('/{id}', [App\Http\Controllers\Admin\TeamController::class, 'update']);
+        Route::delete('/{id}', [App\Http\Controllers\Admin\TeamController::class, 'destroy']);
+        Route::post('/{id}/image', [App\Http\Controllers\Admin\TeamController::class, 'uploadImage']);
+        Route::post('/{id}/toggle-status', [App\Http\Controllers\Admin\TeamController::class, 'toggleStatus']);
+        Route::post('/reorder', [App\Http\Controllers\Admin\TeamController::class, 'reorder']);
     });
 });
