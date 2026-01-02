@@ -63,7 +63,7 @@ function AdminLayoutContent({
     };
 
     return (
-        <div className="min-h-screen flex bg-[#0a0a0f]">
+        <div className="h-screen flex bg-[#0a0a0f] overflow-hidden">
             {/* Desktop Sidebar - Collapsible */}
             <motion.aside
                 initial={false}
@@ -257,8 +257,8 @@ function AdminLayoutContent({
             </AnimatePresence>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-h-screen">
-                <header className="lg:hidden glass-dark border-b border-white/10 p-4 flex items-center justify-between">
+            <div className="flex-1 flex flex-col h-screen overflow-hidden">
+                <header className="lg:hidden glass-dark border-b border-white/10 p-4 flex items-center justify-between flex-shrink-0">
                     <button
                         onClick={() => setMobileOpen(!mobileOpen)}
                         className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -274,7 +274,7 @@ function AdminLayoutContent({
                     <div className="w-10" />
                 </header>
 
-                <main className="flex-1 overflow-y-auto">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden">
                     {children}
                 </main>
             </div>

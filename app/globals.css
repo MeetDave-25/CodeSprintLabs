@@ -211,3 +211,14 @@ body {
 .pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+/* Fix select dropdown visibility in dark theme */
+select {
+  color-scheme: dark;
+}
+
+select option {
+  background-color: #1a1a2e !important;
+  color: #ffffff !important;
+  padding: 8px 12px;
+}
