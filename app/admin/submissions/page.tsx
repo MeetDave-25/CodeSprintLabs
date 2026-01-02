@@ -246,11 +246,11 @@ export default function AdminSubmissionsPage() {
                                     <select
                                         value={studentFilter}
                                         onChange={(e) => setStudentFilter(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-gray-900 [&>option]:text-white"
+                                        className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                                     >
-                                        <option value="all" className="bg-gray-900 text-white">All Students</option>
+                                        <option value="all">All Students</option>
                                         {uniqueStudents.map((student) => (
-                                            <option key={student} value={student} className="bg-gray-900 text-white">
+                                            <option key={student} value={student}>
                                                 {student} ({studentCounts.find(s => s.name === student)?.count || 0} submissions)
                                             </option>
                                         ))}
@@ -263,11 +263,11 @@ export default function AdminSubmissionsPage() {
                                     <select
                                         value={internshipFilter}
                                         onChange={(e) => setInternshipFilter(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-gray-900 [&>option]:text-white"
+                                        className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                                     >
-                                        <option value="all" className="bg-gray-900 text-white">All Internships</option>
+                                        <option value="all">All Internships</option>
                                         {uniqueInternships.map((internship) => (
-                                            <option key={internship} value={internship} className="bg-gray-900 text-white">
+                                            <option key={internship} value={internship}>
                                                 {internship}
                                             </option>
                                         ))}

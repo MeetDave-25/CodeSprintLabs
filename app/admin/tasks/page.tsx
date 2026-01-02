@@ -450,7 +450,7 @@ export default function AdminTaskLibraryPage() {
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Assign to Internship *</label>
                                 <select
-                                    className="w-full bg-white/5 border border-white/10 rounded p-2 text-white"
+                                    className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
                                     value={newTaskData.internshipId}
                                     onChange={e => setNewTaskData({ ...newTaskData, internshipId: e.target.value })}
                                 >
@@ -466,7 +466,7 @@ export default function AdminTaskLibraryPage() {
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Difficulty</label>
                                     <select
-                                        className="w-full bg-white/5 border border-white/10 rounded p-2 text-white"
+                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
                                         value={newTaskData.difficulty}
                                         onChange={e => setNewTaskData({ ...newTaskData, difficulty: e.target.value as any })}
                                     >
@@ -541,7 +541,7 @@ export default function AdminTaskLibraryPage() {
                                     </p>
                                     <label className="block text-sm text-gray-400 mb-2">Select Internship *</label>
                                     <select
-                                        className="w-full bg-white/5 border border-white/10 rounded p-3 text-white"
+                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-3 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
                                         value={selectedInternshipId}
                                         onChange={e => setSelectedInternshipId(e.target.value)}
                                     >

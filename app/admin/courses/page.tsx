@@ -322,7 +322,7 @@ export default function AdminCoursesPage() {
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Level</label>
                                     <select
-                                        className="w-full bg-white/5 border border-white/10 rounded p-2 text-white"
+                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
                                         value={newCourseData.level}
                                         onChange={e => setNewCourseData({ ...newCourseData, level: e.target.value })}
                                     >

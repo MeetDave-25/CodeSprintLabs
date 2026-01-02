@@ -365,13 +365,13 @@ export default function AdminInternshipsPage() {
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Type *</label>
                                         <select
-                                            className="w-full bg-gray-800 border border-white/10 rounded p-2 text-white"
+                                            className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
                                             value={newInternshipData.type}
                                             onChange={e => setNewInternshipData({ ...newInternshipData, type: e.target.value })}
                                         >
-                                            <option value="Remote" className="bg-gray-800 text-white">Remote</option>
-                                            <option value="On-site" className="bg-gray-800 text-white">On-site</option>
-                                            <option value="Hybrid" className="bg-gray-800 text-white">Hybrid</option>
+                                            <option value="Remote">Remote</option>
+                                            <option value="On-site">On-site</option>
+                                            <option value="Hybrid">Hybrid</option>
                                         </select>
                                     </div>
                                 </div>

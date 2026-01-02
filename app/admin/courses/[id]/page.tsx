@@ -661,11 +661,11 @@ export default function AdminCourseDetailPage() {
                                     <select
                                         value={editingTask.difficulty}
                                         onChange={(e) => setEditingTask({ ...editingTask, difficulty: e.target.value })}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-gray-900 [&>option]:text-white"
+                                        className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                                     >
-                                        <option value="Easy" className="bg-gray-900 text-white">Easy</option>
-                                        <option value="Medium" className="bg-gray-900 text-white">Medium</option>
-                                        <option value="Hard" className="bg-gray-900 text-white">Hard</option>
+                                        <option value="Easy">Easy</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Hard">Hard</option>
                                     </select>
                                 </div>
                                 <Input

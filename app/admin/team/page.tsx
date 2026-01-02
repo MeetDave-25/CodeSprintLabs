@@ -268,7 +268,7 @@ export default function AdminTeamPage() {
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="px-4 py-2 bg-[#1a1a2e] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                         >
                             <option value="all">All Status</option>
                             <option value="active">Active</option>

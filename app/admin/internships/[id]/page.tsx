@@ -578,7 +578,7 @@ export default function AdminInternshipDetailPage() {
                                                 <select
                                                     value={formData.difficulty || 'Beginner'}
                                                     onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                    className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                                                 >
                                                     <option value="Beginner">Beginner</option>
                                                     <option value="Intermediate">Intermediate</option>

@@ -346,10 +346,10 @@ export default function AdminAnnouncementsPage() {
                                             <select
                                                 value={formData.targetAudience}
                                                 onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value as any })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                                             >
-                                                <option value="all" className="bg-gray-900">All Users</option>
-                                                <option value="students" className="bg-gray-900">Students Only</option>
+                                                <option value="all">All Users</option>
+                                                <option value="students">Students Only</option>
                                             </select>
                                         </div>
                                         <div>
@@ -357,11 +357,11 @@ export default function AdminAnnouncementsPage() {
                                             <select
                                                 value={formData.priority}
                                                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
                                             >
-                                                <option value="low" className="bg-gray-900">Low</option>
-                                                <option value="medium" className="bg-gray-900">Medium</option>
-                                                <option value="high" className="bg-gray-900">High</option>
+                                                <option value="low">Low</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="high">High</option>
                                             </select>
                                         </div>
                                     </div>
