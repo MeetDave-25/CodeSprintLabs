@@ -186,17 +186,20 @@ class EnrollmentRequestController extends Controller
         }
 
         if (!$enrollmentRequest->resumePath) {
+            Log::warning("Resume download failed: No resumePath for enrollment {$id}");
             return response()->json(['message' => 'No resume attached to this enrollment request'], 404);
         }
 
-        $path = storage_path('app/' . $enrollmentRequest->resumePath);
-
-        if (!file_exists($path)) {
-            return response()->json(['message' => 'Resume file not found'], 404);
+        // Use Laravel Storage facade for consistency
+        if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($enrollmentRequest->resumePath)) {
+            Log::warning("Resume download failed: File not found at path: {$enrollmentRequest->resumePath}");
+            return response()->json(['message' => 'Resume file not found on server. Path: ' . $enrollmentRequest->resumePath], 404);
         }
 
+        $path = storage_path('app/' . $enrollmentRequest->resumePath);
         $filename = $enrollmentRequest->resumeOriginalName ?? 'Resume_' . $enrollmentRequest->studentName . '.pdf';
 
+        Log::info("Downloading resume: {$path}");
         return response()->download($path, $filename);
     }
 
@@ -212,17 +215,20 @@ class EnrollmentRequestController extends Controller
         }
 
         if (!$enrollmentRequest->resumePath) {
+            Log::warning("Resume view failed: No resumePath for enrollment {$id}");
             return response()->json(['message' => 'No resume attached to this enrollment request'], 404);
         }
 
-        $path = storage_path('app/' . $enrollmentRequest->resumePath);
-
-        if (!file_exists($path)) {
-            return response()->json(['message' => 'Resume file not found'], 404);
+        // Use Laravel Storage facade for consistency
+        if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($enrollmentRequest->resumePath)) {
+            Log::warning("Resume view failed: File not found at path: {$enrollmentRequest->resumePath}");
+            return response()->json(['message' => 'Resume file not found on server. Path: ' . $enrollmentRequest->resumePath], 404);
         }
 
+        $path = storage_path('app/' . $enrollmentRequest->resumePath);
         $mimeType = mime_content_type($path);
 
+        Log::info("Viewing resume: {$path}");
         return response()->file($path, [
             'Content-Type' => $mimeType,
         ]);

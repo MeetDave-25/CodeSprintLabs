@@ -111,14 +111,25 @@ export default function AdminEnrollmentRequestsPage() {
                 responseType: 'blob'
             });
             
-            const blob = new Blob([response.data], { type: response.headers['content-type'] || 'application/pdf' });
+            // Check if the response is an error (JSON) instead of a file
+            const contentType = response.headers['content-type'];
+            if (contentType && contentType.includes('application/json')) {
+                // It's an error response
+                const text = await response.data.text();
+                const error = JSON.parse(text);
+                alert(error.message || 'Failed to view resume');
+                return;
+            }
+            
+            const blob = new Blob([response.data], { type: contentType || 'application/pdf' });
             const url = window.URL.createObjectURL(blob);
             window.open(url, '_blank');
             // Revoke after a delay to allow the new tab to load
             setTimeout(() => window.URL.revokeObjectURL(url), 10000);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to view resume:', error);
-            alert('Failed to view resume');
+            const errorMessage = error.response?.data?.message || 'Failed to view resume. The file may not exist.';
+            alert(errorMessage);
         }
     };
 
@@ -128,7 +139,17 @@ export default function AdminEnrollmentRequestsPage() {
                 responseType: 'blob'
             });
             
-            const blob = new Blob([response.data], { type: 'application/pdf' });
+            // Check if the response is an error (JSON) instead of a file
+            const contentType = response.headers['content-type'];
+            if (contentType && contentType.includes('application/json')) {
+                // It's an error response
+                const text = await response.data.text();
+                const error = JSON.parse(text);
+                alert(error.message || 'Failed to download resume');
+                return;
+            }
+            
+            const blob = new Blob([response.data], { type: contentType || 'application/pdf' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -139,7 +160,8 @@ export default function AdminEnrollmentRequestsPage() {
             window.URL.revokeObjectURL(url);
         } catch (error: any) {
             console.error('Failed to download resume:', error);
-            alert('Failed to download resume');
+            const errorMessage = error.response?.data?.message || 'Failed to download resume. The file may not exist.';
+            alert(errorMessage);
         }
     };
 
