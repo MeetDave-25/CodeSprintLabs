@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, Github, Chrome, UserCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, UserCircle, ArrowLeft } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { FloatingRocket } from '@/components/3d/FloatingRocket';
@@ -135,26 +135,6 @@ export default function LoginPage() {
                         <Button type="submit" variant="primary" className="w-full" size="lg" isLoading={isLoading}>
                             Sign In
                         </Button>
-
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-white/10"></div>
-                            </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-4 bg-[#0a0a0f] text-gray-400">Or continue with</span>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/github`} className="flex items-center justify-center space-x-2 px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all">
-                                <Github size={20} />
-                                <span>GitHub</span>
-                            </a>
-                            <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`} className="flex items-center justify-center space-x-2 px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all">
-                                <Chrome size={20} />
-                                <span>Google</span>
-                            </a>
-                        </div>
                     </form>
 
                     <p className="mt-8 text-center text-gray-400">
