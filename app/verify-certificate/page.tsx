@@ -2,54 +2,90 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, CheckCircle, XCircle, Search } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Search, Loader2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { publicService } from '@/lib/services';
 
-// Mock certificate database
-const certificates = {
-    'CERT-2024-FS-001': {
-        code: 'CERT-2024-FS-001',
-        studentName: 'John Doe',
-        courseName: 'Full Stack Web Development',
-        issueDate: '2024-12-05',
-        valid: true
-    },
-    'CERT-2024-PY-002': {
-        code: 'CERT-2024-PY-002',
-        studentName: 'Jane Smith',
-        courseName: 'Python for Data Science',
-        issueDate: '2024-11-20',
-        valid: true
-    },
-};
+interface CertificateResult {
+    valid: boolean;
+    code?: string;
+    studentName?: string;
+    courseName?: string;
+    internshipName?: string;
+    programName?: string;
+    issueDate?: string;
+    issuedAt?: string;
+    type?: string;
+    message?: string;
+}
 
 export default function VerifyCertificatePage() {
     const [certificateCode, setCertificateCode] = useState('');
-    const [verificationResult, setVerificationResult] = useState<any>(null);
+    const [verificationResult, setVerificationResult] = useState<CertificateResult | null>(null);
     const [isVerifying, setIsVerifying] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleVerify = () => {
+    const handleVerify = async () => {
+        if (!certificateCode.trim()) {
+            setError('Please enter a certificate code');
+            return;
+        }
+
         setIsVerifying(true);
+        setError('');
+        setVerificationResult(null);
 
-        // Simulate API call
-        setTimeout(() => {
-            const cert = certificates[certificateCode as keyof typeof certificates];
+        try {
+            const response = await publicService.verifyCertificate(certificateCode.trim());
+            const data = response.data;
 
-            if (cert) {
+            if (data.valid || data.certificate) {
+                const cert = data.certificate || data;
                 setVerificationResult({
-                    ...cert
+                    valid: true,
+                    code: cert.code || cert.certificateCode || certificateCode,
+                    studentName: cert.studentName || cert.student?.name || 'N/A',
+                    courseName: cert.courseName || cert.course?.title,
+                    internshipName: cert.internshipName || cert.internship?.title,
+                    programName: cert.programName || cert.courseName || cert.internshipName || 'N/A',
+                    issueDate: cert.issueDate || cert.issuedAt || cert.created_at,
+                    type: cert.type || 'completion',
                 });
             } else {
                 setVerificationResult({
                     valid: false,
-                    message: 'Certificate not found or invalid'
+                    message: data.message || 'Certificate not found or invalid'
                 });
             }
-
+        } catch (err: any) {
+            if (err.response?.status === 404) {
+                setVerificationResult({
+                    valid: false,
+                    message: 'Certificate not found. Please check the code and try again.'
+                });
+            } else {
+                setError(err.response?.data?.message || 'Failed to verify certificate. Please try again.');
+            }
+        } finally {
             setIsVerifying(false);
-        }, 1000);
+        }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleVerify();
+        }
+    };
+
+    const formatDate = (dateString?: string) => {
+        if (!dateString) return 'N/A';
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     };
 
     return (
@@ -87,14 +123,23 @@ export default function VerifyCertificatePage() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-6">
+                                {error && (
+                                    <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
+                                        {error}
+                                    </div>
+                                )}
+
                                 <div className="flex gap-3">
-                                    <Input
-                                        label="Certificate Code"
-                                        placeholder="e.g., CERT-2024-FS-001"
-                                        value={certificateCode}
-                                        onChange={(e) => setCertificateCode(e.target.value.toUpperCase())}
-                                        icon={<Search size={18} />}
-                                    />
+                                    <div className="flex-1">
+                                        <Input
+                                            label="Certificate Code"
+                                            placeholder="e.g., CERT-2025-FS-001"
+                                            value={certificateCode}
+                                            onChange={(e) => setCertificateCode(e.target.value.toUpperCase())}
+                                            onKeyPress={handleKeyPress}
+                                            icon={<Search size={18} />}
+                                        />
+                                    </div>
                                 </div>
 
                                 <Button
@@ -102,10 +147,19 @@ export default function VerifyCertificatePage() {
                                     className="w-full"
                                     onClick={handleVerify}
                                     isLoading={isVerifying}
-                                    disabled={!certificateCode}
+                                    disabled={!certificateCode.trim()}
                                 >
-                                    <Shield size={18} className="mr-2" />
-                                    Verify Certificate
+                                    {isVerifying ? (
+                                        <>
+                                            <Loader2 size={18} className="mr-2 animate-spin" />
+                                            Verifying...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Shield size={18} className="mr-2" />
+                                            Verify Certificate
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                         </CardContent>
@@ -143,7 +197,7 @@ export default function VerifyCertificatePage() {
                                             <div>
                                                 <div className="text-sm text-gray-400 mb-1">Issue Date</div>
                                                 <div className="font-semibold">
-                                                    {new Date(verificationResult.issueDate).toLocaleDateString()}
+                                                    {formatDate(verificationResult.issueDate)}
                                                 </div>
                                             </div>
                                         </div>
@@ -154,8 +208,12 @@ export default function VerifyCertificatePage() {
                                         </div>
 
                                         <div>
-                                            <div className="text-sm text-gray-400 mb-1">Course Name</div>
-                                            <div className="font-semibold text-lg">{verificationResult.courseName}</div>
+                                            <div className="text-sm text-gray-400 mb-1">
+                                                {verificationResult.type === 'internship' ? 'Internship' : 'Course'} Name
+                                            </div>
+                                            <div className="font-semibold text-lg">
+                                                {verificationResult.courseName || verificationResult.internshipName || verificationResult.programName}
+                                            </div>
                                         </div>
 
                                         <div className="border-t border-white/10 pt-4">
@@ -191,7 +249,7 @@ export default function VerifyCertificatePage() {
                     </motion.div>
                 )}
 
-                {/* Example Codes */}
+                {/* Help Section */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -200,26 +258,14 @@ export default function VerifyCertificatePage() {
                 >
                     <Card>
                         <CardHeader>
-                            <CardTitle>Try These Example Codes</CardTitle>
-                            <CardDescription>Click to auto-fill and verify</CardDescription>
+                            <CardTitle>How to Find Your Certificate Code</CardTitle>
+                            <CardDescription>The certificate code can be found on your certificate</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid md:grid-cols-2 gap-3">
-                                {Object.keys(certificates).map((code) => (
-                                    <button
-                                        key={code}
-                                        onClick={() => {
-                                            setCertificateCode(code);
-                                            setVerificationResult(null);
-                                        }}
-                                        className="p-3 bg-white/5 hover:bg-white/10 rounded-lg text-left transition-all border border-white/10 hover:border-purple-500/50"
-                                    >
-                                        <div className="font-mono text-sm text-purple-400">{code}</div>
-                                        <div className="text-xs text-gray-400 mt-1">
-                                            {certificates[code as keyof typeof certificates].courseName}
-                                        </div>
-                                    </button>
-                                ))}
+                            <div className="space-y-3 text-gray-400">
+                                <p>1. Look at the top-right corner of your certificate</p>
+                                <p>2. The code starts with "CERT-" followed by year and unique identifier</p>
+                                <p>3. Example: CERT-2025-FS-001 or CERT-2025-INT-A1B2C3</p>
                             </div>
                         </CardContent>
                     </Card>

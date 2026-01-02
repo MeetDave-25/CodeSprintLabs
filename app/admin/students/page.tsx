@@ -1,141 +1,103 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, UserCheck, UserX, Mail, Phone, Calendar, Award, Eye, X } from 'lucide-react';
+import { Search, Filter, UserCheck, UserX, Mail, Phone, Calendar, Award, Eye, X, Loader2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import { adminService } from '@/lib/services';
 
 interface Student {
     id: string;
+    _id?: string;
     name: string;
     email: string;
-    phone: string;
-    enrolledDate: string;
-    enrolledInternships: string[]; // NEW: Track which internships student is enrolled in
-    coursesEnrolled: number;
-    coursesCompleted: number;
-    tasksCompleted: number;
-    totalPoints: number;
-    status: 'active' | 'inactive';
+    phone?: string;
+    created_at: string;
+    enrolledInternships?: string[];
+    coursesEnrolled?: number;
+    coursesCompleted?: number;
+    tasksCompleted?: number;
+    totalPoints?: number;
+    status: 'active' | 'inactive' | 'blocked';
 }
 
-const mockStudents: Student[] = [
-    {
-        id: '1',
-        name: 'Rahul Sharma',
-        email: 'rahul.sharma@example.com',
-        phone: '+91 98765 43210',
-        enrolledDate: '2025-10-15',
-        enrolledInternships: ['Full Stack Web Development', 'Java Backend Development'],
-        coursesEnrolled: 3,
-        coursesCompleted: 1,
-        tasksCompleted: 24,
-        totalPoints: 1250,
-        status: 'active',
-    },
-    {
-        id: '2',
-        name: 'Priya Patel',
-        email: 'priya.patel@example.com',
-        phone: '+91 98765 43211',
-        enrolledDate: '2025-11-01',
-        enrolledInternships: ['Python for Data Science'],
-        coursesEnrolled: 2,
-        coursesCompleted: 2,
-        tasksCompleted: 32,
-        totalPoints: 1680,
-        status: 'active',
-    },
-    {
-        id: '3',
-        name: 'Amit Kumar',
-        email: 'amit.kumar@example.com',
-        phone: '+91 98765 43212',
-        enrolledDate: '2025-09-20',
-        enrolledInternships: ['Full Stack Web Development', 'Python for Data Science', 'Mobile App Development'],
-        coursesEnrolled: 4,
-        coursesCompleted: 3,
-        tasksCompleted: 48,
-        totalPoints: 2340,
-        status: 'active',
-    },
-    {
-        id: '4',
-        name: 'Sneha Reddy',
-        email: 'sneha.reddy@example.com',
-        phone: '+91 98765 43213',
-        enrolledDate: '2025-11-20',
-        enrolledInternships: ['Mobile App Development'],
-        coursesEnrolled: 1,
-        coursesCompleted: 0,
-        tasksCompleted: 8,
-        totalPoints: 420,
-        status: 'inactive',
-    },
-    {
-        id: '5',
-        name: 'Vikram Singh',
-        email: 'vikram.singh@example.com',
-        phone: '+91 98765 43214',
-        enrolledDate: '2025-10-05',
-        enrolledInternships: ['Python for Data Science', 'Java Backend Development'],
-        coursesEnrolled: 3,
-        coursesCompleted: 2,
-        tasksCompleted: 36,
-        totalPoints: 1890,
-        status: 'active',
-    },
-    {
-        id: '6',
-        name: 'Anjali Gupta',
-        email: 'anjali.gupta@example.com',
-        phone: '+91 98765 43215',
-        enrolledDate: '2025-11-10',
-        enrolledInternships: ['Python for Data Science'],
-        coursesEnrolled: 1,
-        coursesCompleted: 0,
-        tasksCompleted: 12,
-        totalPoints: 580,
-        status: 'active',
-    },
-];
-
-const availableInternships = [
-    'Full Stack Web Development',
-    'Python for Data Science',
-    'Java Backend Development',
-    'Mobile App Development',
-];
+interface Stats {
+    total: number;
+    active: number;
+    inactive: number;
+    avgPoints: number;
+}
 
 export default function AdminStudentsPage() {
+    const [students, setStudents] = useState<Student[]>([]);
+    const [stats, setStats] = useState<Stats>({ total: 0, active: 0, inactive: 0, avgPoints: 0 });
+    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
     const [internshipFilter, setInternshipFilter] = useState<string>('all');
     const [showFilters, setShowFilters] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+    const [availableInternships, setAvailableInternships] = useState<string[]>([]);
 
-    const filteredStudents = mockStudents.filter(student => {
-        const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            student.email.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus = statusFilter === 'all' || student.status === statusFilter;
-        const matchesInternship = internshipFilter === 'all' ||
-            student.enrolledInternships.includes(internshipFilter);
-        return matchesSearch && matchesStatus && matchesInternship;
-    });
+    // Fetch students and stats from API
+    useEffect(() => {
+        fetchStudents();
+        fetchStats();
+    }, [statusFilter, internshipFilter, searchQuery]);
 
-    const stats = {
-        total: mockStudents.length,
-        active: mockStudents.filter(s => s.status === 'active').length,
-        inactive: mockStudents.filter(s => s.status === 'inactive').length,
-        avgPoints: Math.round(mockStudents.reduce((sum, s) => sum + s.totalPoints, 0) / mockStudents.length),
+    const fetchStudents = async () => {
+        try {
+            setIsLoading(true);
+            const params: any = {};
+            if (statusFilter !== 'all') params.status = statusFilter;
+            if (internshipFilter !== 'all') params.internship = internshipFilter;
+            if (searchQuery) params.search = searchQuery;
+
+            const response = await adminService.getStudents(params);
+            const studentsData = response.data.students || [];
+            setStudents(studentsData);
+
+            // Extract unique internships from students
+            const internships = new Set<string>();
+            studentsData.forEach((student: Student) => {
+                student.enrolledInternships?.forEach(i => internships.add(i));
+            });
+            setAvailableInternships(Array.from(internships));
+        } catch (error) {
+            console.error('Failed to fetch students:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    const fetchStats = async () => {
+        try {
+            const response = await adminService.getStudentStats();
+            setStats(response.data.stats || { total: 0, active: 0, inactive: 0, avgPoints: 0 });
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
+        }
+    };
+
+    const handleStatusChange = async (studentId: string, newStatus: string) => {
+        try {
+            await adminService.updateStudentStatus(studentId, newStatus);
+            fetchStudents();
+            fetchStats();
+            setSelectedStudent(null);
+        } catch (error) {
+            console.error('Failed to update student status:', error);
+        }
+    };
+
+    const getStudentId = (student: Student) => student._id || student.id;
 
     // Count students per internship
     const internshipCounts = availableInternships.map(internship => ({
         name: internship,
-        count: mockStudents.filter(s => s.enrolledInternships.includes(internship)).length
+        count: students.filter(s => s.enrolledInternships?.includes(internship)).length
     }));
 
     return (
@@ -213,7 +175,7 @@ export default function AdminStudentsPage() {
                                 {internshipFilter !== 'all' && (
                                     <div className="flex items-center gap-2 p-3 bg-purple-500/20 rounded-lg">
                                         <span className="text-sm">
-                                            Showing <span className="font-bold">{filteredStudents.length}</span> student(s) enrolled in <span className="font-bold">{internshipFilter}</span>
+                                            Showing <span className="font-bold">{students.length}</span> student(s) enrolled in <span className="font-bold">{internshipFilter}</span>
                                         </span>
                                         <button
                                             onClick={() => setInternshipFilter('all')}
@@ -264,82 +226,94 @@ export default function AdminStudentsPage() {
             {/* Students Table */}
             <Card glow>
                 <CardHeader>
-                    <CardTitle>Students ({filteredStudents.length})</CardTitle>
+                    <CardTitle>Students ({students.length})</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-white/10">
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Student</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Enrolled Internships</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Progress</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Points</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Status</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredStudents.map((student, index) => (
-                                    <motion.tr
-                                        key={student.id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.05 }}
-                                        className="border-b border-white/5 hover:bg-white/5 transition-colors"
-                                    >
-                                        <td className="py-4 px-4">
-                                            <div>
-                                                <div className="font-semibold">{student.name}</div>
-                                                <div className="text-sm text-gray-400">{student.email}</div>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4">
-                                            <div className="flex flex-wrap gap-1">
-                                                {student.enrolledInternships.map((internship, idx) => (
-                                                    <Badge key={idx} variant="default" className="text-xs">
-                                                        {internship}
-                                                    </Badge>
-                                                ))}
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4">
-                                            <div className="text-sm">
-                                                <div>{student.coursesCompleted}/{student.coursesEnrolled} Courses</div>
-                                                <div className="text-gray-400">{student.tasksCompleted} Tasks</div>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4">
-                                            <div className="flex items-center gap-1 text-purple-400 font-semibold">
-                                                <Award size={16} />
-                                                {student.totalPoints}
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-4">
-                                            <Badge variant={student.status === 'active' ? 'success' : 'default'}>
-                                                {student.status === 'active' ? (
-                                                    <><UserCheck size={12} className="mr-1" /> Active</>
-                                                ) : (
-                                                    <><UserX size={12} className="mr-1" /> Inactive</>
-                                                )}
-                                            </Badge>
-                                        </td>
-                                        <td className="py-4 px-4">
-                                            <Button variant="ghost" size="sm" onClick={() => setSelectedStudent(student)}>
-                                                <Eye size={14} />
-                                            </Button>
-                                        </td>
-                                    </motion.tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    {isLoading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-white/10">
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Student</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Enrolled Internships</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Progress</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Points</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Status</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-gray-400">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {students.map((student, index) => (
+                                        <motion.tr
+                                            key={getStudentId(student)}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                                        >
+                                            <td className="py-4 px-4">
+                                                <div>
+                                                    <div className="font-semibold">{student.name}</div>
+                                                    <div className="text-sm text-gray-400">{student.email}</div>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <div className="flex flex-wrap gap-1">
+                                                    {student.enrolledInternships?.length ? (
+                                                        student.enrolledInternships.map((internship, idx) => (
+                                                            <Badge key={idx} variant="default" className="text-xs">
+                                                                {internship}
+                                                            </Badge>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-gray-500 text-sm">No internships</span>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <div className="text-sm">
+                                                    <div>{student.coursesCompleted || 0}/{student.coursesEnrolled || 0} Courses</div>
+                                                    <div className="text-gray-400">{student.tasksCompleted || 0} Tasks</div>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <div className="flex items-center gap-1 text-purple-400 font-semibold">
+                                                    <Award size={16} />
+                                                    {student.totalPoints || 0}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <Badge variant={student.status === 'active' ? 'success' : 'default'}>
+                                                    {student.status === 'active' ? (
+                                                        <><UserCheck size={12} className="mr-1" /> Active</>
+                                                    ) : (
+                                                        <><UserX size={12} className="mr-1" /> Inactive</>
+                                                    )}
+                                                </Badge>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <Button variant="ghost" size="sm" onClick={() => setSelectedStudent(student)}>
+                                                    <Eye size={14} />
+                                                </Button>
+                                            </td>
+                                        </motion.tr>
+                                    ))}
+                                </tbody>
+                            </table>
 
-                        {filteredStudents.length === 0 && (
-                            <div className="text-center py-12 text-gray-400">
-                                No students found matching your filters
-                            </div>
-                        )}
-                    </div>
+                            {students.length === 0 && (
+                                <div className="text-center py-12 text-gray-400">
+                                    {searchQuery || statusFilter !== 'all' || internshipFilter !== 'all' 
+                                        ? 'No students found matching your filters'
+                                        : 'No students registered yet'}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
@@ -373,21 +347,21 @@ export default function AdminStudentsPage() {
                                         <div className="text-sm text-gray-400 mb-1">Phone</div>
                                         <div className="flex items-center gap-2">
                                             <Phone size={16} className="text-purple-400" />
-                                            {selectedStudent.phone}
+                                            {selectedStudent.phone || 'Not provided'}
                                         </div>
                                     </div>
                                     <div>
-                                        <div className="text-sm text-gray-400 mb-1">Enrolled Date</div>
+                                        <div className="text-sm text-gray-400 mb-1">Joined Date</div>
                                         <div className="flex items-center gap-2">
                                             <Calendar size={16} className="text-purple-400" />
-                                            {new Date(selectedStudent.enrolledDate).toLocaleDateString()}
+                                            {new Date(selectedStudent.created_at).toLocaleDateString()}
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-sm text-gray-400 mb-1">Total Points</div>
                                         <div className="flex items-center gap-2">
                                             <Award size={16} className="text-purple-400" />
-                                            {selectedStudent.totalPoints}
+                                            {selectedStudent.totalPoints || 0}
                                         </div>
                                     </div>
                                 </div>
@@ -395,26 +369,51 @@ export default function AdminStudentsPage() {
                                 <div>
                                     <div className="text-sm text-gray-400 mb-2">Enrolled Internships</div>
                                     <div className="flex flex-wrap gap-2">
-                                        {selectedStudent.enrolledInternships.map((internship, idx) => (
-                                            <Badge key={idx} variant="default">
-                                                {internship}
-                                            </Badge>
-                                        ))}
+                                        {selectedStudent.enrolledInternships?.length ? (
+                                            selectedStudent.enrolledInternships.map((internship, idx) => (
+                                                <Badge key={idx} variant="default">
+                                                    {internship}
+                                                </Badge>
+                                            ))
+                                        ) : (
+                                            <span className="text-gray-500">No internships enrolled</span>
+                                        )}
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
                                     <div className="text-center">
-                                        <div className="text-2xl font-bold text-purple-400">{selectedStudent.coursesEnrolled}</div>
+                                        <div className="text-2xl font-bold text-purple-400">{selectedStudent.coursesEnrolled || 0}</div>
                                         <div className="text-sm text-gray-400">Courses Enrolled</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="text-2xl font-bold text-green-400">{selectedStudent.coursesCompleted}</div>
+                                        <div className="text-2xl font-bold text-green-400">{selectedStudent.coursesCompleted || 0}</div>
                                         <div className="text-sm text-gray-400">Courses Completed</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="text-2xl font-bold text-yellow-400">{selectedStudent.tasksCompleted}</div>
+                                        <div className="text-2xl font-bold text-yellow-400">{selectedStudent.tasksCompleted || 0}</div>
                                         <div className="text-sm text-gray-400">Tasks Completed</div>
+                                    </div>
+                                </div>
+
+                                {/* Status Management */}
+                                <div className="pt-4 border-t border-white/10">
+                                    <div className="text-sm text-gray-400 mb-2">Change Status</div>
+                                    <div className="flex gap-2">
+                                        <Button 
+                                            variant={selectedStudent.status === 'active' ? 'primary' : 'outline'}
+                                            size="sm"
+                                            onClick={() => handleStatusChange(getStudentId(selectedStudent), 'active')}
+                                        >
+                                            Active
+                                        </Button>
+                                        <Button 
+                                            variant={selectedStudent.status === 'inactive' ? 'primary' : 'outline'}
+                                            size="sm"
+                                            onClick={() => handleStatusChange(getStudentId(selectedStudent), 'inactive')}
+                                        >
+                                            Inactive
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
