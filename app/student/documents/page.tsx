@@ -113,9 +113,7 @@ export default function StudentDocumentsPage() {
             window.URL.revokeObjectURL(url);
         } catch (error: any) {
             console.error('Failed to download MOU:', error);
-            // Try to open in new tab as fallback
-            const baseUrl = api.defaults.baseURL?.replace('/api', '') || '';
-            window.open(`${baseUrl}/api/student/documents/${enrollmentId}/mou`, '_blank');
+            alert('Failed to download MOU. Please try again.');
         } finally {
             setDownloadingId(null);
         }
@@ -139,9 +137,7 @@ export default function StudentDocumentsPage() {
             window.URL.revokeObjectURL(url);
         } catch (error: any) {
             console.error('Failed to download Offer Letter:', error);
-            // Try to open in new tab as fallback
-            const baseUrl = api.defaults.baseURL?.replace('/api', '') || '';
-            window.open(`${baseUrl}/api/student/documents/${enrollmentId}/offer-letter`, '_blank');
+            alert('Failed to download Offer Letter. Please try again.');
         } finally {
             setDownloadingId(null);
         }

@@ -106,9 +106,16 @@ export default function AdminEnrollmentRequestsPage() {
 
     const handleViewResume = async (id: string) => {
         try {
-            // Open resume in new tab
-            const baseUrl = api.defaults.baseURL?.replace('/api', '') || '';
-            window.open(`${baseUrl}/api/admin/enrollment-requests/${id}/resume/view`, '_blank');
+            // Fetch resume with authentication and open in new tab
+            const response = await api.get(`/admin/enrollment-requests/${id}/resume/view`, {
+                responseType: 'blob'
+            });
+            
+            const blob = new Blob([response.data], { type: response.headers['content-type'] || 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+            // Revoke after a delay to allow the new tab to load
+            setTimeout(() => window.URL.revokeObjectURL(url), 10000);
         } catch (error) {
             console.error('Failed to view resume:', error);
             alert('Failed to view resume');
@@ -121,7 +128,7 @@ export default function AdminEnrollmentRequestsPage() {
                 responseType: 'blob'
             });
             
-            const blob = new Blob([response.data]);
+            const blob = new Blob([response.data], { type: 'application/pdf' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
