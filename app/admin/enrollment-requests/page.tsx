@@ -112,9 +112,9 @@ export default function AdminEnrollmentRequestsPage() {
             });
             
             // Check if the response is an error (JSON) instead of a file
-            const contentType = response.headers['content-type'];
+            const contentType = response.headers['content-type'] || response.headers['Content-Type'];
             if (contentType && contentType.includes('application/json')) {
-                // It's an error response
+                // It's an error response - convert blob to JSON
                 const text = await response.data.text();
                 const error = JSON.parse(text);
                 alert(error.message || 'Failed to view resume');
@@ -128,8 +128,20 @@ export default function AdminEnrollmentRequestsPage() {
             setTimeout(() => window.URL.revokeObjectURL(url), 10000);
         } catch (error: any) {
             console.error('Failed to view resume:', error);
-            const errorMessage = error.response?.data?.message || 'Failed to view resume. The file may not exist.';
-            alert(errorMessage);
+            
+            // Handle error response that comes as blob
+            if (error.response?.data instanceof Blob) {
+                try {
+                    const text = await error.response.data.text();
+                    const errorData = JSON.parse(text);
+                    alert(errorData.message || 'Failed to view resume');
+                } catch (e) {
+                    alert('Failed to view resume. Please check if the file exists.');
+                }
+            } else {
+                const errorMessage = error.response?.data?.message || error.message || 'Failed to view resume. The file may not exist.';
+                alert(errorMessage);
+            }
         }
     };
 
@@ -140,9 +152,9 @@ export default function AdminEnrollmentRequestsPage() {
             });
             
             // Check if the response is an error (JSON) instead of a file
-            const contentType = response.headers['content-type'];
+            const contentType = response.headers['content-type'] || response.headers['Content-Type'];
             if (contentType && contentType.includes('application/json')) {
-                // It's an error response
+                // It's an error response - convert blob to JSON
                 const text = await response.data.text();
                 const error = JSON.parse(text);
                 alert(error.message || 'Failed to download resume');
@@ -160,8 +172,20 @@ export default function AdminEnrollmentRequestsPage() {
             window.URL.revokeObjectURL(url);
         } catch (error: any) {
             console.error('Failed to download resume:', error);
-            const errorMessage = error.response?.data?.message || 'Failed to download resume. The file may not exist.';
-            alert(errorMessage);
+            
+            // Handle error response that comes as blob
+            if (error.response?.data instanceof Blob) {
+                try {
+                    const text = await error.response.data.text();
+                    const errorData = JSON.parse(text);
+                    alert(errorData.message || 'Failed to download resume');
+                } catch (e) {
+                    alert('Failed to download resume. Please check if the file exists.');
+                }
+            } else {
+                const errorMessage = error.response?.data?.message || error.message || 'Failed to download resume. The file may not exist.';
+                alert(errorMessage);
+            }
         }
     };
 
