@@ -53,6 +53,8 @@ interface EnrollmentRequest {
     offerLetterGenerated?: boolean;
     resumePath?: string;
     resumeOriginalName?: string;
+    resumeCloudinaryUrl?: string;
+    resumeGoogleDriveUrl?: string;
     created_at: string;
 }
 
@@ -62,6 +64,11 @@ interface Stats {
     rejected: number;
     total: number;
 }
+
+// Helper function to check if a resume exists (local, Cloudinary, or Google Drive)
+const hasResume = (request: EnrollmentRequest): boolean => {
+    return !!(request.resumePath || request.resumeCloudinaryUrl || request.resumeGoogleDriveUrl);
+};
 
 export default function AdminEnrollmentRequestsPage() {
     const [requests, setRequests] = useState<EnrollmentRequest[]>([]);
@@ -199,12 +206,18 @@ export default function AdminEnrollmentRequestsPage() {
             const response = await api.delete(`/admin/enrollment-requests/${id}/resume`);
             if (response.data.status === 'success') {
                 alert('Resume cleared successfully');
-                // Update the local state
+                // Update the local state - clear all resume fields
+                const clearedResumeFields = { 
+                    resumePath: undefined, 
+                    resumeOriginalName: undefined,
+                    resumeCloudinaryUrl: undefined,
+                    resumeGoogleDriveUrl: undefined
+                };
                 setRequests(prev => prev.map(r => 
-                    r.id === id ? { ...r, resumePath: undefined, resumeOriginalName: undefined } : r
+                    r.id === id ? { ...r, ...clearedResumeFields } : r
                 ));
                 if (selectedRequest && selectedRequest.id === id) {
-                    setSelectedRequest({ ...selectedRequest, resumePath: undefined, resumeOriginalName: undefined });
+                    setSelectedRequest({ ...selectedRequest, ...clearedResumeFields });
                 }
             }
         } catch (error: any) {
@@ -555,7 +568,7 @@ export default function AdminEnrollmentRequestsPage() {
 
                                     {/* Resume and Documents Badges */}
                                     <div className="mt-4 flex flex-wrap gap-2">
-                                        {request.resumePath && (
+                                        {hasResume(request) && (
                                             <span 
                                                 className="cursor-pointer hover:opacity-80"
                                                 onClick={() => handleViewResume(request.id)}
@@ -701,7 +714,7 @@ export default function AdminEnrollmentRequestsPage() {
                         )}
 
                         {/* Resume Section */}
-                        {selectedRequest.resumePath && (
+                        {hasResume(selectedRequest) && (
                             <Card className="mb-4 border-blue-500/30">
                                 <CardHeader>
                                     <CardTitle className="text-lg text-blue-400">
