@@ -114,40 +114,41 @@ export default function AdminEnrollmentRequestsPage() {
 
     const handleViewResume = async (id: string) => {
         try {
-            // Fetch resume with authentication and open in new tab
-            const response = await api.get(`/admin/enrollment-requests/${id}/resume/view`, {
-                responseType: 'blob'
-            });
+            // First, try to get the resume info (might be a redirect URL)
+            const response = await api.get(`/admin/enrollment-requests/${id}/resume/view`);
             
-            // Check if the response is an error (JSON) instead of a file
-            const contentType = response.headers['content-type'] || response.headers['Content-Type'];
-            if (contentType && contentType.includes('application/json')) {
-                // It's an error response - convert blob to JSON
-                const text = await response.data.text();
-                const error = JSON.parse(text);
-                alert(error.message || 'Failed to view resume');
+            // If we get a redirect response with URL, open it directly
+            if (response.data.status === 'redirect' && response.data.url) {
+                window.open(response.data.url, '_blank');
                 return;
             }
             
-            const blob = new Blob([response.data], { type: contentType || 'application/pdf' });
-            const url = window.URL.createObjectURL(blob);
-            window.open(url, '_blank');
-            // Revoke after a delay to allow the new tab to load
-            setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+            // Otherwise, it returned an error
+            if (response.data.message) {
+                alert(response.data.message);
+            }
         } catch (error: any) {
-            console.error('Failed to view resume:', error);
+            // If the response is a file (blob), handle it
+            if (error.response?.status === undefined) {
+                // Network error or CORS issue
+                alert('Failed to view resume. Network error.');
+                return;
+            }
             
-            // Handle error response that comes as blob
-            if (error.response?.data instanceof Blob) {
-                try {
-                    const text = await error.response.data.text();
-                    const errorData = JSON.parse(text);
-                    alert(errorData.message || 'Failed to view resume');
-                } catch (e) {
-                    alert('Failed to view resume. Please check if the file exists.');
-                }
-            } else {
-                const errorMessage = error.response?.data?.message || error.message || 'Failed to view resume. The file may not exist.';
+            // For local files, try fetching as blob
+            try {
+                const blobResponse = await api.get(`/admin/enrollment-requests/${id}/resume/view`, {
+                    responseType: 'blob'
+                });
+                
+                const contentType = blobResponse.headers['content-type'] || 'application/pdf';
+                const blob = new Blob([blobResponse.data], { type: contentType });
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+            } catch (blobError: any) {
+                console.error('Failed to view resume:', blobError);
+                const errorMessage = blobError.response?.data?.message || error.response?.data?.message || 'Failed to view resume';
                 alert(errorMessage);
             }
         }
@@ -155,43 +156,40 @@ export default function AdminEnrollmentRequestsPage() {
 
     const handleDownloadResume = async (id: string, studentName: string) => {
         try {
-            const response = await api.get(`/admin/enrollment-requests/${id}/resume`, {
-                responseType: 'blob'
-            });
+            // First, try to get the resume info (might be a redirect URL)
+            const response = await api.get(`/admin/enrollment-requests/${id}/resume`);
             
-            // Check if the response is an error (JSON) instead of a file
-            const contentType = response.headers['content-type'] || response.headers['Content-Type'];
-            if (contentType && contentType.includes('application/json')) {
-                // It's an error response - convert blob to JSON
-                const text = await response.data.text();
-                const error = JSON.parse(text);
-                alert(error.message || 'Failed to download resume');
+            // If we get a redirect response with URL, open it directly
+            if (response.data.status === 'redirect' && response.data.url) {
+                // For Cloudinary/Google Drive URLs, just open in new tab
+                window.open(response.data.url, '_blank');
                 return;
             }
             
-            const blob = new Blob([response.data], { type: contentType || 'application/pdf' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `Resume_${studentName.replace(/\s+/g, '_')}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            // Otherwise, it returned an error
+            if (response.data.message) {
+                alert(response.data.message);
+            }
         } catch (error: any) {
-            console.error('Failed to download resume:', error);
-            
-            // Handle error response that comes as blob
-            if (error.response?.data instanceof Blob) {
-                try {
-                    const text = await error.response.data.text();
-                    const errorData = JSON.parse(text);
-                    alert(errorData.message || 'Failed to download resume');
-                } catch (e) {
-                    alert('Failed to download resume. Please check if the file exists.');
-                }
-            } else {
-                const errorMessage = error.response?.data?.message || error.message || 'Failed to download resume. The file may not exist.';
+            // For local files, try fetching as blob
+            try {
+                const blobResponse = await api.get(`/admin/enrollment-requests/${id}/resume`, {
+                    responseType: 'blob'
+                });
+                
+                const contentType = blobResponse.headers['content-type'] || 'application/pdf';
+                const blob = new Blob([blobResponse.data], { type: contentType });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Resume_${studentName.replace(/\s+/g, '_')}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            } catch (blobError: any) {
+                console.error('Failed to download resume:', blobError);
+                const errorMessage = blobError.response?.data?.message || error.response?.data?.message || 'Failed to download resume';
                 alert(errorMessage);
             }
         }

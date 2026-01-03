@@ -187,14 +187,22 @@ class EnrollmentRequestController extends Controller
 
         // Check for Cloudinary URL first
         if ($enrollmentRequest->resumeCloudinaryUrl) {
-            Log::info("Redirecting to Cloudinary resume: {$enrollmentRequest->resumeCloudinaryUrl}");
-            return redirect($enrollmentRequest->resumeCloudinaryUrl);
+            Log::info("Returning Cloudinary resume URL: {$enrollmentRequest->resumeCloudinaryUrl}");
+            return response()->json([
+                'status' => 'redirect',
+                'url' => $enrollmentRequest->resumeCloudinaryUrl,
+                'filename' => $enrollmentRequest->resumeOriginalName ?? 'Resume.pdf'
+            ]);
         }
 
         // Check for Google Drive URL
         if ($enrollmentRequest->resumeGoogleDriveUrl) {
-            Log::info("Redirecting to Google Drive resume: {$enrollmentRequest->resumeGoogleDriveUrl}");
-            return redirect($enrollmentRequest->resumeGoogleDriveUrl);
+            Log::info("Returning Google Drive resume URL: {$enrollmentRequest->resumeGoogleDriveUrl}");
+            return response()->json([
+                'status' => 'redirect',
+                'url' => $enrollmentRequest->resumeGoogleDriveUrl,
+                'filename' => $enrollmentRequest->resumeOriginalName ?? 'Resume.pdf'
+            ]);
         }
 
         // Fallback to local storage
@@ -229,14 +237,20 @@ class EnrollmentRequestController extends Controller
 
         // Check for Cloudinary URL first
         if ($enrollmentRequest->resumeCloudinaryUrl) {
-            Log::info("Redirecting to Cloudinary resume for view: {$enrollmentRequest->resumeCloudinaryUrl}");
-            return redirect($enrollmentRequest->resumeCloudinaryUrl);
+            Log::info("Returning Cloudinary resume URL for view: {$enrollmentRequest->resumeCloudinaryUrl}");
+            return response()->json([
+                'status' => 'redirect',
+                'url' => $enrollmentRequest->resumeCloudinaryUrl
+            ]);
         }
 
         // Check for Google Drive URL
         if ($enrollmentRequest->resumeGoogleDriveUrl) {
-            Log::info("Redirecting to Google Drive resume for view: {$enrollmentRequest->resumeGoogleDriveUrl}");
-            return redirect($enrollmentRequest->resumeGoogleDriveUrl);
+            Log::info("Returning Google Drive resume URL for view: {$enrollmentRequest->resumeGoogleDriveUrl}");
+            return response()->json([
+                'status' => 'redirect',
+                'url' => $enrollmentRequest->resumeGoogleDriveUrl
+            ]);
         }
 
         // Fallback to local storage
