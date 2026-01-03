@@ -185,21 +185,34 @@ class EnrollmentRequestController extends Controller
             return response()->json(['message' => 'Enrollment request not found'], 404);
         }
 
+        // Check for Cloudinary URL first
+        if ($enrollmentRequest->resumeCloudinaryUrl) {
+            Log::info("Redirecting to Cloudinary resume: {$enrollmentRequest->resumeCloudinaryUrl}");
+            return redirect($enrollmentRequest->resumeCloudinaryUrl);
+        }
+
+        // Check for Google Drive URL
+        if ($enrollmentRequest->resumeGoogleDriveUrl) {
+            Log::info("Redirecting to Google Drive resume: {$enrollmentRequest->resumeGoogleDriveUrl}");
+            return redirect($enrollmentRequest->resumeGoogleDriveUrl);
+        }
+
+        // Fallback to local storage
         if (!$enrollmentRequest->resumePath) {
-            Log::warning("Resume download failed: No resumePath for enrollment {$id}");
+            Log::warning("Resume download failed: No resume for enrollment {$id}");
             return response()->json(['message' => 'No resume attached to this enrollment request'], 404);
         }
 
         // Use Laravel Storage facade for consistency
         if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($enrollmentRequest->resumePath)) {
             Log::warning("Resume download failed: File not found at path: {$enrollmentRequest->resumePath}");
-            return response()->json(['message' => 'Resume file not found on server. Path: ' . $enrollmentRequest->resumePath], 404);
+            return response()->json(['message' => 'Resume file not found on server. The file may have been deleted. Path: ' . $enrollmentRequest->resumePath], 404);
         }
 
         $path = storage_path('app/' . $enrollmentRequest->resumePath);
         $filename = $enrollmentRequest->resumeOriginalName ?? 'Resume_' . $enrollmentRequest->studentName . '.pdf';
 
-        Log::info("Downloading resume: {$path}");
+        Log::info("Downloading resume from local: {$path}");
         return response()->download($path, $filename);
     }
 
@@ -214,23 +227,84 @@ class EnrollmentRequestController extends Controller
             return response()->json(['message' => 'Enrollment request not found'], 404);
         }
 
+        // Check for Cloudinary URL first
+        if ($enrollmentRequest->resumeCloudinaryUrl) {
+            Log::info("Redirecting to Cloudinary resume for view: {$enrollmentRequest->resumeCloudinaryUrl}");
+            return redirect($enrollmentRequest->resumeCloudinaryUrl);
+        }
+
+        // Check for Google Drive URL
+        if ($enrollmentRequest->resumeGoogleDriveUrl) {
+            Log::info("Redirecting to Google Drive resume for view: {$enrollmentRequest->resumeGoogleDriveUrl}");
+            return redirect($enrollmentRequest->resumeGoogleDriveUrl);
+        }
+
+        // Fallback to local storage
         if (!$enrollmentRequest->resumePath) {
-            Log::warning("Resume view failed: No resumePath for enrollment {$id}");
+            Log::warning("Resume view failed: No resume for enrollment {$id}");
             return response()->json(['message' => 'No resume attached to this enrollment request'], 404);
         }
 
         // Use Laravel Storage facade for consistency
         if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($enrollmentRequest->resumePath)) {
             Log::warning("Resume view failed: File not found at path: {$enrollmentRequest->resumePath}");
-            return response()->json(['message' => 'Resume file not found on server. Path: ' . $enrollmentRequest->resumePath], 404);
+            return response()->json(['message' => 'Resume file not found on server. The file may have been deleted. Path: ' . $enrollmentRequest->resumePath], 404);
         }
 
         $path = storage_path('app/' . $enrollmentRequest->resumePath);
         $mimeType = mime_content_type($path);
 
-        Log::info("Viewing resume: {$path}");
+        Log::info("Viewing resume from local: {$path}");
         return response()->file($path, [
             'Content-Type' => $mimeType,
+        ]);
+    }
+
+    /**
+     * Clear/remove resume from an enrollment request (for invalid files)
+     */
+    public function clearResume($id)
+    {
+        $enrollmentRequest = EnrollmentRequest::find($id);
+
+        if (!$enrollmentRequest) {
+            return response()->json(['message' => 'Enrollment request not found'], 404);
+        }
+
+        // If there's a Cloudinary file, try to delete it
+        if ($enrollmentRequest->resumeCloudinaryPublicId) {
+            try {
+                $cloudinaryService = app(\App\Services\CloudinaryService::class);
+                $cloudinaryService->delete($enrollmentRequest->resumeCloudinaryPublicId);
+            } catch (\Exception $e) {
+                Log::warning("Failed to delete Cloudinary file: " . $e->getMessage());
+            }
+        }
+
+        // If there's a local file, try to delete it
+        if ($enrollmentRequest->resumePath) {
+            try {
+                \Illuminate\Support\Facades\Storage::disk('local')->delete($enrollmentRequest->resumePath);
+            } catch (\Exception $e) {
+                Log::warning("Failed to delete local file: " . $e->getMessage());
+            }
+        }
+
+        // Clear all resume fields
+        $enrollmentRequest->update([
+            'resumePath' => null,
+            'resumeOriginalName' => null,
+            'resumeGoogleDriveUrl' => null,
+            'resumeCloudinaryUrl' => null,
+            'resumeCloudinaryPublicId' => null,
+        ]);
+
+        Log::info("Cleared resume for enrollment {$id}");
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Resume cleared successfully',
+            'data' => $enrollmentRequest
         ]);
     }
 

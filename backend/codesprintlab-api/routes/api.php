@@ -234,6 +234,7 @@ Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
         Route::post('/{id}/reject', [AdminEnrollmentRequestController::class, 'reject']); // Reject request
         Route::get('/{id}/resume', [AdminEnrollmentRequestController::class, 'downloadResume']); // Download resume
         Route::get('/{id}/resume/view', [AdminEnrollmentRequestController::class, 'viewResume']); // View resume
+        Route::delete('/{id}/resume', [AdminEnrollmentRequestController::class, 'clearResume']); // Clear invalid resume
         
         // Admin Document Access
         Route::get('/{enrollmentId}/mou', [App\Http\Controllers\DocumentController::class, 'downloadMOU']);

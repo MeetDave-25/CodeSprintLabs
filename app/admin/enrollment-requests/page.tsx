@@ -18,7 +18,8 @@ import {
     Briefcase,
     AlertCircle,
     Download,
-    FileUp
+    FileUp,
+    Trash2
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -186,6 +187,30 @@ export default function AdminEnrollmentRequestsPage() {
                 const errorMessage = error.response?.data?.message || error.message || 'Failed to download resume. The file may not exist.';
                 alert(errorMessage);
             }
+        }
+    };
+
+    const handleClearResume = async (id: string) => {
+        if (!confirm('Are you sure you want to clear this resume? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const response = await api.delete(`/admin/enrollment-requests/${id}/resume`);
+            if (response.data.status === 'success') {
+                alert('Resume cleared successfully');
+                // Update the local state
+                setRequests(prev => prev.map(r => 
+                    r.id === id ? { ...r, resumePath: undefined, resumeOriginalName: undefined } : r
+                ));
+                if (selectedRequest && selectedRequest.id === id) {
+                    setSelectedRequest({ ...selectedRequest, resumePath: undefined, resumeOriginalName: undefined });
+                }
+            }
+        } catch (error: any) {
+            console.error('Failed to clear resume:', error);
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to clear resume';
+            alert(errorMessage);
         }
     };
 
@@ -710,8 +735,20 @@ export default function AdminEnrollmentRequestsPage() {
                                                 <Download size={14} className="mr-1" />
                                                 Download
                                             </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleClearResume(selectedRequest.id)}
+                                                className="text-red-400 border-red-400/30 hover:bg-red-500/10"
+                                            >
+                                                <Trash2 size={14} className="mr-1" />
+                                                Clear
+                                            </Button>
                                         </div>
                                     </div>
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Note: Use "Clear" if the resume file is missing or corrupt to remove the broken reference.
+                                    </p>
                                 </CardContent>
                             </Card>
                         )}

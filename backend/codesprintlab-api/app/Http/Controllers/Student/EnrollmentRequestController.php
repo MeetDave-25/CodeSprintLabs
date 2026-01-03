@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\EnrollmentRequest;
 use App\Models\Internship;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 class EnrollmentRequestController extends Controller
 {
+    protected $cloudinaryService;
+
+    public function __construct(CloudinaryService $cloudinaryService)
+    {
+        $this->cloudinaryService = $cloudinaryService;
+    }
+
     /**
      * Submit an enrollment request for an internship
      */
@@ -59,17 +67,37 @@ class EnrollmentRequestController extends Controller
         $resumePath = null;
         $resumeOriginalName = null;
         $resumeGoogleDriveUrl = null;
+        $resumeCloudinaryUrl = null;
+        $resumeCloudinaryPublicId = null;
 
         // Check if using profile resume
         if ($request->input('useProfileResume') === 'true') {
             // Use resume from user's profile
-            if ($user->resumePath || $user->resumeGoogleDriveUrl) {
+            if ($user->resumeCloudinaryUrl) {
+                // Use Cloudinary URL from profile
+                $resumeCloudinaryUrl = $user->resumeCloudinaryUrl;
+                $resumeCloudinaryPublicId = $user->resumeCloudinaryPublicId;
+                $resumeOriginalName = $user->resumeOriginalName ?? 'Profile Resume';
+            } elseif ($user->resumePath || $user->resumeGoogleDriveUrl) {
                 if ($user->resumePath && Storage::disk('local')->exists($user->resumePath)) {
-                    // Copy the profile resume to enrollment folder
-                    $extension = pathinfo($user->resumePath, PATHINFO_EXTENSION);
-                    $newPath = 'resumes/' . $user->id . '/enrollment_' . time() . '.' . $extension;
-                    Storage::disk('local')->copy($user->resumePath, $newPath);
-                    $resumePath = $newPath;
+                    // Try to upload to Cloudinary first
+                    $localPath = storage_path('app/' . $user->resumePath);
+                    $cloudinaryResult = $this->cloudinaryService->uploadFromPath(
+                        $localPath,
+                        'resumes/' . $user->id,
+                        'enrollment_' . time()
+                    );
+                    
+                    if ($cloudinaryResult) {
+                        $resumeCloudinaryUrl = $cloudinaryResult['secure_url'];
+                        $resumeCloudinaryPublicId = $cloudinaryResult['public_id'];
+                    } else {
+                        // Fallback to local storage
+                        $extension = pathinfo($user->resumePath, PATHINFO_EXTENSION);
+                        $newPath = 'resumes/' . $user->id . '/enrollment_' . time() . '.' . $extension;
+                        Storage::disk('local')->copy($user->resumePath, $newPath);
+                        $resumePath = $newPath;
+                    }
                     $resumeOriginalName = $user->resumeOriginalName ?? 'Profile Resume';
                 } elseif ($user->resumeGoogleDriveUrl) {
                     // Use Google Drive URL from profile
@@ -80,7 +108,21 @@ class EnrollmentRequestController extends Controller
         } elseif ($request->hasFile('resume')) {
             $file = $request->file('resume');
             $resumeOriginalName = $file->getClientOriginalName();
-            $resumePath = $file->store('resumes/' . $user->id, 'local');
+            
+            // Try Cloudinary first
+            $cloudinaryResult = $this->cloudinaryService->upload(
+                $file,
+                'resumes/' . $user->id,
+                'enrollment_' . time()
+            );
+            
+            if ($cloudinaryResult) {
+                $resumeCloudinaryUrl = $cloudinaryResult['secure_url'];
+                $resumeCloudinaryPublicId = $cloudinaryResult['public_id'];
+            } else {
+                // Fallback to local storage
+                $resumePath = $file->store('resumes/' . $user->id, 'local');
+            }
         }
 
         // Create enrollment request with complete student profile
@@ -104,6 +146,8 @@ class EnrollmentRequestController extends Controller
             'resumePath' => $resumePath,
             'resumeOriginalName' => $resumeOriginalName,
             'resumeGoogleDriveUrl' => $resumeGoogleDriveUrl,
+            'resumeCloudinaryUrl' => $resumeCloudinaryUrl,
+            'resumeCloudinaryPublicId' => $resumeCloudinaryPublicId,
         ]);
 
         return response()->json([

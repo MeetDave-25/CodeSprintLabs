@@ -59,6 +59,8 @@ class EnrollmentRequest extends Model
         'resumePath',
         'resumeOriginalName',
         'resumeGoogleDriveUrl',
+        'resumeCloudinaryUrl',
+        'resumeCloudinaryPublicId',
         // Withdrawal fields
         'withdrawalRequested',
         'withdrawalRequestedAt',
