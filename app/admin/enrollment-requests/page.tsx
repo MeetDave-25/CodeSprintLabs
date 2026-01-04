@@ -601,11 +601,12 @@ export default function AdminEnrollmentRequestsPage() {
 
             {/* Detail Modal */}
             {showDetailModal && selectedRequest && (
-                <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-4 overflow-y-auto">
+                <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
+                    <div className="min-h-full flex items-center justify-center p-4 py-8">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-[#0f0f13] border border-white/10 rounded-xl p-6 w-full max-w-2xl my-8 max-h-[calc(100vh-4rem)] overflow-y-auto"
+                        className="bg-[#0f0f13] border border-white/10 rounded-xl p-6 w-full max-w-2xl relative"
                     >
                         <div className="flex items-start justify-between mb-6">
                             <div>
@@ -908,6 +909,7 @@ export default function AdminEnrollmentRequestsPage() {
                             </Button>
                         </div>
                     </motion.div>
+                    </div>
                 </div>
             )}
         </div>
