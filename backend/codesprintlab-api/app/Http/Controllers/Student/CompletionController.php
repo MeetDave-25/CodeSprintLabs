@@ -202,6 +202,10 @@ class CompletionController extends Controller
     {
         $grade = $this->calculateGrade($enrollment->marks ?? 0);
         
+        // Get internship type from the related internship
+        $internship = $enrollment->internship;
+        $internshipType = $internship ? $internship->type : 'Remote';
+        
         return [
             'studentName' => $enrollment->studentName,
             'studentEmail' => $enrollment->studentEmail,
@@ -210,6 +214,7 @@ class CompletionController extends Controller
             'internshipTitle' => $enrollment->internshipTitle,
             'internshipDomain' => $enrollment->internshipDomain,
             'internshipDuration' => $enrollment->internshipDuration,
+            'internshipType' => $internshipType,
             'startDate' => $enrollment->startDate ? $enrollment->startDate->format('d M Y') : 'N/A',
             'endDate' => $enrollment->endDate ? $enrollment->endDate->format('d M Y') : now()->format('d M Y'),
             'tasksCompleted' => $enrollment->tasksCompleted ?? 0,

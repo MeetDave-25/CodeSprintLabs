@@ -452,7 +452,7 @@
             </tr>
             <tr>
                 <td class="label">Mode of Work</td>
-                <td class="value"><span class="badge">{{ $internshipType ?? 'Work From Home' }}</span></td>
+                <td class="value"><span class="badge">{{ $internshipType ?? 'Remote' }}</span></td>
             </tr>
             <tr>
                 <td class="label">Status</td>
