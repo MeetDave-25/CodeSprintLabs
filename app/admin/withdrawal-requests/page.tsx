@@ -441,9 +441,9 @@ export default function WithdrawalRequestsPage() {
                                         </h3>
                                         <div className="flex flex-wrap gap-3">
                                             <Button
-                                                variant="secondary"
+                                                variant="ghost"
                                                 size="sm"
-                                                className="bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+                                                className="bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
                                                 onClick={async () => {
                                                     try {
                                                         const response = await api.get(`/admin/withdrawal-requests/${selectedRequest.id || selectedRequest._id}/partial-completion`, {
@@ -465,9 +465,9 @@ export default function WithdrawalRequestsPage() {
                                                 Partial Completion Letter
                                             </Button>
                                             <Button
-                                                variant="secondary"
+                                                variant="ghost"
                                                 size="sm"
-                                                className="bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30"
+                                                className="bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30"
                                                 onClick={async () => {
                                                     try {
                                                         const response = await api.get(`/admin/withdrawal-requests/${selectedRequest.id || selectedRequest._id}/relieving-letter`, {

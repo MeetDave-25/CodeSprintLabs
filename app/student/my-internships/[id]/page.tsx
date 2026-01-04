@@ -490,8 +490,8 @@ export default function StudentInternshipDetailPage() {
                                             <div className="pt-2 border-t border-white/10 space-y-2">
                                                 <p className="text-xs text-gray-400 mb-2">Your Documents</p>
                                                 <Button 
-                                                    variant="secondary" 
-                                                    className="w-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+                                                    variant="ghost" 
+                                                    className="w-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
                                                     onClick={async () => {
                                                         try {
                                                             const response = await api.get(`/student/documents/${internship?.enrollmentId}/partial-completion`, {
@@ -513,8 +513,8 @@ export default function StudentInternshipDetailPage() {
                                                     Partial Completion Letter
                                                 </Button>
                                                 <Button 
-                                                    variant="secondary" 
-                                                    className="w-full bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30"
+                                                    variant="ghost" 
+                                                    className="w-full bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30"
                                                     onClick={async () => {
                                                         try {
                                                             const response = await api.get(`/student/documents/${internship?.enrollmentId}/relieving-letter`, {

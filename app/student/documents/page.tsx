@@ -462,9 +462,9 @@ export default function StudentDocumentsPage() {
                                                     {/* Withdrawal Documents */}
                                                     {doc.hasPartialCompletionLetter && (
                                                         <Button
-                                                            variant="secondary"
+                                                            variant="ghost"
                                                             size="sm"
-                                                            className="bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+                                                            className="bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
                                                             onClick={() => handleDownloadPartialCompletionLetter(doc.id, doc.internshipTitle)}
                                                             isLoading={downloadingId === doc.id + '-partial'}
                                                         >
@@ -474,9 +474,9 @@ export default function StudentDocumentsPage() {
                                                     )}
                                                     {doc.hasRelievingLetter && (
                                                         <Button
-                                                            variant="secondary"
+                                                            variant="ghost"
                                                             size="sm"
-                                                            className="bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30"
+                                                            className="bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30"
                                                             onClick={() => handleDownloadRelievingLetter(doc.id, doc.internshipTitle)}
                                                             isLoading={downloadingId === doc.id + '-relieving'}
                                                         >
