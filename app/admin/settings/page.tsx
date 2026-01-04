@@ -286,30 +286,26 @@ export default function AdminSettingsPage() {
                                 <div className="font-semibold">Push Notifications</div>
                                 <div className="text-sm text-gray-400">Enable push notifications for users</div>
                             </div>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={settings.enableNotifications}
-                                    onChange={(e) => setSettings({ ...settings, enableNotifications: e.target.checked })}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                            </label>
+                            <button
+                                type="button"
+                                onClick={() => setSettings({ ...settings, enableNotifications: !settings.enableNotifications })}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.enableNotifications ? 'bg-purple-600' : 'bg-gray-700'}`}
+                            >
+                                <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${settings.enableNotifications ? 'translate-x-5' : 'translate-x-1'}`} />
+                            </button>
                         </div>
                         <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                             <div>
                                 <div className="font-semibold">Email Alerts</div>
                                 <div className="text-sm text-gray-400">Send email alerts for important events</div>
                             </div>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={settings.enableEmailAlerts}
-                                    onChange={(e) => setSettings({ ...settings, enableEmailAlerts: e.target.checked })}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                            </label>
+                            <button
+                                type="button"
+                                onClick={() => setSettings({ ...settings, enableEmailAlerts: !settings.enableEmailAlerts })}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.enableEmailAlerts ? 'bg-purple-600' : 'bg-gray-700'}`}
+                            >
+                                <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${settings.enableEmailAlerts ? 'translate-x-5' : 'translate-x-1'}`} />
+                            </button>
                         </div>
                     </CardContent>
                 </Card>
@@ -329,30 +325,26 @@ export default function AdminSettingsPage() {
                                 <div className="font-semibold">Maintenance Mode</div>
                                 <div className="text-sm text-gray-400">Temporarily disable public access</div>
                             </div>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={settings.maintenanceMode}
-                                    onChange={(e) => setSettings({ ...settings, maintenanceMode: e.target.checked })}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-                            </label>
+                            <button
+                                type="button"
+                                onClick={() => setSettings({ ...settings, maintenanceMode: !settings.maintenanceMode })}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.maintenanceMode ? 'bg-red-600' : 'bg-gray-700'}`}
+                            >
+                                <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${settings.maintenanceMode ? 'translate-x-5' : 'translate-x-1'}`} />
+                            </button>
                         </div>
                         <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                             <div>
                                 <div className="font-semibold">Allow Registration</div>
                                 <div className="text-sm text-gray-400">Enable new user registrations</div>
                             </div>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={settings.allowRegistration}
-                                    onChange={(e) => setSettings({ ...settings, allowRegistration: e.target.checked })}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                            </label>
+                            <button
+                                type="button"
+                                onClick={() => setSettings({ ...settings, allowRegistration: !settings.allowRegistration })}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.allowRegistration ? 'bg-purple-600' : 'bg-gray-700'}`}
+                            >
+                                <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${settings.allowRegistration ? 'translate-x-5' : 'translate-x-1'}`} />
+                            </button>
                         </div>
                     </CardContent>
                 </Card>
