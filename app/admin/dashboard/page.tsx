@@ -76,36 +76,37 @@ export default function AdminDashboard() {
         try {
             // Fetch all dashboard data in parallel
             const [overviewRes, analyticsRes, submissionsRes, enrollmentsRes] = await Promise.all([
-                adminService.getOverview().catch(() => ({ data: {} })),
-                adminService.getAnalytics(6).catch(() => ({ data: { monthlyData: [] } })),
-                adminService.getRecentSubmissions(5).catch(() => ({ data: { submissions: [] } })),
-                adminService.getRecentEnrollments(5).catch(() => ({ data: { enrollments: [] } })),
+                adminService.getOverview().catch(() => ({ data: { data: {} } })),
+                adminService.getAnalytics(6).catch(() => ({ data: { data: [] } })),
+                adminService.getRecentSubmissions(5).catch(() => ({ data: { data: [] } })),
+                adminService.getRecentEnrollments(5).catch(() => ({ data: { data: [] } })),
             ]);
 
-            // Process overview stats
-            const overview = overviewRes.data;
+            // Process overview stats - data is nested: response.data.data
+            const overview = overviewRes.data?.data || overviewRes.data || {};
             setStats({
-                totalStudents: overview.totalStudents || overview.students || 0,
-                activeInternships: overview.activeInternships || overview.internships || 0,
-                pendingSubmissions: overview.pendingSubmissions || 0,
-                totalRevenue: overview.totalRevenue || overview.revenue || 0,
+                totalStudents: overview.students?.total || overview.totalStudents || 0,
+                activeInternships: overview.internships?.active || overview.activeInternships || 0,
+                pendingSubmissions: overview.submissions?.pending || overview.pendingSubmissions || 0,
+                totalRevenue: overview.payments?.totalRevenue || overview.totalRevenue || 0,
                 studentsGrowth: overview.studentsGrowth,
                 revenueGrowth: overview.revenueGrowth,
             });
 
-            // Process analytics data
-            const analytics = analyticsRes.data;
-            if (analytics.monthlyData && analytics.monthlyData.length > 0) {
-                setMonthlyData(analytics.monthlyData);
+            // Process analytics data - response.data.data is the array
+            const analyticsData = analyticsRes.data?.data || analyticsRes.data?.monthlyData || [];
+            if (Array.isArray(analyticsData) && analyticsData.length > 0) {
+                setMonthlyData(analyticsData);
             } else {
                 // Generate empty placeholder data if no analytics
                 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
                 setMonthlyData(months.map(month => ({ month, students: 0, revenue: 0 })));
             }
 
-            // Process recent submissions
-            const submissionsData = submissionsRes.data.submissions || submissionsRes.data.data || [];
-            setRecentSubmissions(submissionsData.slice(0, 5).map((s: any) => ({
+            // Process recent submissions - response.data.data is the array
+            const submissionsData = submissionsRes.data?.data || submissionsRes.data?.submissions || [];
+            const submissionsArray = Array.isArray(submissionsData) ? submissionsData : [];
+            setRecentSubmissions(submissionsArray.slice(0, 5).map((s: any) => ({
                 id: s.id || s._id,
                 student: s.studentName || s.student || 'Unknown',
                 task: s.taskTitle || s.task || 'Unknown Task',
@@ -113,12 +114,13 @@ export default function AdminDashboard() {
                 time: formatTimeAgo(s.submittedAt || s.created_at),
             })));
 
-            // Process recent enrollments
-            const enrollmentsData = enrollmentsRes.data.enrollments || enrollmentsRes.data.data || [];
-            setRecentEnrollments(enrollmentsData.slice(0, 5).map((e: any) => ({
+            // Process recent enrollments - response.data.data is the array
+            const enrollmentsData = enrollmentsRes.data?.data || enrollmentsRes.data?.enrollments || [];
+            const enrollmentsArray = Array.isArray(enrollmentsData) ? enrollmentsData : [];
+            setRecentEnrollments(enrollmentsArray.slice(0, 5).map((e: any) => ({
                 student: e.studentName || e.student || 'Unknown',
                 internship: e.internshipTitle || e.internship || 'Unknown',
-                date: formatDate(e.enrolledAt || e.created_at),
+                date: formatDate(e.enrolledAt || e.date || e.created_at),
             })));
         } catch (error) {
             console.error('Failed to fetch dashboard data:', error);
