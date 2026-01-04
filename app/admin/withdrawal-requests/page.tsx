@@ -440,10 +440,8 @@ export default function WithdrawalRequestsPage() {
                                             Withdrawal Documents
                                         </h3>
                                         <div className="flex flex-wrap gap-3">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
+                                            <button
+                                                className="inline-flex items-center justify-center px-3 py-1.5 text-sm rounded-lg font-medium bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30 transition-all"
                                                 onClick={async () => {
                                                     try {
                                                         const response = await api.get(`/admin/withdrawal-requests/${selectedRequest.id || selectedRequest._id}/partial-completion`, {
@@ -463,11 +461,9 @@ export default function WithdrawalRequestsPage() {
                                             >
                                                 <Download size={14} className="mr-2" />
                                                 Partial Completion Letter
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30"
+                                            </button>
+                                            <button
+                                                className="inline-flex items-center justify-center px-3 py-1.5 text-sm rounded-lg font-medium bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30 transition-all"
                                                 onClick={async () => {
                                                     try {
                                                         const response = await api.get(`/admin/withdrawal-requests/${selectedRequest.id || selectedRequest._id}/relieving-letter`, {
@@ -487,7 +483,7 @@ export default function WithdrawalRequestsPage() {
                                             >
                                                 <Download size={14} className="mr-2" />
                                                 Relieving Letter
-                                            </Button>
+                                            </button>
                                         </div>
                                     </div>
                                 )}

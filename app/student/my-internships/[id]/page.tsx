@@ -489,9 +489,8 @@ export default function StudentInternshipDetailPage() {
                                             {/* Withdrawal Documents */}
                                             <div className="pt-2 border-t border-white/10 space-y-2">
                                                 <p className="text-xs text-gray-400 mb-2">Your Documents</p>
-                                                <Button 
-                                                    variant="ghost" 
-                                                    className="w-full bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
+                                                <button 
+                                                    className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30 transition-all"
                                                     onClick={async () => {
                                                         try {
                                                             const response = await api.get(`/student/documents/${internship?.enrollmentId}/partial-completion`, {
@@ -511,10 +510,9 @@ export default function StudentInternshipDetailPage() {
                                                 >
                                                     <Download size={16} className="mr-2" />
                                                     Partial Completion Letter
-                                                </Button>
-                                                <Button 
-                                                    variant="ghost" 
-                                                    className="w-full bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30"
+                                                </button>
+                                                <button 
+                                                    className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30 transition-all"
                                                     onClick={async () => {
                                                         try {
                                                             const response = await api.get(`/student/documents/${internship?.enrollmentId}/relieving-letter`, {
@@ -534,7 +532,7 @@ export default function StudentInternshipDetailPage() {
                                                 >
                                                     <Download size={16} className="mr-2" />
                                                     Relieving Letter
-                                                </Button>
+                                                </button>
                                             </div>
                                         </div>
                                     )}

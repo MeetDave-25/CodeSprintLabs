@@ -461,28 +461,24 @@ export default function StudentDocumentsPage() {
 
                                                     {/* Withdrawal Documents */}
                                                     {doc.hasPartialCompletionLetter && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30"
+                                                        <button
+                                                            className="inline-flex items-center justify-center px-3 py-1.5 text-sm rounded-lg font-medium bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30 transition-all disabled:opacity-50"
                                                             onClick={() => handleDownloadPartialCompletionLetter(doc.id, doc.internshipTitle)}
-                                                            isLoading={downloadingId === doc.id + '-partial'}
+                                                            disabled={downloadingId === doc.id + '-partial'}
                                                         >
                                                             <FileText size={14} className="mr-2" />
                                                             Partial Completion
-                                                        </Button>
+                                                        </button>
                                                     )}
                                                     {doc.hasRelievingLetter && (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30"
+                                                        <button
+                                                            className="inline-flex items-center justify-center px-3 py-1.5 text-sm rounded-lg font-medium bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30 transition-all disabled:opacity-50"
                                                             onClick={() => handleDownloadRelievingLetter(doc.id, doc.internshipTitle)}
-                                                            isLoading={downloadingId === doc.id + '-relieving'}
+                                                            disabled={downloadingId === doc.id + '-relieving'}
                                                         >
                                                             <FileText size={14} className="mr-2" />
                                                             Relieving Letter
-                                                        </Button>
+                                                        </button>
                                                     )}
                                                 </div>
                                             </div>
