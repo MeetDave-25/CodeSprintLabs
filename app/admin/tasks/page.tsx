@@ -450,13 +450,14 @@ export default function AdminTaskLibraryPage() {
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Assign to Internship *</label>
                                 <select
-                                    className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
+                                    className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white appearance-none cursor-pointer"
+                                    style={{ color: 'white', backgroundColor: '#1a1a24' }}
                                     value={newTaskData.internshipId}
                                     onChange={e => setNewTaskData({ ...newTaskData, internshipId: e.target.value })}
                                 >
-                                    <option value="">Select an internship</option>
+                                    <option value="" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Select an internship</option>
                                     {internships.map(internship => (
-                                        <option key={internship.id} value={internship.id}>
+                                        <option key={internship.id} value={internship.id} style={{ backgroundColor: '#1a1a24', color: 'white' }}>
                                             {internship.title}
                                         </option>
                                     ))}
@@ -466,13 +467,14 @@ export default function AdminTaskLibraryPage() {
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Difficulty</label>
                                     <select
-                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
+                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white appearance-none cursor-pointer"
+                                        style={{ color: 'white', backgroundColor: '#1a1a24' }}
                                         value={newTaskData.difficulty}
                                         onChange={e => setNewTaskData({ ...newTaskData, difficulty: e.target.value as any })}
                                     >
-                                        <option value="Easy">Easy</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Hard">Hard</option>
+                                        <option value="Easy" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Easy</option>
+                                        <option value="Medium" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Medium</option>
+                                        <option value="Hard" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Hard</option>
                                     </select>
                                 </div>
                                 <div>
@@ -541,13 +543,14 @@ export default function AdminTaskLibraryPage() {
                                     </p>
                                     <label className="block text-sm text-gray-400 mb-2">Select Internship *</label>
                                     <select
-                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-3 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
+                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-3 text-white appearance-none cursor-pointer"
+                                        style={{ color: 'white', backgroundColor: '#1a1a24' }}
                                         value={selectedInternshipId}
                                         onChange={e => setSelectedInternshipId(e.target.value)}
                                     >
-                                        <option value="">Select an internship</option>
+                                        <option value="" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Select an internship</option>
                                         {internships.filter(i => i.id !== selectedTask.internshipId).map(internship => (
-                                            <option key={internship.id} value={internship.id}>
+                                            <option key={internship.id} value={internship.id} style={{ backgroundColor: '#1a1a24', color: 'white' }}>
                                                 {internship.title}
                                             </option>
                                         ))}
