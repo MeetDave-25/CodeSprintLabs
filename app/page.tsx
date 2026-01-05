@@ -4,15 +4,15 @@ import React, { Suspense, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Code, Users, Award, Zap, BookOpen, TrendingUp, Clock, Star } from 'lucide-react';
+import { ArrowRight, Code, Users, Award, Zap, BookOpen, TrendingUp, Star } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Button from '@/components/ui/Button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { publicService } from '@/lib/services';
-import { Internship, Course } from '@/types';
+import { Course } from '@/types';
 
 // Dynamic imports for heavy 3D components - loads only when needed
 const FloatingRocket = dynamic(() => import('@/components/3d/FloatingRocket').then(mod => ({ default: mod.FloatingRocket })), {
@@ -68,24 +68,19 @@ interface PublicStats {
 
 export default function HomePage() {
     const [stats, setStats] = useState<PublicStats | null>(null);
-    const [featuredInternships, setFeaturedInternships] = useState<Internship[]>([]);
     const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [statsRes, internshipsRes, coursesRes] = await Promise.all([
+                const [statsRes, coursesRes] = await Promise.all([
                     publicService.getStats(),
-                    publicService.getFeaturedInternships(),
                     publicService.getFeaturedCourses()
                 ]);
 
                 if (statsRes.data.status === 'success') {
                     setStats(statsRes.data.data);
-                }
-                if (internshipsRes.data.status === 'success') {
-                    setFeaturedInternships(internshipsRes.data.data);
                 }
                 if (coursesRes.data.status === 'success') {
                     setFeaturedCourses(coursesRes.data.data);
@@ -369,80 +364,6 @@ export default function HomePage() {
                     </motion.div>
                 </div>
             </section>
-
-            {/* Featured Internships Section */}
-            {featuredInternships.length > 0 && (
-                <section className="py-20 relative bg-gradient-to-b from-transparent via-purple-900/10 to-transparent">
-                    <div className="container mx-auto px-4">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="text-center mb-16"
-                        >
-                            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                                Featured <span className="gradient-text">Internships</span>
-                            </h2>
-                            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
-                                Popular internship programs chosen by our students
-                            </p>
-                        </motion.div>
-
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {featuredInternships.slice(0, 6).map((internship, index) => (
-                                <motion.div
-                                    key={internship.id}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: index * 0.1 }}
-                                >
-                                    <Link href={`/internships/${internship.id}`}>
-                                        <Card hover3d glow className="h-full group cursor-pointer">
-                                            <CardHeader>
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <Badge variant={getDifficultyColor(internship.difficulty) as any}>
-                                                        {internship.difficulty}
-                                                    </Badge>
-                                                    <div className="flex items-center text-sm text-gray-400">
-                                                        <Users size={14} className="mr-1" />
-                                                        {internship.enrolled || 0}
-                                                    </div>
-                                                </div>
-                                                <CardTitle className="group-hover:gradient-text transition-all">
-                                                    {internship.title}
-                                                </CardTitle>
-                                                <CardDescription className="line-clamp-2">
-                                                    {internship.description}
-                                                </CardDescription>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <div className="flex flex-wrap gap-2 mb-4">
-                                                    {(internship.languages || []).slice(0, 3).map((lang) => (
-                                                        <span key={lang} className="px-2 py-1 bg-white/5 rounded-md text-xs text-gray-300">
-                                                            {lang}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                                <div className="flex items-center justify-between text-sm text-gray-400">
-                                                    <div className="flex items-center">
-                                                        <Clock size={14} className="mr-1" />
-                                                        {internship.duration}
-                                                    </div>
-                                                    <span className="text-purple-400 group-hover:text-purple-300 flex items-center">
-                                                        View Details
-                                                        <ArrowRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
-                                                    </span>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            )}
 
             {/* Featured Courses Section */}
             {featuredCourses.length > 0 && (
