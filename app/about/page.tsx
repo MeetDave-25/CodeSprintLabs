@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Target, Users, Award, Zap, ArrowRight, CheckCircle, User, Linkedin, Github, Twitter } from 'lucide-react';
+import { Target, Users, Award, Zap, ArrowRight, CheckCircle, User, Linkedin, Github, Twitter, BookOpen } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Button from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
+import { Skeleton } from '@/components/ui/Skeleton';
 import api from '@/lib/api';
+import { publicService } from '@/lib/services';
 
 interface TeamMember {
     _id: string;
@@ -22,13 +24,45 @@ interface TeamMember {
     gradient: string;
 }
 
+interface Stats {
+    totalStudents: number;
+    activeInternships: number;
+    totalInternships: number;
+    certificatesIssued: number;
+    totalCourses: number;
+    successRate: number;
+}
+
 export default function AboutPage() {
     const [team, setTeam] = useState<TeamMember[]>([]);
     const [loadingTeam, setLoadingTeam] = useState(true);
+    const [stats, setStats] = useState<Stats | null>(null);
+    const [loadingStats, setLoadingStats] = useState(true);
 
     useEffect(() => {
         fetchTeamMembers();
+        fetchStats();
     }, []);
+
+    const fetchStats = async () => {
+        try {
+            const response = await publicService.getStats();
+            setStats(response.data.data);
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            // Fallback to default stats
+            setStats({
+                totalStudents: 10000,
+                activeInternships: 25,
+                totalInternships: 50,
+                certificatesIssued: 5000,
+                totalCourses: 30,
+                successRate: 95
+            });
+        } finally {
+            setLoadingStats(false);
+        }
+    };
 
     const fetchTeamMembers = async () => {
         try {
@@ -72,12 +106,31 @@ export default function AboutPage() {
         }
     };
 
-    const stats = [
-        { label: 'Active Students', value: '10,000+', icon: Users },
-        { label: 'Courses Offered', value: '50+', icon: Target },
-        { label: 'Certificates Issued', value: '5,000+', icon: Award },
-        { label: 'Success Rate', value: '95%', icon: Zap },
-    ];
+    // Format number with + suffix for display
+    const formatNumber = (num: number) => {
+        if (num >= 1000) {
+            return `${(num / 1000).toFixed(num >= 10000 ? 0 : 1)}K+`;
+        }
+        return `${num}+`;
+    };
+
+    // Dynamic stats based on real data
+    const statsDisplay = stats ? [
+        { label: 'Active Students', value: formatNumber(stats.totalStudents), icon: Users },
+        { label: 'Courses Offered', value: `${stats.totalCourses}+`, icon: BookOpen },
+        { label: 'Certificates Issued', value: formatNumber(stats.certificatesIssued), icon: Award },
+        { label: 'Success Rate', value: `${stats.successRate}%`, icon: Zap },
+    ] : [];
+
+    // Dynamic achievements based on real data
+    const achievements = stats ? [
+        `Partnered with 50+ companies for placement opportunities`,
+        `Trained over ${formatNumber(stats.totalStudents)} students across India`,
+        `Maintained ${stats.successRate}% student satisfaction rate`,
+        'Awarded "Best EdTech Platform 2024"',
+        `Issued ${formatNumber(stats.certificatesIssued)} certificates`,
+        '24/7 student support and mentorship',
+    ] : [];
 
     const values = [
         {
@@ -100,15 +153,6 @@ export default function AboutPage() {
             title: 'Innovation',
             description: 'Constantly evolving our methods to match industry trends',
         },
-    ];
-
-    const achievements = [
-        'Partnered with 50+ companies for placement opportunities',
-        'Trained over 10,000 students across India',
-        'Maintained 95% student satisfaction rate',
-        'Awarded "Best EdTech Platform 2024"',
-        'Featured in top tech publications',
-        '24/7 student support and mentorship',
     ];
 
     return (
@@ -134,22 +178,34 @@ export default function AboutPage() {
 
                     {/* Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
-                        {stats.map((stat, index) => (
-                            <motion.div
-                                key={stat.label}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <Card className="text-center">
+                        {loadingStats ? (
+                            [1, 2, 3, 4].map((i) => (
+                                <Card key={i} className="text-center">
                                     <CardContent className="p-6">
-                                        <stat.icon className="w-8 h-8 mx-auto mb-3 text-purple-400" />
-                                        <div className="text-3xl font-bold gradient-text mb-1">{stat.value}</div>
-                                        <div className="text-sm text-gray-400">{stat.label}</div>
+                                        <Skeleton className="w-8 h-8 mx-auto mb-3 rounded-full" />
+                                        <Skeleton className="h-8 w-20 mx-auto mb-1" />
+                                        <Skeleton className="h-4 w-24 mx-auto" />
                                     </CardContent>
                                 </Card>
-                            </motion.div>
-                        ))}
+                            ))
+                        ) : (
+                            statsDisplay.map((stat, index) => (
+                                <motion.div
+                                    key={stat.label}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
+                                    <Card className="text-center">
+                                        <CardContent className="p-6">
+                                            <stat.icon className="w-8 h-8 mx-auto mb-3 text-purple-400" />
+                                            <div className="text-3xl font-bold gradient-text mb-1">{stat.value}</div>
+                                            <div className="text-sm text-gray-400">{stat.label}</div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            ))
+                        )}
                     </div>
                 </div>
             </section>
