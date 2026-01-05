@@ -95,6 +95,11 @@ export const publicService = {
     
     // Certificate Verification
     verifyCertificate: (code: string) => api.get(`/certificates/verify/${code}`),
+    
+    // Landing Page Data
+    getStats: () => api.get('/public/stats'),
+    getFeaturedInternships: () => api.get('/public/featured-internships'),
+    getFeaturedCourses: () => api.get('/public/featured-courses'),
 };
 
 // ============ NOTIFICATION SERVICES ============

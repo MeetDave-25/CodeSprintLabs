@@ -50,6 +50,11 @@ Route::get('/internships/{id}', [App\Http\Controllers\InternshipController::clas
 Route::get('/courses', [App\Http\Controllers\CourseController::class, 'index']);
 Route::get('/courses/{id}', [App\Http\Controllers\CourseController::class, 'show']);
 
+// Public Stats for Landing Page
+Route::get('/public/stats', [App\Http\Controllers\PublicStatsController::class, 'index']);
+Route::get('/public/featured-internships', [App\Http\Controllers\PublicStatsController::class, 'featuredInternships']);
+Route::get('/public/featured-courses', [App\Http\Controllers\PublicStatsController::class, 'featuredCourses']);
+
 // Public Team Members (for About page)
 Route::get('/team', [App\Http\Controllers\TeamController::class, 'index']);
 
