@@ -37,6 +37,8 @@ interface StudentStats {
     totalTasks: number;
     streak: number;
     points: number;
+    tasksInProgress: number;
+    tasksPending: number;
 }
 
 export default function StudentDashboard() {
@@ -50,6 +52,8 @@ export default function StudentDashboard() {
         totalTasks: 0,
         streak: 0,
         points: 0,
+        tasksInProgress: 0,
+        tasksPending: 0,
     });
     const [recentTasks, setRecentTasks] = useState<Task[]>([]);
     const [upcomingDeadlines, setUpcomingDeadlines] = useState<any[]>([]);
@@ -61,13 +65,15 @@ export default function StudentDashboard() {
                 // Fetch student profile stats
                 const statsResponse = await api.get('/student/profile/stats');
                 if (statsResponse.data.status === 'success') {
-                    const stats = statsResponse.data.data;
+                    const stats = statsResponse.data.data || statsResponse.data.stats;
                     setStudentData(prev => ({
                         ...prev,
                         name: user?.name || prev.name,
                         tasksCompleted: stats.tasksCompleted || 0,
                         points: stats.totalPoints || stats.points || 0,
                         streak: stats.streak || 0,
+                        tasksInProgress: stats.tasksInProgress || 0,
+                        tasksPending: stats.tasksPending || 0,
                     }));
                 }
 
@@ -214,11 +220,11 @@ export default function StudentDashboard() {
                                             <div className="text-xs text-gray-400">Completed</div>
                                         </div>
                                         <div className="text-center">
-                                            <div className="text-2xl font-bold text-yellow-500">1</div>
+                                            <div className="text-2xl font-bold text-yellow-500">{studentData.tasksInProgress}</div>
                                             <div className="text-xs text-gray-400">In Progress</div>
                                         </div>
                                         <div className="text-center">
-                                            <div className="text-2xl font-bold text-blue-500">{studentData.totalTasks - studentData.tasksCompleted - 1}</div>
+                                            <div className="text-2xl font-bold text-blue-500">{studentData.tasksPending}</div>
                                             <div className="text-xs text-gray-400">Remaining</div>
                                         </div>
                                     </div>
@@ -345,12 +351,20 @@ export default function StudentDashboard() {
                                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
                                     <Award size={32} className="text-white" />
                                 </div>
-                                <h3 className="font-bold mb-2">12 Day Streak! 🔥</h3>
+                                <h3 className="font-bold mb-2">
+                                    {studentData.streak > 0 
+                                        ? `${studentData.streak} Day Streak! 🔥` 
+                                        : 'Start Your Streak! 🎯'}
+                                </h3>
                                 <p className="text-sm text-gray-400 mb-4">
-                                    You're on fire! Keep up the great work.
+                                    {studentData.streak > 0 
+                                        ? "You're on fire! Keep up the great work." 
+                                        : 'Complete a task today to start your streak!'}
                                 </p>
                                 <div className="text-xs text-gray-500">
-                                    Complete 3 more days to unlock a badge
+                                    {studentData.streak > 0 
+                                        ? `Complete ${Math.max(0, 7 - (studentData.streak % 7))} more days to unlock a badge` 
+                                        : 'Maintain a 7-day streak to earn a badge'}
                                 </div>
                             </CardContent>
                         </Card>

@@ -127,6 +127,12 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
+        // Calculate streak from submissions
+        $streak = $this->calculateStreak($user->id);
+
+        // Count tasks by status
+        $taskStats = $this->getTaskStats($user);
+
         $stats = [
             'totalPoints' => $user->totalPoints,
             'tasksCompleted' => $user->tasksCompleted,
@@ -134,9 +140,88 @@ class ProfileController extends Controller
             'coursesEnrolled' => count($user->enrolledCourses ?? []),
             'internshipsEnrolled' => count($user->enrolledInternships ?? []),
             'certificatesEarned' => $user->certificates()->count(),
+            'streak' => $streak,
+            'tasksInProgress' => $taskStats['inProgress'],
+            'tasksPending' => $taskStats['pending'],
         ];
 
         return response()->json(['stats' => $stats]);
+    }
+
+    /**
+     * Calculate the student's current streak (consecutive days with submissions)
+     */
+    private function calculateStreak(string $userId): int
+    {
+        $submissions = \App\Models\Submission::where('studentId', $userId)
+            ->where('status', 'approved')
+            ->orderBy('submittedAt', 'desc')
+            ->get();
+
+        if ($submissions->isEmpty()) {
+            return 0;
+        }
+
+        $streak = 0;
+        $currentDate = \Carbon\Carbon::today();
+        $submissionDates = $submissions->map(function ($submission) {
+            return \Carbon\Carbon::parse($submission->submittedAt)->format('Y-m-d');
+        })->unique()->values()->toArray();
+
+        // Check if there's a submission today or yesterday to start the streak
+        $todayStr = $currentDate->format('Y-m-d');
+        $yesterdayStr = $currentDate->copy()->subDay()->format('Y-m-d');
+        
+        if (!in_array($todayStr, $submissionDates) && !in_array($yesterdayStr, $submissionDates)) {
+            return 0; // Streak is broken
+        }
+
+        // Count consecutive days
+        $checkDate = in_array($todayStr, $submissionDates) ? $currentDate : $currentDate->copy()->subDay();
+        
+        while (in_array($checkDate->format('Y-m-d'), $submissionDates)) {
+            $streak++;
+            $checkDate = $checkDate->copy()->subDay();
+        }
+
+        return $streak;
+    }
+
+    /**
+     * Get task statistics for the student
+     */
+    private function getTaskStats($user): array
+    {
+        $enrolledInternships = $user->enrolledInternships ?? [];
+        $enrolledCourses = $user->enrolledCourses ?? [];
+
+        // Get all tasks for enrolled internships and courses
+        $tasks = \App\Models\Task::where(function ($q) use ($enrolledInternships, $enrolledCourses) {
+            $q->whereIn('internshipId', $enrolledInternships)
+              ->orWhereIn('courseId', $enrolledCourses);
+        })->where(function ($q) {
+            $q->where('isActive', true)->orWhereNull('isActive');
+        })->get();
+
+        $inProgress = 0;
+        $pending = 0;
+
+        foreach ($tasks as $task) {
+            $submission = \App\Models\Submission::where('studentId', $user->id)
+                ->where('taskId', $task->id)
+                ->first();
+
+            if (!$submission) {
+                $pending++;
+            } elseif ($submission->status === 'pending') {
+                $inProgress++; // Submitted but not yet approved
+            }
+        }
+
+        return [
+            'inProgress' => $inProgress,
+            'pending' => $pending,
+        ];
     }
 
     /**
