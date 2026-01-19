@@ -61,9 +61,9 @@ export default function AdminSubmissionsPage() {
                 internship: s.internshipTitle || s.internship || 'Unknown Internship',
                 submittedDate: s.submittedAt || s.submittedDate || s.created_at,
                 status: s.status || 'pending',
-                repositoryUrl: s.url || s.repositoryUrl || '',
+                repositoryUrl: s.githubLink || s.url || s.repositoryUrl || '',
                 notes: s.notes || '',
-                grade: s.points || s.grade,
+                grade: s.pointsAwarded || s.points || s.grade,
                 feedback: s.feedback || ''
             }));
             setSubmissions(normalized);
@@ -333,8 +333,8 @@ export default function AdminSubmissionsPage() {
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${statusFilter === status
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                                            : 'bg-white/10 text-gray-400 hover:bg-white/20'
+                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                        : 'bg-white/10 text-gray-400 hover:bg-white/20'
                                         }`}
                                 >
                                     {status}

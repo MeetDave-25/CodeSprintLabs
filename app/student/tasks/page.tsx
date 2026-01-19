@@ -94,21 +94,24 @@ export default function TasksPage() {
         if (!selectedTask) return;
 
         const payload = {
-            url: submissionLink,
+            githubLink: submissionLink,
             notes: submissionFile // Using notes field for general content for now
         };
 
         try {
             const res = await api.post(`/student/tasks/${selectedTask.id}/submit`, payload);
-            if (res.data.status === 'success') {
-                alert('Task submitted successfully!');
-                // Update local status
-                setTasks(tasks.map(t => t.id === selectedTask.id ? { ...t, status: 'completed' } : t));
+            if (res.data.status === 'success' || res.data.message) {
+                alert(res.data.message || 'Task submitted successfully!');
+                // Update local status to pending (under review)
+                setTasks(tasks.map(t => t.id === selectedTask.id ? { ...t, status: 'pending' } : t));
                 setSelectedTask(null);
+                setSubmissionLink('');
+                setSubmissionFile('');
             }
-        } catch (error) {
-            console.error(error);
-            alert('Failed to submit task');
+        } catch (error: any) {
+            console.error('Submission error:', error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.errors?.githubLink?.[0] || 'Failed to submit task';
+            alert(errorMessage);
         }
     };
 
