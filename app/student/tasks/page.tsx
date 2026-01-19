@@ -93,6 +93,20 @@ export default function TasksPage() {
     const handleSubmit = async () => {
         if (!selectedTask) return;
 
+        // Validate GitHub link is provided
+        if (!submissionLink || submissionLink.trim() === '') {
+            alert('Please enter a GitHub repository URL or link');
+            return;
+        }
+
+        // Validate it's a valid URL format
+        try {
+            new URL(submissionLink);
+        } catch (e) {
+            alert('Please enter a valid URL (e.g., https://github.com/username/repo)');
+            return;
+        }
+
         const payload = {
             githubLink: submissionLink,
             notes: submissionFile // Using notes field for general content for now
@@ -487,12 +501,15 @@ export default function TasksPage() {
                             <CardContent>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">GitHub Repository URL / Link</label>
+                                        <label className="block text-sm font-medium mb-2">
+                                            GitHub Repository URL / Link <span className="text-red-400">*</span>
+                                        </label>
                                         <input
                                             type="url"
                                             value={submissionLink}
                                             onChange={(e) => setSubmissionLink(e.target.value)}
-                                            placeholder="https://..."
+                                            placeholder="https://github.com/username/repository"
+                                            required
                                             className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
                                         />
                                     </div>
