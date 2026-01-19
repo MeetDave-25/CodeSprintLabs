@@ -91,10 +91,17 @@ export default function TasksPage() {
     }, []);
 
     const handleSubmit = async () => {
-        if (!selectedTask) return;
+        console.log('handleSubmit called for task:', selectedTask?.id);
+        if (!selectedTask) {
+            console.error('No selected task');
+            return;
+        }
+
+        console.log('Submission Link:', submissionLink);
 
         // Validate GitHub link is provided
         if (!submissionLink || submissionLink.trim() === '') {
+            console.warn('Validation failed: No link provided');
             alert('Please enter a GitHub repository URL or link');
             return;
         }
@@ -103,6 +110,7 @@ export default function TasksPage() {
         try {
             new URL(submissionLink);
         } catch (e) {
+            console.warn('Validation failed: Invalid URL format', submissionLink);
             alert('Please enter a valid URL (e.g., https://github.com/username/repo)');
             return;
         }
@@ -111,19 +119,30 @@ export default function TasksPage() {
             githubLink: submissionLink,
             notes: submissionFile // Using notes field for general content for now
         };
+        console.log('Preparing to submit payload:', payload);
 
         try {
+            console.log(`Sending POST request to /student/tasks/${selectedTask.id}/submit`);
             const res = await api.post(`/student/tasks/${selectedTask.id}/submit`, payload);
+            console.log('Response received:', res);
+
             if (res.data.status === 'success' || res.data.message) {
+                console.log('Submission successful');
                 alert(res.data.message || 'Task submitted successfully!');
                 // Update local status to pending (under review)
                 setTasks(tasks.map(t => t.id === selectedTask.id ? { ...t, status: 'pending' } : t));
                 setSelectedTask(null);
                 setSubmissionLink('');
                 setSubmissionFile('');
+            } else {
+                console.warn('Unexpected response format:', res.data);
             }
         } catch (error: any) {
-            console.error('Submission error:', error);
+            console.error('Submission error caught:', error);
+            if (error.response) {
+                console.error('Error response data:', error.response.data);
+                console.error('Error response status:', error.response.status);
+            }
             const errorMessage = error.response?.data?.message || error.response?.data?.errors?.githubLink?.[0] || 'Failed to submit task';
             alert(errorMessage);
         }
