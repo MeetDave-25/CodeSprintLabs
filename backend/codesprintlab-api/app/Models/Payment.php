@@ -19,7 +19,7 @@ class Payment extends Model
         'amount',
         'currency',
         'status', // 'pending', 'completed', 'failed', 'refunded'
-        'paymentMethod', // 'razorpay', 'card', 'upi', etc.
+        'paymentMethod', // 'razorpay', 'card', 'upi', 'manual', etc.
         'transactionId',
         'razorpayOrderId',
         'razorpayPaymentId',
@@ -27,12 +27,22 @@ class Payment extends Model
         'paymentDate',
         'refundedAt',
         'refundReason',
+        // Manual payment fields
+        'paymentScreenshot',
+        'paymentScreenshotPublicId',
+        'upiTransactionId',
+        'upiReferenceNumber',
+        'verificationStatus', // 'pending', 'verified', 'rejected'
+        'verifiedBy',
+        'verifiedAt',
+        'rejectionReason',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'paymentDate' => 'datetime',
         'refundedAt' => 'datetime',
+        'verifiedAt' => 'datetime',
     ];
 
     protected $attributes = [

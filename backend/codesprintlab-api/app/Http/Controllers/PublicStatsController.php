@@ -97,4 +97,27 @@ class PublicStatsController extends Controller
             'data' => $courses
         ]);
     }
+
+    /**
+     * Get public platform settings
+     */
+    public function settings()
+    {
+        $settings = \App\Models\Setting::where('key', 'platform_settings')->first();
+        $data = $settings ? $settings->value : [];
+        
+        // Extract only public safe settings
+        $publicSettings = [
+            'siteName' => $data['siteName'] ?? config('app.name', 'CodeSprint Labs'),
+            'supportEmail' => $data['supportEmail'] ?? config('mail.from.address', 'support@codesprintlabs.com'),
+            'courseSettings' => [
+                'defaultCurrency' => $data['courseSettings']['defaultCurrency'] ?? 'INR',
+            ]
+        ];
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $publicSettings
+        ]);
+    }
 }

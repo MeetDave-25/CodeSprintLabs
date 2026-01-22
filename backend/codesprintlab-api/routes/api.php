@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\TaskController as AdminTaskController;
 use App\Http\Controllers\Admin\CertificateController as AdminCertificateController;
 use App\Http\Controllers\Admin\EnrollmentRequestController as AdminEnrollmentRequestController;
 use App\Http\Controllers\Student\EnrollmentRequestController as StudentEnrollmentRequestController;
+use App\Http\Controllers\Student\CoursePaymentController;
+use App\Http\Controllers\Admin\CoursePaymentVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +59,9 @@ Route::get('/public/featured-courses', [App\Http\Controllers\PublicStatsControll
 
 // Public Team Members (for About page)
 Route::get('/team', [App\Http\Controllers\TeamController::class, 'index']);
+
+// Public Settings
+Route::get('/public/settings', [App\Http\Controllers\PublicStatsController::class, 'settings']);
 
 // Protected routes for all authenticated users
 Route::middleware('auth:api')->group(function () {
@@ -149,6 +154,14 @@ Route::prefix('student')->middleware('auth:api')->group(function () {
     // Payments (for course purchase)
     Route::post('/payments/create-order', [PaymentController::class, 'createOrder']);
     Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']);
+
+    // Course Payment (UPI/Manual Payment)
+    Route::prefix('course-payments')->group(function () {
+        Route::post('/initiate', [CoursePaymentController::class, 'initiatePayment']); // Get UPI QR code
+        Route::post('/submit-proof', [CoursePaymentController::class, 'submitPaymentProof']); // Upload screenshot
+        Route::get('/status/{courseId}', [CoursePaymentController::class, 'getPaymentStatus']); // Check status
+        Route::get('/my-requests', [CoursePaymentController::class, 'myPaymentRequests']); // All my payment requests
+    });
 });
 
 // Admin Routes
@@ -195,6 +208,16 @@ Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
     Route::get('/payments/export', [PaymentController::class, 'export']);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
     Route::post('/payments/{id}/refund', [PaymentController::class, 'refund']);
+
+    // Course Payment Verification (Manual UPI Payments)
+    Route::prefix('course-payment-verification')->group(function () {
+        Route::get('/pending', [CoursePaymentVerificationController::class, 'getPendingPayments']); // Pending verifications
+        Route::get('/all', [CoursePaymentVerificationController::class, 'getAllPayments']); // All payment requests
+        Route::get('/stats', [CoursePaymentVerificationController::class, 'getStats']); // Statistics
+        Route::get('/{id}', [CoursePaymentVerificationController::class, 'viewPaymentDetails']); // View details
+        Route::post('/{id}/approve', [CoursePaymentVerificationController::class, 'approvePayment']); // Approve
+        Route::post('/{id}/reject', [CoursePaymentVerificationController::class, 'rejectPayment']); // Reject
+    });
 
     // Completion Reviews (Admin reviews completed internships)
     Route::prefix('completion-reviews')->group(function () {

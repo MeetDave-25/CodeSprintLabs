@@ -112,8 +112,11 @@ class SettingsController extends Controller
      */
     public function platformSettings()
     {
-        // This could be stored in a settings table or config file
-        $settings = [
+        $settings = \App\Models\Setting::where('key', 'platform_settings')->first();
+        $data = $settings ? $settings->value : [];
+
+        // Defaults from config if not set in DB
+        $defaults = [
             'siteName' => config('app.name', 'CodeSprint Labs'),
             'siteUrl' => config('app.url'),
             'frontendUrl' => config('app.frontend_url', 'http://localhost:3000'),
@@ -136,9 +139,14 @@ class SettingsController extends Controller
             ],
         ];
 
+        // Merge defaults with DB data
+        // Note: vector merge needed for nested arrays if partial updates allowed, 
+        // but for now simple array_replace_recursive is better
+        $finalSettings = array_replace_recursive($defaults, $data);
+
         return response()->json([
             'status' => 'success',
-            'data' => $settings
+            'data' => $finalSettings
         ]);
     }
 
@@ -147,9 +155,6 @@ class SettingsController extends Controller
      */
     public function updatePlatformSettings(Request $request)
     {
-        // In a real app, you would store these in a database or config file
-        // For now, we'll just validate and return success
-
         $validated = $request->validate([
             'siteName' => 'sometimes|string|max:255',
             'supportEmail' => 'sometimes|email',
@@ -162,12 +167,32 @@ class SettingsController extends Controller
             'notificationSettings.enrollmentAlerts' => 'sometimes|boolean',
         ]);
 
-        // Here you would save to database/config
+        // Fetch existing settings
+        $settings = \App\Models\Setting::where('key', 'platform_settings')->first();
+        
+        if (!$settings) {
+            $settings = new \App\Models\Setting(['key' => 'platform_settings', 'value' => []]);
+        }
+
+        // Update value (merge with existing)
+        $currentValue = $settings->value ?? [];
+        // We use array_merge here but careful with nested structures, 
+        // the validated data comes flat or structured depending on frontend.
+        // Assuming frontend sends structured JSON matching the shape.
+        
+        // However, Laravel validation dot notation 'internshipSettings.maxTasksPerDay'
+        // implies the request input is nested.
+        
+        // We need to merge validated data into current value
+        $newValue = array_replace_recursive($currentValue, $validated);
+
+        $settings->value = $newValue;
+        $settings->save();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Settings updated successfully',
-            'data' => $validated
+            'data' => $newValue
         ]);
     }
 

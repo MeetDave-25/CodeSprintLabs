@@ -51,4 +51,15 @@ return [
         'key' => env('RAZORPAY_KEY_ID'),
         'secret' => env('RAZORPAY_KEY_SECRET'),
     ],
+
+    'upi' => [
+        'id' => env('UPI_ID'),
+        'name' => env('UPI_NAME', 'CodeSprintLab'),
+    ],
+
+    'cloudinary' => [
+        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+        'api_key' => env('CLOUDINARY_API_KEY'),
+        'api_secret' => env('CLOUDINARY_API_SECRET'),
+    ],
 ];
