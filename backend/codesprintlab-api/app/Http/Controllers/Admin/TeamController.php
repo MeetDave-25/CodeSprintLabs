@@ -96,7 +96,13 @@ class TeamController extends Controller
      */
     public function show($id)
     {
-        $member = TeamMember::findOrFail($id);
+        $member = TeamMember::where('_id', $id)->first();
+        
+        if (!$member) {
+            return response()->json([
+                'message' => 'Team member not found',
+            ], 404);
+        }
 
         return response()->json([
             'member' => $member,
@@ -108,7 +114,13 @@ class TeamController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $member = TeamMember::findOrFail($id);
+        $member = TeamMember::where('_id', $id)->first();
+        
+        if (!$member) {
+            return response()->json([
+                'message' => 'Team member not found',
+            ], 404);
+        }
 
         $request->validate([
             'name' => 'sometimes|required|string|max:255',
@@ -147,9 +159,19 @@ class TeamController extends Controller
         try {
             Log::info("Attempting to delete team member with ID: {$id}");
             
-            $member = TeamMember::findOrFail($id);
-            $name = $member->name;
+            // Use where('_id') for MongoDB compatibility
+            $member = TeamMember::where('_id', $id)->first();
             
+            if (!$member) {
+                Log::error("Team member not found with ID: {$id}");
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Team member not found',
+                ], 404);
+            }
+            
+            $name = $member->name;
             Log::info("Found team member: {$name} (ID: {$id})");
 
             // Delete image if exists
@@ -177,13 +199,6 @@ class TeamController extends Controller
                     'message' => 'Failed to delete team member',
                 ], 500);
             }
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            Log::error("Team member not found with ID: {$id}");
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Team member not found',
-            ], 404);
         } catch (\Exception $e) {
             Log::error("Error deleting team member (ID: {$id}): " . $e->getMessage());
             Log::error("Stack trace: " . $e->getTraceAsString());
@@ -201,7 +216,13 @@ class TeamController extends Controller
      */
     public function uploadImage(Request $request, $id)
     {
-        $member = TeamMember::findOrFail($id);
+        $member = TeamMember::where('_id', $id)->first();
+        
+        if (!$member) {
+            return response()->json([
+                'message' => 'Team member not found',
+            ], 404);
+        }
 
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
@@ -247,7 +268,14 @@ class TeamController extends Controller
      */
     public function toggleStatus($id)
     {
-        $member = TeamMember::findOrFail($id);
+        $member = TeamMember::where('_id', $id)->first();
+        
+        if (!$member) {
+            return response()->json([
+                'message' => 'Team member not found',
+            ], 404);
+        }
+        
         $member->update(['isActive' => !$member->isActive]);
 
         return response()->json([
