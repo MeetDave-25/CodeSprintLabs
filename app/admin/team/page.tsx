@@ -174,11 +174,26 @@ export default function AdminTeamPage() {
         if (!confirm('Are you sure you want to delete this team member?')) return;
 
         try {
-            await api.delete(`/admin/team/${id}`);
-            fetchTeamMembers();
-            fetchStats();
-        } catch (error) {
+            console.log('Attempting to delete team member with ID:', id);
+            const response = await api.delete(`/admin/team/${id}`);
+            console.log('Delete response:', response.data);
+
+            // Show success message
+            alert('Team member deleted successfully!');
+
+            // Refresh the data
+            await fetchTeamMembers();
+            await fetchStats();
+        } catch (error: any) {
             console.error('Error deleting team member:', error);
+            console.error('Error response:', error.response?.data);
+            console.error('Error status:', error.response?.status);
+
+            // Show specific error message
+            const errorMessage = error.response?.data?.message ||
+                error.message ||
+                'Failed to delete team member. Please try again.';
+            alert(`Error: ${errorMessage}`);
         }
     };
 
@@ -494,11 +509,10 @@ export default function AdminTeamPage() {
                                             key={option.value}
                                             type="button"
                                             onClick={() => setFormData({ ...formData, gradient: option.value })}
-                                            className={`h-12 rounded-lg bg-gradient-to-br ${option.value} ${
-                                                formData.gradient === option.value
+                                            className={`h-12 rounded-lg bg-gradient-to-br ${option.value} ${formData.gradient === option.value
                                                     ? 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1a2e]'
                                                     : ''
-                                            }`}
+                                                }`}
                                             title={option.label}
                                         />
                                     ))}

@@ -144,21 +144,56 @@ class TeamController extends Controller
      */
     public function destroy($id)
     {
-        $member = TeamMember::findOrFail($id);
-        $name = $member->name;
+        try {
+            Log::info("Attempting to delete team member with ID: {$id}");
+            
+            $member = TeamMember::findOrFail($id);
+            $name = $member->name;
+            
+            Log::info("Found team member: {$name} (ID: {$id})");
 
-        // Delete image if exists
-        if ($member->image) {
-            Storage::disk('public')->delete($member->image);
+            // Delete image if exists
+            if ($member->image) {
+                Log::info("Deleting image: {$member->image}");
+                Storage::disk('public')->delete($member->image);
+            }
+
+            // Perform deletion
+            $deleted = $member->delete();
+            
+            if ($deleted) {
+                Log::info("Team member successfully deleted: {$name} (ID: {$id})");
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Team member deleted successfully',
+                    'deleted_name' => $name,
+                ], 200);
+            } else {
+                Log::error("Failed to delete team member: {$name} (ID: {$id})");
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete team member',
+                ], 500);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::error("Team member not found with ID: {$id}");
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Team member not found',
+            ], 404);
+        } catch (\Exception $e) {
+            Log::error("Error deleting team member (ID: {$id}): " . $e->getMessage());
+            Log::error("Stack trace: " . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the team member',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $member->delete();
-
-        Log::info("Team member deleted: {$name}");
-
-        return response()->json([
-            'message' => 'Team member deleted successfully',
-        ]);
     }
 
     /**
