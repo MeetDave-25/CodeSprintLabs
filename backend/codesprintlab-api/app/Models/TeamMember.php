@@ -8,9 +8,6 @@ class TeamMember extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'team_members';
-    
-    // Ensure _id is always included in JSON responses
-    protected $visible = ['_id', 'name', 'role', 'bio', 'email', 'phone', 'image', 'linkedin', 'github', 'twitter', 'gradient', 'order', 'isActive', 'created_at', 'updated_at'];
 
     protected $fillable = [
         'name',
