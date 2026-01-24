@@ -26,7 +26,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import api from '@/lib/api';
 
 interface TeamMember {
-    _id: string;
+    id: string;
     name: string;
     role: string;
     bio?: string;
@@ -155,7 +155,7 @@ export default function AdminTeamPage() {
 
         try {
             if (editingMember) {
-                await api.put(`/admin/team/${editingMember._id}`, formData);
+                await api.put(`/admin/team/${editingMember.id}`, formData);
             } else {
                 await api.post('/admin/team', formData);
             }
@@ -322,7 +322,7 @@ export default function AdminTeamPage() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {members.map((member, index) => (
                         <motion.div
-                            key={member._id}
+                            key={member.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05 }}
@@ -391,14 +391,14 @@ export default function AdminTeamPage() {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => handleToggleStatus(member._id)}
+                                            onClick={() => handleToggleStatus(member.id)}
                                         >
                                             {member.isActive ? <EyeOff size={14} /> : <Eye size={14} />}
                                         </Button>
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => handleDelete(member._id)}
+                                            onClick={() => handleDelete(member.id)}
                                             className="text-red-400 hover:text-red-300"
                                         >
                                             <Trash2 size={14} />
@@ -510,8 +510,8 @@ export default function AdminTeamPage() {
                                             type="button"
                                             onClick={() => setFormData({ ...formData, gradient: option.value })}
                                             className={`h-12 rounded-lg bg-gradient-to-br ${option.value} ${formData.gradient === option.value
-                                                    ? 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1a2e]'
-                                                    : ''
+                                                ? 'ring-2 ring-white ring-offset-2 ring-offset-[#1a1a2e]'
+                                                : ''
                                                 }`}
                                             title={option.label}
                                         />
