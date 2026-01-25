@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, UserCheck, UserX, Mail, Phone, Calendar, Award, Eye, X, Loader2 } from 'lucide-react';
+import { Search, Filter, UserCheck, UserX, Mail, Phone, Calendar, Award, Eye, X, Loader2, Trash2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -89,6 +89,22 @@ export default function AdminStudentsPage() {
             setSelectedStudent(null);
         } catch (error) {
             console.error('Failed to update student status:', error);
+        }
+    };
+
+    const handleDelete = async (studentId: string, studentName: string) => {
+        if (window.confirm(`Are you sure you want to delete ${studentName}? This action cannot be undone.`)) {
+            try {
+                await adminService.deleteStudent(studentId);
+                fetchStudents();
+                fetchStats();
+                if (selectedStudent && (selectedStudent.id === studentId || selectedStudent._id === studentId)) {
+                    setSelectedStudent(null);
+                }
+            } catch (error) {
+                console.error('Failed to delete student:', error);
+                alert('Failed to delete student');
+            }
         }
     };
 
@@ -296,9 +312,19 @@ export default function AdminStudentsPage() {
                                                 </Badge>
                                             </td>
                                             <td className="py-4 px-4">
-                                                <Button variant="ghost" size="sm" onClick={() => setSelectedStudent(student)}>
-                                                    <Eye size={14} />
-                                                </Button>
+                                                <div className="flex items-center gap-2">
+                                                    <Button variant="ghost" size="sm" onClick={() => setSelectedStudent(student)}>
+                                                        <Eye size={14} />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                                                        onClick={() => handleDelete(getStudentId(student), student.name)}
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </Button>
+                                                </div>
                                             </td>
                                         </motion.tr>
                                     ))}
@@ -307,7 +333,7 @@ export default function AdminStudentsPage() {
 
                             {students.length === 0 && (
                                 <div className="text-center py-12 text-gray-400">
-                                    {searchQuery || statusFilter !== 'all' || internshipFilter !== 'all' 
+                                    {searchQuery || statusFilter !== 'all' || internshipFilter !== 'all'
                                         ? 'No students found matching your filters'
                                         : 'No students registered yet'}
                                 </div>
@@ -400,14 +426,14 @@ export default function AdminStudentsPage() {
                                 <div className="pt-4 border-t border-white/10">
                                     <div className="text-sm text-gray-400 mb-2">Change Status</div>
                                     <div className="flex gap-2">
-                                        <Button 
+                                        <Button
                                             variant={selectedStudent.status === 'active' ? 'primary' : 'outline'}
                                             size="sm"
                                             onClick={() => handleStatusChange(getStudentId(selectedStudent), 'active')}
                                         >
                                             Active
                                         </Button>
-                                        <Button 
+                                        <Button
                                             variant={selectedStudent.status === 'inactive' ? 'primary' : 'outline'}
                                             size="sm"
                                             onClick={() => handleStatusChange(getStudentId(selectedStudent), 'inactive')}

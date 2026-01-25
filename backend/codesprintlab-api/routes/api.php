@@ -180,6 +180,7 @@ Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
     Route::get('/students/stats', [StudentController::class, 'stats']);
     Route::get('/students/{id}', [StudentController::class, 'show']);
     Route::put('/students/{id}/status', [StudentController::class, 'updateStatus']);
+    Route::delete('/students/{id}', [StudentController::class, 'destroy']);
 
     // Submissions
     Route::get('/submissions', [SubmissionController::class, 'index']);

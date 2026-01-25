@@ -97,4 +97,16 @@ class StudentController extends Controller
             ],
         ]);
     }
+    /**
+     * Delete student
+     */
+    public function destroy(string $id)
+    {
+        $student = User::where('role', 'student')->findOrFail($id);
+        $student->delete();
+
+        return response()->json([
+            'message' => 'Student deleted successfully'
+        ]);
+    }
 }

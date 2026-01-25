@@ -4,17 +4,17 @@ import api from './api';
 export const authService = {
     register: (data: { name: string; email: string; password: string; password_confirmation: string }) =>
         api.post('/auth/register', data),
-    
+
     login: (data: { email: string; password: string }) =>
         api.post('/auth/login', data),
-    
+
     logout: () => api.post('/auth/logout'),
-    
+
     me: () => api.get('/auth/me'),
-    
+
     verifyOtp: (data: { email: string; code: string }) =>
         api.post('/auth/verify-otp', data),
-    
+
     resendOtp: (email: string) =>
         api.post('/auth/resend-otp', { email }),
 };
@@ -29,7 +29,7 @@ export const studentService = {
             headers: { 'Content-Type': 'multipart/form-data' },
         }),
     getStats: () => api.get('/student/profile/stats'),
-    
+
     // Tasks
     getTasks: (source?: 'internship' | 'course') =>
         api.get('/student/tasks', { params: { source } }),
@@ -39,15 +39,15 @@ export const studentService = {
             headers: { 'Content-Type': 'multipart/form-data' },
         }),
     getSubmissions: () => api.get('/student/submissions'),
-    
+
     // My Internships
     getMyInternships: () => api.get('/student/my-internships'),
     getMyInternship: (id: string) => api.get(`/student/my-internships/${id}`),
-    getCurrentTask: (internshipId: string) => 
+    getCurrentTask: (internshipId: string) =>
         api.get(`/student/my-internships/${internshipId}/current-task`),
     requestInternshipCertificate: (id: string) =>
         api.post(`/student/my-internships/${id}/certificate`),
-    
+
     // Internship Completion
     requestInternshipCompletion: (enrollmentId: string) =>
         api.post(`/student/internship-completion/${enrollmentId}/request`),
@@ -57,23 +57,23 @@ export const studentService = {
         api.get(`/student/internship-completion/${enrollmentId}/letter/preview`),
     downloadCompletionLetter: (enrollmentId: string) =>
         api.get(`/student/internship-completion/${enrollmentId}/letter/download`, { responseType: 'blob' }),
-    
+
     // My Courses
     getMyCourses: () => api.get('/student/my-courses'),
     getMyCourse: (id: string) => api.get(`/student/my-courses/${id}`),
     requestCourseCertificate: (id: string) =>
         api.post(`/student/my-courses/${id}/certificate`),
-    
+
     // Enroll
     enrollInternship: (id: string) => api.post(`/student/internships/${id}/enroll`),
-    
+
     // Certificates
     getCertificates: () => api.get('/student/certificates'),
-    downloadCertificate: (id: string) => 
+    downloadCertificate: (id: string) =>
         api.get(`/student/certificates/${id}/download`, { responseType: 'blob' }),
     previewCertificate: (id: string) =>
         api.get(`/student/certificates/${id}/preview`),
-    
+
     // Payments
     createPaymentOrder: (courseId: string) =>
         api.post('/student/payments/create-order', { courseId }),
@@ -87,15 +87,15 @@ export const publicService = {
     getInternships: (filters?: { domain?: string; difficulty?: string }) =>
         api.get('/internships', { params: filters }),
     getInternship: (id: string) => api.get(`/internships/${id}`),
-    
+
     // Courses
     getCourses: (filters?: { level?: string }) =>
         api.get('/courses', { params: filters }),
     getCourse: (id: string) => api.get(`/courses/${id}`),
-    
+
     // Certificate Verification
     verifyCertificate: (code: string) => api.get(`/certificates/verify/${code}`),
-    
+
     // Landing Page Data
     getStats: () => api.get('/public/stats'),
     getFeaturedInternships: () => api.get('/public/featured-internships'),
@@ -122,7 +122,7 @@ export const adminService = {
     getRecentEnrollments: (limit?: number) =>
         api.get('/admin/dashboard/recent-enrollments', { params: { limit } }),
     getDistribution: () => api.get('/admin/dashboard/distribution'),
-    
+
     // Students
     getStudents: (filters?: { status?: string; internship?: string; search?: string }) =>
         api.get('/admin/students', { params: filters }),
@@ -130,28 +130,29 @@ export const adminService = {
     getStudent: (id: string) => api.get(`/admin/students/${id}`),
     updateStudentStatus: (id: string, status: string) =>
         api.put(`/admin/students/${id}/status`, { status }),
-    
+    deleteStudent: (id: string) => api.delete(`/admin/students/${id}`),
+
     // Submissions
     getSubmissions: (filters?: { status?: string; studentId?: string }) =>
         api.get('/admin/submissions', { params: filters }),
     getSubmission: (id: string) => api.get(`/admin/submissions/${id}`),
     reviewSubmission: (id: string, data: { status: 'approved' | 'rejected'; feedback?: string; points?: number }) =>
         api.put(`/admin/submissions/${id}/review`, data),
-    
+
     // Internships
     getInternships: () => api.get('/admin/internships'),
     createInternship: (data: any) => api.post('/admin/internships', data),
     getInternship: (id: string) => api.get(`/admin/internships/${id}`),
     updateInternship: (id: string, data: any) => api.put(`/admin/internships/${id}`, data),
     deleteInternship: (id: string) => api.delete(`/admin/internships/${id}`),
-    
+
     // Courses
     getCourses: () => api.get('/admin/courses'),
     createCourse: (data: any) => api.post('/admin/courses', data),
     getCourse: (id: string) => api.get(`/admin/courses/${id}`),
     updateCourse: (id: string, data: any) => api.put(`/admin/courses/${id}`, data),
     deleteCourse: (id: string) => api.delete(`/admin/courses/${id}`),
-    
+
     // Tasks
     getTasks: (filters?: { source?: string; internshipId?: string; courseId?: string; difficulty?: string }) =>
         api.get('/admin/tasks', { params: filters }),
@@ -162,7 +163,7 @@ export const adminService = {
     deleteTask: (id: string) => api.delete(`/admin/tasks/${id}`),
     toggleTaskStatus: (id: string) => api.put(`/admin/tasks/${id}/toggle-status`),
     bulkUpdateTasks: (tasks: any[]) => api.post('/admin/tasks/bulk-update', { tasks }),
-    
+
     // Payments
     getPayments: (filters?: { status?: string; from?: string; to?: string; search?: string }) =>
         api.get('/admin/payments', { params: filters }),
@@ -172,7 +173,7 @@ export const adminService = {
         api.post(`/admin/payments/${id}/refund`, { reason }),
     exportPayments: (filters?: { status?: string; from?: string; to?: string }) =>
         api.get('/admin/payments/export', { params: filters, responseType: 'blob' }),
-    
+
     // Internship Completion Reviews
     getCompletionReviews: (filters?: { status?: string; search?: string }) =>
         api.get('/admin/completion-reviews', { params: filters }),
@@ -188,7 +189,7 @@ export const adminService = {
         api.get(`/admin/completion-reviews/${id}/letter/download`, { responseType: 'blob' }),
     previewCertificateForCompletion: (id: string) =>
         api.get(`/admin/completion-reviews/${id}/certificate/preview`),
-    
+
     // Admin-initiated completion (for any enrolled student)
     getEnrolledStudentsForInternship: (internshipId: string) =>
         api.get(`/admin/completion-reviews/internship/${internshipId}/enrolled`),
@@ -196,7 +197,7 @@ export const adminService = {
         api.post(`/admin/completion-reviews/enrollment/${enrollmentId}/initiate`),
     completeInternshipForStudent: (enrollmentId: string, data: { marks: number; feedback?: string; issueCertificate?: boolean }) =>
         api.post(`/admin/completion-reviews/enrollment/${enrollmentId}/complete`, data),
-    
+
     // Certificates
     getCertificates: (filters?: { studentId?: string; type?: string; search?: string }) =>
         api.get('/admin/certificates', { params: filters }),
@@ -209,7 +210,7 @@ export const adminService = {
         api.post('/admin/certificates/bulk-issue', data),
     regenerateCertificatePdf: (id: string) =>
         api.get(`/admin/certificates/${id}/regenerate-pdf`, { responseType: 'blob' }),
-    
+
     // Announcements
     getAnnouncements: (filters?: { status?: string; audience?: string; priority?: string }) =>
         api.get('/admin/announcements', { params: filters }),
@@ -221,7 +222,7 @@ export const adminService = {
     deleteAnnouncement: (id: string) => api.delete(`/admin/announcements/${id}`),
     publishAnnouncement: (id: string) => api.post(`/admin/announcements/${id}/publish`),
     unpublishAnnouncement: (id: string) => api.post(`/admin/announcements/${id}/unpublish`),
-    
+
     // Settings
     getProfile: () => api.get('/admin/settings/profile'),
     updateProfile: (data: { name?: string; phone?: string }) =>
