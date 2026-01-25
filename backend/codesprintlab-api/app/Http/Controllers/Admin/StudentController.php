@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+use App\Models\Internship;
+
 class StudentController extends Controller
 {
     /**
@@ -22,7 +24,15 @@ class StudentController extends Controller
 
         // Filter by internship
         if ($request->has('internship')) {
-            $query->where('enrolledInternships', 'elemMatch', ['$eq' => $request->internship]);
+            $val = $request->internship;
+            // First check if it's a title
+            $internship = Internship::where('title', $val)->first();
+            if ($internship) {
+                $query->where('enrolledInternships', 'elemMatch', ['$eq' => $internship->id]);
+            } else {
+                // Fallback to ID
+                $query->where('enrolledInternships', 'elemMatch', ['$eq' => $val]);
+            }
         }
 
         // Search by name or email
@@ -36,6 +46,27 @@ class StudentController extends Controller
 
         $students = $query->orderBy('created_at', 'desc')->get();
 
+        // Transform Internship IDs to Titles
+        $allInternshipIds = $students->pluck('enrolledInternships')->flatten()->unique()->filter();
+        if ($allInternshipIds->isNotEmpty()) {
+            $internshipMap = Internship::whereIn('_id', $allInternshipIds)->pluck('title', '_id')->toArray();
+            
+            // Also try to fetch by id string if _id lookup misses (MongoDB/Laravel quirk handling)
+             if (count($internshipMap) < $allInternshipIds->count()) {
+                 $moreInternships = Internship::whereIn('id', $allInternshipIds)->pluck('title', 'id')->toArray();
+                 $internshipMap = array_merge($internshipMap, $moreInternships);
+             }
+
+            $students->transform(function ($student) use ($internshipMap) {
+                if (!empty($student->enrolledInternships)) {
+                    $student->enrolledInternships = collect($student->enrolledInternships)->map(function ($id) use ($internshipMap) {
+                        return $internshipMap[$id] ?? $id;
+                    })->toArray();
+                }
+                return $student;
+            });
+        }
+
         return response()->json(['students' => $students]);
     }
 
@@ -45,6 +76,18 @@ class StudentController extends Controller
     public function show(string $id)
     {
         $student = User::where('role', 'student')->findOrFail($id);
+
+        // Transform Internship IDs to Titles
+        if (!empty($student->enrolledInternships)) {
+             $internshipMap = Internship::whereIn('_id', $student->enrolledInternships)->pluck('title', '_id')->toArray();
+             // Fallback for string ids
+             $moreInternships = Internship::whereIn('id', $student->enrolledInternships)->pluck('title', 'id')->toArray();
+             $internshipMap = array_merge($internshipMap, $moreInternships);
+
+             $student->enrolledInternships = collect($student->enrolledInternships)->map(function ($id) use ($internshipMap) {
+                 return $internshipMap[$id] ?? $id;
+             })->toArray();
+        }
 
         // Get additional stats
         $stats = [
