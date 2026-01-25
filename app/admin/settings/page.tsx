@@ -65,7 +65,7 @@ export default function AdminSettingsPage() {
             ]);
 
             if (profileRes.data) {
-                const p = profileRes.data.admin || profileRes.data;
+                const p = profileRes.data.data || profileRes.data.admin || profileRes.data;
                 setProfile({
                     name: p.name || '',
                     email: p.email || '',
@@ -73,8 +73,11 @@ export default function AdminSettingsPage() {
                 });
             }
 
-            if (settingsRes.data && settingsRes.data.settings) {
-                setSettings(prev => ({ ...prev, ...settingsRes.data.settings }));
+            if (settingsRes.data) {
+                const s = settingsRes.data.data || settingsRes.data.settings || settingsRes.data;
+                if (s) {
+                    setSettings(prev => ({ ...prev, ...s }));
+                }
             }
         } catch (error) {
             console.error('Failed to fetch settings:', error);
