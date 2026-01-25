@@ -100,6 +100,7 @@ export const publicService = {
     getStats: () => api.get('/public/stats'),
     getFeaturedInternships: () => api.get('/public/featured-internships'),
     getFeaturedCourses: () => api.get('/public/featured-courses'),
+    getSettings: () => api.get('/public/settings'),
 };
 
 // ============ NOTIFICATION SERVICES ============

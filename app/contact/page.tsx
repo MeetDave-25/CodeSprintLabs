@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Button from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
+
+import { publicService } from '@/lib/services';
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -16,6 +18,22 @@ export default function ContactPage() {
         message: '',
     });
     const [submitted, setSubmitted] = useState(false);
+    const [supportEmail, setSupportEmail] = useState('support@codesprintlabs.com');
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await publicService.getSettings();
+                if (response.data && response.data.data && response.data.data.supportEmail) {
+                    setSupportEmail(response.data.data.supportEmail);
+                }
+            } catch (error) {
+                console.error('Failed to fetch settings:', error);
+            }
+        };
+
+        fetchSettings();
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,8 +57,8 @@ export default function ContactPage() {
         {
             icon: Mail,
             title: 'Email',
-            value: 'support@codesprintlabs.com',
-            link: 'mailto:support@codesprintlabs.com',
+            value: supportEmail,
+            link: `mailto:${supportEmail}`,
         },
         {
             icon: Phone,
