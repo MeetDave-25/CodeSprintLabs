@@ -63,8 +63,8 @@ export default function ContactPage() {
         {
             icon: Phone,
             title: 'Phone',
-            value: '+91 98765 43210',
-            link: 'tel:+919876543210',
+            value: '+91 81609 01481',
+            link: 'tel:+918160901481',
         },
         {
             icon: MapPin,
