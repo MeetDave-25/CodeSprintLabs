@@ -54,6 +54,22 @@ class CertificateController extends Controller
 
         $certificates = $query->orderBy('issueDate', 'desc')->paginate($request->get('per_page', 20));
 
+        // Attach enrollment ID for internship certificates to allow letter download
+        $certificates->getCollection()->transform(function ($cert) {
+            if ($cert->internshipId) {
+                // Find corresponding enrollment
+                $enrollment = \App\Models\EnrollmentRequest::where('userId', $cert->studentId)
+                    ->where('internshipId', $cert->internshipId)
+                    ->where('completionStatus', 'certificate_issued') // Ensure it's the completed one
+                    ->first();
+                
+                if ($enrollment) {
+                    $cert->enrollmentId = $enrollment->_id ?? $enrollment->id;
+                }
+            }
+            return $cert;
+        });
+
         return response()->json([
             'status' => 'success',
             'data' => $certificates

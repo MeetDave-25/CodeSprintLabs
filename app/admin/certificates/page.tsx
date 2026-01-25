@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Award, Download, Eye, CheckCircle, XCircle, Loader2, RefreshCw } from 'lucide-react';
+import { Search, Award, Download, Eye, CheckCircle, XCircle, Loader2, RefreshCw, FileText } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -26,6 +26,7 @@ interface Certificate {
     issuedAt?: string;
     created_at?: string;
     status: 'issued' | 'revoked' | 'active';
+    enrollmentId?: string;
 }
 
 interface Stats {
@@ -52,15 +53,15 @@ export default function AdminCertificatesPage() {
             setIsLoading(true);
             const params: any = {};
             if (searchQuery) params.search = searchQuery;
-            
+
             const response = await adminService.getCertificates(params);
             let certsData = response.data.data || response.data.certificates || response.data || [];
-            
+
             // Handle pagination if present
             if (certsData.data) {
                 certsData = certsData.data;
             }
-            
+
             // Filter by status locally if needed
             if (statusFilter !== 'all') {
                 certsData = certsData.filter((cert: Certificate) => {
@@ -68,7 +69,7 @@ export default function AdminCertificatesPage() {
                     return certStatus === statusFilter;
                 });
             }
-            
+
             setCertificates(certsData);
         } catch (error) {
             console.error('Failed to fetch certificates:', error);
@@ -94,13 +95,29 @@ export default function AdminCertificatesPage() {
 
     const handleRevoke = async (id: string) => {
         if (!confirm('Are you sure you want to revoke this certificate?')) return;
-        
+
         try {
             await adminService.revokeCertificate(id);
             fetchCertificates();
             fetchStats();
         } catch (error) {
             console.error('Failed to revoke certificate:', error);
+        }
+    };
+
+    const handleDownloadLetter = async (enrollmentId: string, studentName: string) => {
+        try {
+            const response = await adminService.downloadCompletionLetter(enrollmentId);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `completion-letter-${studentName}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Failed to download letter:', error);
+            alert('Could not download completion letter. Ensure the student has completed the internship review.');
         }
     };
 
@@ -174,8 +191,8 @@ export default function AdminCertificatesPage() {
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${statusFilter === status
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                         }`}
                                 >
                                     {status}
@@ -235,8 +252,8 @@ export default function AdminCertificatesPage() {
                                             </td>
                                             <td className="py-4 px-4">
                                                 <div className="text-sm">
-                                                    {getIssueDate(cert) 
-                                                        ? new Date(getIssueDate(cert)!).toLocaleDateString() 
+                                                    {getIssueDate(cert)
+                                                        ? new Date(getIssueDate(cert)!).toLocaleDateString()
                                                         : 'N/A'}
                                                 </div>
                                             </td>
@@ -257,10 +274,20 @@ export default function AdminCertificatesPage() {
                                                     <Button variant="ghost" size="sm">
                                                         <Download size={14} />
                                                     </Button>
+                                                    {cert.enrollmentId && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            title="Download Completion Letter"
+                                                            onClick={() => handleDownloadLetter(cert.enrollmentId!, getStudentName(cert))}
+                                                        >
+                                                            <FileText size={14} className="text-blue-400" />
+                                                        </Button>
+                                                    )}
                                                     {getCertificateStatus(cert) === 'issued' && (
-                                                        <Button 
-                                                            variant="ghost" 
-                                                            size="sm" 
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
                                                             className="text-red-400 hover:text-red-300"
                                                             onClick={() => handleRevoke(getCertificateId(cert))}
                                                         >
