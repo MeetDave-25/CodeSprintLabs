@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\Internship;
+use App\Models\EnrollmentRequest;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
@@ -97,16 +98,40 @@ class CertificateController extends Controller
             return response()->json(['message' => 'Certificate not found'], 404);
         }
 
-        // Authorization check: Only owner or admin can download
-        // Assuming we are in a protected route or using a signed URL. 
-        // ideally: if ($request->user()->id !== $certificate->studentId && !$request->user()->isAdmin()) abort(403);
-        
+        // Process Internship Certificate
+        if ($certificate->internshipId) {
+            $enrollment = EnrollmentRequest::where('userId', $certificate->studentId)
+                ->where('internshipId', $certificate->internshipId)
+                ->first();
+            
+            $internship = Internship::find($certificate->internshipId);
+
+            $data = [
+                'studentName' => $certificate->studentName,
+                'internshipTitle' => $certificate->internshipTitle,
+                'startDate' => $enrollment ? ($enrollment->startDate ? $enrollment->startDate : now()) : now(),
+                'endDate' => $enrollment ? ($enrollment->endDate ? $enrollment->endDate : now()) : now(),
+                'issueDate' => $certificate->issueDate,
+                'verificationCode' => $certificate->verificationCode,
+                'marks' => $certificate->marks,
+                'grade' => $certificate->grade,
+                'maxMarks' => 50,
+                'internshipDuration' => $internship ? $internship->duration : 'N/A', 
+            ];
+
+            $pdf = Pdf::loadView('certificates.internship-certificate', $data);
+            $pdf->setPaper('a4', 'landscape');
+            
+            return $pdf->download('certificate-' . $certificate->verificationCode . '.pdf');
+        }
+
+        // Fallback or Course Certificate
         $data = [
             'name' => $certificate->studentName,
             'course' => $certificate->courseTitle ?? $certificate->internshipTitle,
             'date' => $certificate->issueDate->format('F d, Y'),
             'id' => $certificate->verificationCode,
-            'qr_code' => 'link_to_verification_page_here' // In future logic
+            'qr_code' => 'link_to_verification_page_here' 
         ];
 
         $pdf = Pdf::loadView('certificates.template', $data);
