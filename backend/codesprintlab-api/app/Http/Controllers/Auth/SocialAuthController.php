@@ -56,7 +56,7 @@ class SocialAuthController extends Controller
             $user = User::create([
                 'name' => $socialUser->getName() ?? $socialUser->getNickname(),
                 'email' => $socialUser->getEmail(),
-                'password' => bcrypt(Str::random(16)), // Random password
+                'password' => Str::random(16), // Random password
                 'provider' => $provider,
                 'provider_id' => $socialUser->getId(),
                 'provider_token' => $socialUser->token,

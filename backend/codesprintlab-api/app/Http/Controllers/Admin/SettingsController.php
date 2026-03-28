@@ -72,7 +72,7 @@ class SettingsController extends Controller
         }
 
         $user->update([
-            'password' => Hash::make($request->password)
+            'password' => $request->password
         ]);
 
         return response()->json([
@@ -225,7 +225,7 @@ class SettingsController extends Controller
         $admin = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'],
             'role' => 'admin',
             'email_verified_at' => now(),
             'status' => 'active',
