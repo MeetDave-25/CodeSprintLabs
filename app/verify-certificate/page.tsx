@@ -97,7 +97,7 @@ export default function VerifyCertificatePage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-12"
                 >
-                    <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                    <div className="w-20 h-20 mx-auto mb-6 bg-brand-400 on-neon hover:bg-brand-300 rounded-full flex items-center justify-center">
                         <Shield size={40} className="text-white" />
                     </div>
                     <h1 className="text-4xl font-bold mb-4">

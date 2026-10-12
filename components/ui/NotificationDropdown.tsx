@@ -95,11 +95,11 @@ export default function NotificationDropdown() {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-gray-400 hover:text-white transition-colors rounded-full hover:bg-white/10"
+                className="relative rounded-lg p-2 text-gray-400 transition-colors hover:bg-white/[0.06] hover:text-white" aria-label="Notifications"
             >
                 <Bell size={20} />
                 {unreadCount > 0 && (
-                    <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    <span className="absolute top-1 right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand-400 px-1 text-[10px] font-bold text-ink-950 ring-2 ring-ink-950">
                         {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                 )}
@@ -112,14 +112,14 @@ export default function NotificationDropdown() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-80 bg-[#1a1a24] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                        className="absolute right-0 mt-2 w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-white/10 bg-ink-850/95 shadow-elevated backdrop-blur-xl z-50"
                     >
                         <div className="flex items-center justify-between p-4 border-b border-white/5">
                             <h3 className="font-semibold text-white">Notifications</h3>
                             {unreadCount > 0 && (
                                 <button
                                     onClick={handleMarkAllRead}
-                                    className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                                    className="text-xs font-medium text-brand-300 hover:text-brand-200 transition-colors"
                                 >
                                     Mark all read
                                 </button>
@@ -128,7 +128,7 @@ export default function NotificationDropdown() {
 
                         <div className="max-h-96 overflow-y-auto">
                             {notifications.length === 0 ? (
-                                <div className="p-8 text-center text-gray-500 text-sm">
+                                <div className="px-6 py-12 text-center text-gray-500 text-sm"><Bell size={22} className="mx-auto mb-3 text-gray-600" />
                                     No notifications yet
                                 </div>
                             ) : (
@@ -136,7 +136,7 @@ export default function NotificationDropdown() {
                                     <div
                                         key={notification.id || notification._id}
                                         onClick={() => handleMarkAsRead(notification.id || notification._id, notification.link)}
-                                        className={`p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors ${!notification.read ? 'bg-purple-500/5' : ''}`}
+                                        className={`p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors ${!notification.read ? 'bg-brand-500/[0.04]' : ''}`}
                                     >
                                         <div className="flex gap-3">
                                             <div className={`mt-1 min-w-[32px] h-8 rounded-full flex items-center justify-center bg-white/5`}>
@@ -154,7 +154,7 @@ export default function NotificationDropdown() {
                                                 </span>
                                             </div>
                                             {!notification.read && (
-                                                <div className="mt-2 w-2 h-2 rounded-full bg-purple-500 shrink-0" />
+                                                <div className="mt-2 w-2 h-2 rounded-full bg-brand-400 shrink-0" />
                                             )}
                                         </div>
                                     </div>

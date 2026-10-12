@@ -306,7 +306,7 @@ export default function StudentDocumentsPage() {
                     onClick={() => setActiveTab('documents')}
                     className={`px-4 py-2 rounded-t-lg transition-all ${
                         activeTab === 'documents'
-                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                 >
@@ -317,7 +317,7 @@ export default function StudentDocumentsPage() {
                     onClick={() => setActiveTab('requests')}
                     className={`px-4 py-2 rounded-t-lg transition-all relative ${
                         activeTab === 'requests'
-                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                 >
@@ -360,7 +360,7 @@ export default function StudentDocumentsPage() {
                                         ? 'border-orange-500/30 bg-gradient-to-br from-orange-900/10 to-red-900/10' 
                                         : doc.hasCertificate 
                                             ? 'border-green-500/30' 
-                                            : 'border-purple-500/20'
+                                            : 'border-brand-500/20'
                                 }`}>
                                     <CardContent className="p-6">
                                         <div className="flex flex-col gap-4">
@@ -371,7 +371,7 @@ export default function StudentDocumentsPage() {
                                                         {doc.isWithdrawn ? (
                                                             <LogOut size={20} className="text-orange-400" />
                                                         ) : (
-                                                            <Briefcase size={20} className="text-purple-400" />
+                                                            <Briefcase size={20} className="text-brand-400" />
                                                         )}
                                                         <h3 className="text-xl font-bold">{doc.internshipTitle}</h3>
                                                     </div>
@@ -399,7 +399,7 @@ export default function StudentDocumentsPage() {
 
                                                 {/* Grade Display */}
                                                 {doc.hasCompletionLetter && doc.marks && (
-                                                    <div className="text-center p-4 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-lg border border-purple-500/30">
+                                                    <div className="text-center p-4 bg-gradient-to-br from-brand-600/20 to-brand-600/20 rounded-lg border border-brand-500/30">
                                                         <div className="text-3xl font-bold gradient-text">{doc.grade}</div>
                                                         <div className="text-sm text-gray-400">{doc.marks}/50 marks</div>
                                                     </div>

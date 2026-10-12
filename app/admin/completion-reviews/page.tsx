@@ -241,7 +241,7 @@ export default function AdminCompletionReviewsPage() {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-purple-400">{stats.avgMarks}/50</div>
+                        <div className="text-2xl font-bold text-brand-400">{stats.avgMarks}/50</div>
                         <div className="text-sm text-gray-400">Avg. Marks</div>
                     </CardContent>
                 </Card>
@@ -258,7 +258,7 @@ export default function AdminCompletionReviewsPage() {
                                 placeholder="Search by student name, email, or internship..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </form>
                         <div className="flex gap-2 flex-wrap">
@@ -268,7 +268,7 @@ export default function AdminCompletionReviewsPage() {
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all whitespace-nowrap ${
                                         statusFilter === status
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                     }`}
                                 >
@@ -307,7 +307,7 @@ export default function AdminCompletionReviewsPage() {
                                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                         {/* Student Info */}
                                         <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                            <div className="w-12 h-12 bg-brand-400 on-neon hover:bg-brand-300 rounded-full flex items-center justify-center text-white font-bold text-lg">
                                                 {review.studentName.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
@@ -316,7 +316,7 @@ export default function AdminCompletionReviewsPage() {
                                                     {getStatusBadge(review.completionStatus)}
                                                 </div>
                                                 <p className="text-sm text-gray-400">{review.studentEmail}</p>
-                                                <p className="text-sm text-purple-400 mt-1">{review.internshipTitle}</p>
+                                                <p className="text-sm text-brand-400 mt-1">{review.internshipTitle}</p>
                                             </div>
                                         </div>
 
@@ -456,7 +456,7 @@ export default function AdminCompletionReviewsPage() {
                                         </div>
                                         <div className="text-sm text-gray-400">Tasks Completed</div>
                                     </div>
-                                    <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4 text-center">
+                                    <div className="bg-brand-500/10 border border-brand-500/30 rounded-lg p-4 text-center">
                                         <div className="text-2xl font-bold gradient-text">
                                             {selectedReview.totalPoints}
                                         </div>
@@ -482,7 +482,7 @@ export default function AdminCompletionReviewsPage() {
                                             max="50"
                                             value={marks}
                                             onChange={(e) => setMarks(parseInt(e.target.value))}
-                                            className="flex-1 h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                                            className="flex-1 h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-brand-600"
                                         />
                                         <div className="flex items-center gap-2 bg-white/5 rounded-lg px-4 py-2">
                                             <input
@@ -516,7 +516,7 @@ export default function AdminCompletionReviewsPage() {
                                         value={feedback}
                                         onChange={(e) => setFeedback(e.target.value)}
                                         placeholder="Provide feedback on the intern's performance..."
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 resize-none"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"
                                     />
                                 </div>
 
@@ -556,7 +556,7 @@ export default function AdminCompletionReviewsPage() {
                         className="max-w-2xl w-full my-8"
                     >
                         <Card className="max-h-[80vh] overflow-y-auto">
-                            <CardHeader className="sticky top-0 bg-[#1a1a2e] z-10 border-b border-white/10">
+                            <CardHeader className="sticky top-0 bg-[#141414] z-10 border-b border-white/10">
                                 <div className="flex items-center justify-between">
                                     <CardTitle>Completion Letter Preview</CardTitle>
                                     <Button
@@ -571,8 +571,8 @@ export default function AdminCompletionReviewsPage() {
                             <CardContent className="p-6">
                                 <div className="bg-white text-black rounded-lg p-8 space-y-6">
                                     {/* Letter Header */}
-                                    <div className="text-center border-b-2 border-purple-600 pb-4">
-                                        <h1 className="text-2xl font-bold text-purple-600">CodeSprint Labs</h1>
+                                    <div className="text-center border-b-2 border-brand-600 pb-4">
+                                        <h1 className="text-2xl font-bold text-brand-600">CodeSprint Labs</h1>
                                         <p className="text-gray-500 text-sm italic">Empowering Future Tech Leaders</p>
                                     </div>
 
@@ -589,7 +589,7 @@ export default function AdminCompletionReviewsPage() {
                                     {/* Content */}
                                     <div className="space-y-4 text-gray-800">
                                         <p>
-                                            This is to certify that <strong className="text-purple-600">{previewData.studentName}</strong>
+                                            This is to certify that <strong className="text-brand-600">{previewData.studentName}</strong>
                                             {previewData.studentCollegeName !== 'N/A' && (
                                                 <> from <strong>{previewData.studentCollegeName}</strong></>
                                             )} has successfully completed the internship program at CodeSprint Labs.
@@ -603,13 +603,13 @@ export default function AdminCompletionReviewsPage() {
                                     </div>
 
                                     {/* Performance Box */}
-                                    <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
-                                        <h3 className="text-center font-bold text-purple-600 mb-4 uppercase">Performance Summary</h3>
+                                    <div className="bg-brand-50 border-2 border-brand-200 rounded-lg p-6">
+                                        <h3 className="text-center font-bold text-brand-600 mb-4 uppercase">Performance Summary</h3>
                                         <div className="text-center mb-4">
-                                            <div className="inline-block w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full text-white text-3xl font-bold leading-[80px]">
+                                            <div className="inline-block w-20 h-20 bg-brand-400 on-neon hover:bg-brand-300 rounded-full text-white text-3xl font-bold leading-[80px]">
                                                 {previewData.grade}
                                             </div>
-                                            <div className="text-xl font-bold text-purple-600 mt-2">
+                                            <div className="text-xl font-bold text-brand-600 mt-2">
                                                 {previewData.marks} / {previewData.maxMarks} Marks
                                             </div>
                                         </div>
@@ -635,8 +635,8 @@ export default function AdminCompletionReviewsPage() {
 
                                     {/* Feedback */}
                                     {previewData.adminFeedback && (
-                                        <div className="bg-gray-50 border-l-4 border-purple-600 p-4">
-                                            <h4 className="font-bold text-purple-600 mb-2">Supervisor's Remarks</h4>
+                                        <div className="bg-gray-50 border-l-4 border-brand-600 p-4">
+                                            <h4 className="font-bold text-brand-600 mb-2">Supervisor's Remarks</h4>
                                             <p className="text-gray-700">{previewData.adminFeedback}</p>
                                         </div>
                                     )}

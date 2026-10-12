@@ -247,7 +247,7 @@ export default function CourseDetailPage() {
                             <Card key={module.id}>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <BookOpen size={20} className="text-purple-400" />
+                                        <BookOpen size={20} className="text-brand-400" />
                                         Module {moduleIndex + 1}: {module.title}
                                     </CardTitle>
                                 </CardHeader>
@@ -320,9 +320,9 @@ export default function CourseDetailPage() {
                     <div className="space-y-6">
                         {/* Certificate Card */}
                         {course.certificateEligible ? (
-                            <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-500/30">
+                            <Card className="bg-gradient-to-br from-brand-600/20 to-brand-600/20 border-brand-500/30">
                                 <CardContent className="p-6 text-center">
-                                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                                    <div className="w-16 h-16 mx-auto mb-4 bg-brand-400 on-neon hover:bg-brand-300 rounded-full flex items-center justify-center">
                                         <Award size={32} className="text-white" />
                                     </div>
                                     <h3 className="font-bold text-lg mb-2">Certificate Available!</h3>
@@ -361,7 +361,7 @@ export default function CourseDetailPage() {
                                         Complete all tasks to unlock your certificate
                                     </p>
                                     <div className="mt-4 text-sm">
-                                        <span className="text-purple-400 font-bold">{course.total - course.completed}</span>
+                                        <span className="text-brand-400 font-bold">{course.total - course.completed}</span>
                                         <span className="text-gray-400"> tasks remaining</span>
                                     </div>
                                 </CardContent>
@@ -415,7 +415,7 @@ export default function CourseDetailPage() {
                                         <input
                                             type="url"
                                             placeholder="https://github.com/username/repo"
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         />
                                     </div>
                                     <div>
@@ -423,7 +423,7 @@ export default function CourseDetailPage() {
                                         <textarea
                                             rows={4}
                                             placeholder="Describe your solution..."
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 resize-none"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"
                                         />
                                     </div>
                                     <div className="flex gap-3">

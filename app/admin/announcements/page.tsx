@@ -204,7 +204,7 @@ export default function AdminAnnouncementsPage() {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-purple-400">{stats.totalViews}</div>
+                        <div className="text-2xl font-bold text-brand-400">{stats.totalViews}</div>
                         <div className="text-sm text-gray-400">Total Views</div>
                     </CardContent>
                 </Card>
@@ -213,7 +213,7 @@ export default function AdminAnnouncementsPage() {
             {/* Announcements List */}
             {isLoading ? (
                 <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                    <Loader2 className="w-8 h-8 animate-spin text-brand-500" />
                 </div>
             ) : (
                 <div className="space-y-4">
@@ -229,7 +229,7 @@ export default function AdminAnnouncementsPage() {
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3 mb-3">
-                                                <Megaphone size={20} className="text-purple-400" />
+                                                <Megaphone size={20} className="text-brand-400" />
                                                 <h3 className="text-xl font-bold">{announcement.title}</h3>
                                                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(announcement.priority)}`}>
                                                     {announcement.priority}
@@ -335,7 +335,7 @@ export default function AdminAnnouncementsPage() {
                                             placeholder="Announcement content..."
                                             value={formData.content}
                                             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 min-h-[100px]"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 min-h-[100px]"
                                             required
                                         />
                                     </div>
@@ -346,7 +346,7 @@ export default function AdminAnnouncementsPage() {
                                             <select
                                                 value={formData.targetAudience}
                                                 onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value as any })}
-                                                className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                                className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                             >
                                                 <option value="all">All Users</option>
                                                 <option value="students">Students Only</option>
@@ -357,7 +357,7 @@ export default function AdminAnnouncementsPage() {
                                             <select
                                                 value={formData.priority}
                                                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-                                                className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                                className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                             >
                                                 <option value="low">Low</option>
                                                 <option value="medium">Medium</option>
@@ -372,7 +372,7 @@ export default function AdminAnnouncementsPage() {
                                             id="isActive"
                                             checked={formData.isActive}
                                             onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                            className="w-4 h-4 rounded border-white/10 bg-white/5 text-purple-600 focus:ring-purple-500"
+                                            className="w-4 h-4 rounded border-white/10 bg-white/5 text-brand-600 focus:ring-brand-500"
                                         />
                                         <label htmlFor="isActive" className="text-sm text-gray-300">Publish immediately</label>
                                     </div>

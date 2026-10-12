@@ -63,7 +63,7 @@ export default function VerifyCertificatePage() {
 
                     {isLoading ? (
                         <div className="text-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mx-auto"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-500 mx-auto"></div>
                             <p className="mt-4 text-gray-400">Verifying...</p>
                         </div>
                     ) : error ? (
@@ -87,7 +87,7 @@ export default function VerifyCertificatePage() {
 
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-4 p-4 bg-white/5 rounded-lg">
-                                        <div className="p-3 bg-purple-500/20 rounded-full text-purple-400">
+                                        <div className="p-3 bg-brand-500/20 rounded-full text-brand-400">
                                             <User size={24} />
                                         </div>
                                         <div>

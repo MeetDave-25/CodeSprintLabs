@@ -147,7 +147,7 @@ export default function AdminSettingsPage() {
     if (isLoading) {
         return (
             <div className="p-6 flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                <Loader2 className="w-8 h-8 animate-spin text-brand-500" />
             </div>
         );
     }
@@ -165,7 +165,7 @@ export default function AdminSettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <User size={20} className="text-purple-400" />
+                            <User size={20} className="text-brand-400" />
                             Admin Profile
                         </CardTitle>
                         <CardDescription>Your account information</CardDescription>
@@ -198,7 +198,7 @@ export default function AdminSettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Key size={20} className="text-purple-400" />
+                            <Key size={20} className="text-brand-400" />
                             Change Password
                         </CardTitle>
                         <CardDescription>Update your account password</CardDescription>
@@ -248,7 +248,7 @@ export default function AdminSettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Globe size={20} className="text-purple-400" />
+                            <Globe size={20} className="text-brand-400" />
                             General Settings
                         </CardTitle>
                         <CardDescription>Basic platform configuration</CardDescription>
@@ -278,7 +278,7 @@ export default function AdminSettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Bell size={20} className="text-purple-400" />
+                            <Bell size={20} className="text-brand-400" />
                             Notifications
                         </CardTitle>
                         <CardDescription>Manage notification preferences</CardDescription>
@@ -292,7 +292,7 @@ export default function AdminSettingsPage() {
                             <button
                                 type="button"
                                 onClick={() => setSettings({ ...settings, enableNotifications: !settings.enableNotifications })}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.enableNotifications ? 'bg-purple-600' : 'bg-gray-700'}`}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.enableNotifications ? 'bg-brand-400 on-neon' : 'bg-gray-700'}`}
                             >
                                 <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${settings.enableNotifications ? 'translate-x-5' : 'translate-x-1'}`} />
                             </button>
@@ -305,7 +305,7 @@ export default function AdminSettingsPage() {
                             <button
                                 type="button"
                                 onClick={() => setSettings({ ...settings, enableEmailAlerts: !settings.enableEmailAlerts })}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.enableEmailAlerts ? 'bg-purple-600' : 'bg-gray-700'}`}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.enableEmailAlerts ? 'bg-brand-400 on-neon' : 'bg-gray-700'}`}
                             >
                                 <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${settings.enableEmailAlerts ? 'translate-x-5' : 'translate-x-1'}`} />
                             </button>
@@ -317,7 +317,7 @@ export default function AdminSettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Lock size={20} className="text-purple-400" />
+                            <Lock size={20} className="text-brand-400" />
                             Security
                         </CardTitle>
                         <CardDescription>Security and access control</CardDescription>
@@ -344,7 +344,7 @@ export default function AdminSettingsPage() {
                             <button
                                 type="button"
                                 onClick={() => setSettings({ ...settings, allowRegistration: !settings.allowRegistration })}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.allowRegistration ? 'bg-purple-600' : 'bg-gray-700'}`}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.allowRegistration ? 'bg-brand-400 on-neon' : 'bg-gray-700'}`}
                             >
                                 <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${settings.allowRegistration ? 'translate-x-5' : 'translate-x-1'}`} />
                             </button>
@@ -356,7 +356,7 @@ export default function AdminSettingsPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Palette size={20} className="text-purple-400" />
+                            <Palette size={20} className="text-brand-400" />
                             Appearance
                         </CardTitle>
                         <CardDescription>Customize platform appearance</CardDescription>
@@ -365,7 +365,7 @@ export default function AdminSettingsPage() {
                         <div className="p-4 bg-white/5 rounded-lg">
                             <div className="font-semibold mb-2">Theme</div>
                             <div className="grid grid-cols-2 gap-3">
-                                <button className="p-3 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg text-white font-semibold">
+                                <button className="p-3 bg-brand-400 on-neon hover:bg-brand-300 rounded-lg text-white font-semibold">
                                     Dark (Active)
                                 </button>
                                 <button className="p-3 bg-white/10 rounded-lg text-gray-400 hover:bg-white/20 transition-colors">
@@ -376,7 +376,7 @@ export default function AdminSettingsPage() {
                         <div className="p-4 bg-white/5 rounded-lg">
                             <div className="font-semibold mb-2">Primary Color</div>
                             <div className="flex gap-3">
-                                <div className="w-10 h-10 rounded-full bg-purple-600 cursor-pointer ring-2 ring-white"></div>
+                                <div className="w-10 h-10 rounded-full bg-brand-400 cursor-pointer ring-2 ring-white"></div>
                                 <div className="w-10 h-10 rounded-full bg-blue-600 cursor-pointer hover:ring-2 hover:ring-white/50 transition-all"></div>
                                 <div className="w-10 h-10 rounded-full bg-green-600 cursor-pointer hover:ring-2 hover:ring-white/50 transition-all"></div>
                                 <div className="w-10 h-10 rounded-full bg-red-600 cursor-pointer hover:ring-2 hover:ring-white/50 transition-all"></div>

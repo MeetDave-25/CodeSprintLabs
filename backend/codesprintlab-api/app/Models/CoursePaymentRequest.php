@@ -3,16 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
 
-class CoursePaymentRequest extends Model
+class CoursePaymentRequest extends BaseModel
 {
     use HasFactory;
     
-    protected $connection = 'mongodb';
-    protected $collection = 'course_payment_requests';
-
-    protected $appends = ['id'];
+    protected $table = 'course_payment_requests';
 
     protected $fillable = [
         'userId',
@@ -43,18 +39,6 @@ class CoursePaymentRequest extends Model
     protected $attributes = [
         'status' => 'pending',
     ];
-
-    /**
-     * Get the id attribute as string
-     */
-    public function getIdAttribute($value = null)
-    {
-        $id = $this->attributes['id'] ?? $this->attributes['_id'] ?? null;
-        if ($id instanceof \MongoDB\BSON\ObjectId) {
-            return (string) $id;
-        }
-        return $id;
-    }
 
     /**
      * Get the student who made this payment request

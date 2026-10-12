@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
-
-class Notification extends Model
+class Notification extends BaseModel
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'notifications';
+    protected $table = 'notifications';
 
     protected $fillable = [
         'userId',

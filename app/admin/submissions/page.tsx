@@ -177,7 +177,7 @@ export default function AdminSubmissionsPage() {
         return (
             <div className="p-6 flex items-center justify-center min-h-[400px]">
                 <div className="text-center">
-                    <Loader2 className="w-12 h-12 animate-spin text-purple-500 mx-auto mb-4" />
+                    <Loader2 className="w-12 h-12 animate-spin text-brand-500 mx-auto mb-4" />
                     <p className="text-gray-400">Loading submissions...</p>
                 </div>
             </div>
@@ -200,25 +200,25 @@ export default function AdminSubmissionsPage() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold gradient-text">{stats.total}</div>
                         <div className="text-sm text-gray-400">Total Submissions</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold text-yellow-400">{stats.pending}</div>
                         <div className="text-sm text-gray-400">Pending Review</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold text-green-400">{stats.approved}</div>
                         <div className="text-sm text-gray-400">Approved</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold text-red-400">{stats.rejected}</div>
                         <div className="text-sm text-gray-400">Rejected</div>
@@ -233,7 +233,7 @@ export default function AdminSubmissionsPage() {
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                 >
-                    <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                    <Card className="bg-[#141414]/90 backdrop-blur-md">
                         <CardHeader>
                             <CardTitle>Advanced Filters</CardTitle>
                             <CardDescription>Filter submissions by student or internship</CardDescription>
@@ -246,7 +246,7 @@ export default function AdminSubmissionsPage() {
                                     <select
                                         value={studentFilter}
                                         onChange={(e) => setStudentFilter(e.target.value)}
-                                        className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                        className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                     >
                                         <option value="all">All Students</option>
                                         {uniqueStudents.map((student) => (
@@ -263,7 +263,7 @@ export default function AdminSubmissionsPage() {
                                     <select
                                         value={internshipFilter}
                                         onChange={(e) => setInternshipFilter(e.target.value)}
-                                        className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                        className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                     >
                                         <option value="all">All Internships</option>
                                         {uniqueInternships.map((internship) => (
@@ -279,7 +279,7 @@ export default function AdminSubmissionsPage() {
                             {(studentFilter !== 'all' || internshipFilter !== 'all') && (
                                 <div className="mt-4 flex flex-wrap gap-2">
                                     {studentFilter !== 'all' && (
-                                        <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 rounded-lg text-sm">
+                                        <div className="flex items-center gap-2 px-3 py-2 bg-brand-500/20 rounded-lg text-sm">
                                             <span>Student: <strong>{studentFilter}</strong></span>
                                             <button
                                                 onClick={() => setStudentFilter('all')}
@@ -290,7 +290,7 @@ export default function AdminSubmissionsPage() {
                                         </div>
                                     )}
                                     {internshipFilter !== 'all' && (
-                                        <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 rounded-lg text-sm">
+                                        <div className="flex items-center gap-2 px-3 py-2 bg-brand-500/20 rounded-lg text-sm">
                                             <span>Internship: <strong>{internshipFilter}</strong></span>
                                             <button
                                                 onClick={() => setInternshipFilter('all')}
@@ -311,7 +311,7 @@ export default function AdminSubmissionsPage() {
             )}
 
             {/* Search and Status Filters */}
-            <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+            <Card className="bg-[#141414]/90 backdrop-blur-md">
                 <CardContent className="p-4">
                     <div className="flex flex-col md:flex-row gap-4">
                         {/* Search */}
@@ -322,7 +322,7 @@ export default function AdminSubmissionsPage() {
                                 placeholder="Search by student or task..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </div>
 
@@ -333,7 +333,7 @@ export default function AdminSubmissionsPage() {
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${statusFilter === status
-                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                        ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                         : 'bg-white/10 text-gray-400 hover:bg-white/20'
                                         }`}
                                 >
@@ -354,7 +354,7 @@ export default function AdminSubmissionsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                     >
-                        <Card hover3d glow className="bg-[#1a1a2e]/95 backdrop-blur-md border-white/20">
+                        <Card hover3d glow className="bg-[#141414]/95 backdrop-blur-md border-white/20">
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex-1">
@@ -369,7 +369,7 @@ export default function AdminSubmissionsPage() {
                                         </div>
                                         <h3 className="text-xl font-bold mb-1">{submission.taskTitle}</h3>
                                         <div className="text-sm text-gray-400">
-                                            Submitted by <span className="text-purple-400 font-semibold">{submission.studentName}</span>
+                                            Submitted by <span className="text-brand-400 font-semibold">{submission.studentName}</span>
                                         </div>
                                     </div>
                                     <div className="text-right text-sm text-gray-400">
@@ -384,7 +384,7 @@ export default function AdminSubmissionsPage() {
                                             href={submission.repositoryUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-purple-400 hover:underline"
+                                            className="text-brand-400 hover:underline"
                                         >
                                             {submission.repositoryUrl}
                                         </a>
@@ -395,7 +395,7 @@ export default function AdminSubmissionsPage() {
                                     {submission.grade && (
                                         <div className="text-sm">
                                             <span className="text-gray-400">Grade:</span>{' '}
-                                            <span className="font-semibold text-purple-400">{submission.grade}/100</span>
+                                            <span className="font-semibold text-brand-400">{submission.grade}/100</span>
                                         </div>
                                     )}
                                     {submission.feedback && (
@@ -439,7 +439,7 @@ export default function AdminSubmissionsPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="max-w-3xl w-full max-h-[90vh] overflow-y-auto"
                     >
-                        <Card className="bg-[#1a1a2e] border-white/20">
+                        <Card className="bg-[#141414] border-white/20">
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -467,7 +467,7 @@ export default function AdminSubmissionsPage() {
                                         <div className="font-semibold mb-1 text-white">{selectedSubmission.studentName}</div>
                                         <div className="text-sm text-gray-400">{selectedSubmission.studentEmail}</div>
                                         <div className="text-sm text-gray-400 mt-2">
-                                            Internship: <span className="text-purple-400">{selectedSubmission.internship}</span>
+                                            Internship: <span className="text-brand-400">{selectedSubmission.internship}</span>
                                         </div>
                                         <div className="text-sm text-gray-400">
                                             Submitted: {new Date(selectedSubmission.submittedDate).toLocaleString()}
@@ -482,7 +482,7 @@ export default function AdminSubmissionsPage() {
                                                 href={selectedSubmission.repositoryUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="block mt-1 text-purple-400 hover:underline break-all"
+                                                className="block mt-1 text-brand-400 hover:underline break-all"
                                             >
                                                 {selectedSubmission.repositoryUrl}
                                             </a>
@@ -510,7 +510,7 @@ export default function AdminSubmissionsPage() {
                                                     value={reviewGrade}
                                                     onChange={(e) => setReviewGrade(e.target.value)}
                                                     placeholder="Enter points (e.g., 10)"
-                                                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                                 />
                                             </div>
 
@@ -522,7 +522,7 @@ export default function AdminSubmissionsPage() {
                                                     onChange={(e) => setReviewFeedback(e.target.value)}
                                                     rows={4}
                                                     placeholder="Provide feedback to the student..."
-                                                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 resize-none"
+                                                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"
                                                 />
                                             </div>
 

@@ -331,7 +331,7 @@ export default function StudentInternshipDetailPage() {
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-xl bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center">
                             <Briefcase size={24} className="text-white" />
                         </div>
                         <div>
@@ -403,7 +403,7 @@ export default function StudentInternshipDetailPage() {
                                                             <Calendar size={16} />
                                                             <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2 text-purple-400 font-semibold">
+                                                        <div className="flex items-center gap-2 text-brand-400 font-semibold">
                                                             <Target size={16} />
                                                             {task.points} points
                                                         </div>
@@ -618,26 +618,26 @@ export default function StudentInternshipDetailPage() {
 
                         {/* Browse New Internships */}
                         <Link href="/internships">
-                            <Card className="border-2 border-purple-500/30 bg-gradient-to-br from-purple-600/10 to-pink-600/10 hover:border-purple-500/50 transition-all cursor-pointer">
+                            <Card className="border-2 border-brand-500/30 bg-gradient-to-br from-brand-600/10 to-brand-600/10 hover:border-brand-500/50 transition-all cursor-pointer">
                                 <CardContent className="p-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                                        <div className="w-10 h-10 rounded-lg bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center">
                                             <Plus size={20} className="text-white" />
                                         </div>
                                         <div className="flex-1">
                                             <div className="font-semibold">Browse New Internships</div>
                                             <div className="text-xs text-gray-400">Explore more opportunities</div>
                                         </div>
-                                        <ExternalLink size={16} className="text-purple-400" />
+                                        <ExternalLink size={16} className="text-brand-400" />
                                     </div>
                                 </CardContent>
                             </Card>
                         </Link>
 
                         {/* Progress Card */}
-                        <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-500/30">
+                        <Card className="bg-gradient-to-br from-brand-600/20 to-brand-600/20 border-brand-500/30">
                             <CardContent className="p-6 text-center">
-                                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                                <div className="w-16 h-16 mx-auto mb-4 bg-brand-400 on-neon hover:bg-brand-300 rounded-full flex items-center justify-center">
                                     <TrendingUp size={32} className="text-white" />
                                 </div>
                                 <h3 className="font-bold text-lg mb-2">Great Progress!</h3>
@@ -879,7 +879,7 @@ export default function StudentInternshipDetailPage() {
                         className="max-w-2xl w-full my-8"
                     >
                         <Card className="max-h-[80vh] overflow-y-auto">
-                            <CardHeader className="sticky top-0 bg-[#1a1a2e] z-10 border-b border-white/10">
+                            <CardHeader className="sticky top-0 bg-[#141414] z-10 border-b border-white/10">
                                 <div className="flex items-center justify-between">
                                     <CardTitle>Completion Letter Preview</CardTitle>
                                     <Button
@@ -894,8 +894,8 @@ export default function StudentInternshipDetailPage() {
                             <CardContent className="p-6">
                                 <div className="bg-white text-black rounded-lg p-8 space-y-6">
                                     {/* Letter Header */}
-                                    <div className="text-center border-b-2 border-purple-600 pb-4">
-                                        <h1 className="text-2xl font-bold text-purple-600">CodeSprint Labs</h1>
+                                    <div className="text-center border-b-2 border-brand-600 pb-4">
+                                        <h1 className="text-2xl font-bold text-brand-600">CodeSprint Labs</h1>
                                         <p className="text-gray-500 text-sm italic">Empowering Future Tech Leaders</p>
                                     </div>
 
@@ -912,7 +912,7 @@ export default function StudentInternshipDetailPage() {
                                     {/* Content */}
                                     <div className="space-y-4 text-gray-800">
                                         <p>
-                                            This is to certify that <strong className="text-purple-600">{letterPreviewData.studentName}</strong>
+                                            This is to certify that <strong className="text-brand-600">{letterPreviewData.studentName}</strong>
                                             {letterPreviewData.studentCollegeName !== 'N/A' && (
                                                 <> from <strong>{letterPreviewData.studentCollegeName}</strong></>
                                             )} has successfully completed the internship program at CodeSprint Labs.
@@ -926,13 +926,13 @@ export default function StudentInternshipDetailPage() {
                                     </div>
 
                                     {/* Performance Box */}
-                                    <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
-                                        <h3 className="text-center font-bold text-purple-600 mb-4 uppercase">Performance Summary</h3>
+                                    <div className="bg-brand-50 border-2 border-brand-200 rounded-lg p-6">
+                                        <h3 className="text-center font-bold text-brand-600 mb-4 uppercase">Performance Summary</h3>
                                         <div className="text-center mb-4">
-                                            <div className="inline-block w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full text-white text-3xl font-bold leading-[80px]">
+                                            <div className="inline-block w-20 h-20 bg-brand-400 on-neon hover:bg-brand-300 rounded-full text-white text-3xl font-bold leading-[80px]">
                                                 {letterPreviewData.grade}
                                             </div>
-                                            <div className="text-xl font-bold text-purple-600 mt-2">
+                                            <div className="text-xl font-bold text-brand-600 mt-2">
                                                 {letterPreviewData.marks} / {letterPreviewData.maxMarks} Marks
                                             </div>
                                         </div>
@@ -958,8 +958,8 @@ export default function StudentInternshipDetailPage() {
 
                                     {/* Feedback */}
                                     {letterPreviewData.adminFeedback && (
-                                        <div className="bg-gray-50 border-l-4 border-purple-600 p-4">
-                                            <h4 className="font-bold text-purple-600 mb-2">Supervisor's Remarks</h4>
+                                        <div className="bg-gray-50 border-l-4 border-brand-600 p-4">
+                                            <h4 className="font-bold text-brand-600 mb-2">Supervisor's Remarks</h4>
                                             <p className="text-gray-700">{letterPreviewData.adminFeedback}</p>
                                         </div>
                                     )}
@@ -1008,7 +1008,7 @@ export default function StudentInternshipDetailPage() {
                                         <input
                                             type="url"
                                             placeholder="https://github.com/username/repo"
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         />
                                     </div>
                                     <div>
@@ -1016,7 +1016,7 @@ export default function StudentInternshipDetailPage() {
                                         <textarea
                                             rows={4}
                                             placeholder="Describe your solution..."
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 resize-none"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"
                                         />
                                     </div>
                                     <div className="flex gap-3">

@@ -173,9 +173,9 @@ export default function MyInternshipsPage() {
                         <div className="text-sm text-gray-400">Active</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-500/30">
+                <Card className="bg-gradient-to-br from-brand-600/20 to-brand-600/20 border-brand-500/30">
                     <CardContent className="p-4 text-center">
-                        <div className="text-3xl font-bold text-purple-400">{stats.completed}</div>
+                        <div className="text-3xl font-bold text-brand-400">{stats.completed}</div>
                         <div className="text-sm text-gray-400">Completed</div>
                     </CardContent>
                 </Card>
@@ -196,7 +196,7 @@ export default function MyInternshipsPage() {
                         placeholder="Search internships..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                     />
                 </div>
                 <div className="flex gap-2 flex-wrap">
@@ -206,7 +206,7 @@ export default function MyInternshipsPage() {
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-lg transition-all capitalize ${
                                 filter === f
-                                    ? 'bg-purple-600 text-white'
+                                    ? 'bg-brand-400 on-neon'
                                     : 'bg-white/5 text-gray-400 hover:bg-white/10'
                             }`}
                         >
@@ -253,7 +253,7 @@ export default function MyInternshipsPage() {
                                         ? 'border-yellow-500/30'
                                         : internship.progress >= 100
                                         ? 'border-green-500/30'
-                                        : 'border-purple-500/20'
+                                        : 'border-brand-500/20'
                                 }`}
                                 onClick={() => router.push(`/student/my-internships/${internship.id}`)}
                             >
@@ -263,7 +263,7 @@ export default function MyInternshipsPage() {
                                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                                                 internship.withdrawalStatus === 'approved'
                                                     ? 'bg-orange-500/20'
-                                                    : 'bg-gradient-to-br from-purple-600 to-pink-600'
+                                                    : 'bg-brand-400 on-neon hover:bg-brand-300'
                                             }`}>
                                                 {internship.withdrawalStatus === 'approved' ? (
                                                     <LogOut size={24} className="text-orange-400" />
@@ -353,11 +353,11 @@ export default function MyInternshipsPage() {
             )}
 
             {/* Help Text */}
-            <Card className="bg-gradient-to-r from-purple-600/10 to-pink-600/10 border-purple-500/20">
+            <Card className="bg-gradient-to-r from-brand-600/10 to-brand-600/10 border-brand-500/20">
                 <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                            <LogOut size={20} className="text-purple-400" />
+                        <div className="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center flex-shrink-0">
+                            <LogOut size={20} className="text-brand-400" />
                         </div>
                         <div>
                             <h3 className="font-semibold mb-1">Need to Leave an Internship?</h3>

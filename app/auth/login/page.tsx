@@ -1,14 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, UserCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, GraduationCap, ShieldCheck, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { FloatingRocket } from '@/components/3d/FloatingRocket';
+import AuthShell from '@/components/auth/AuthShell';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+
+const roles: { value: UserRole; label: string; icon: typeof GraduationCap }[] = [
+    { value: 'student', label: 'Student', icon: GraduationCap },
+    { value: 'admin', label: 'Admin', icon: ShieldCheck },
+];
+
+/** Only follow same-origin return URLs that belong to the signed-in role's area. */
+function getReturnUrl(role: UserRole): string | null {
+    if (typeof window === 'undefined') return null;
+    const url = new URLSearchParams(window.location.search).get('returnUrl');
+    if (!url || !url.startsWith('/') || url.startsWith('//')) return null;
+    return url.startsWith(role === 'admin' ? '/admin' : '/student') ? url : null;
+}
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -27,140 +40,106 @@ export default function LoginPage() {
 
         try {
             await login(email, password, role);
-            if (role === 'admin') {
-                router.push('/admin/dashboard');
-            } else {
-                router.push('/student/dashboard');
-            }
+            const fallback = role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
+            router.push(getReturnUrl(role) ?? fallback);
         } catch (err: any) {
             if (err.response?.data?.action === 'verify_email') {
                 router.push(`/auth/verify-email?email=${encodeURIComponent(err.response.data.email)}`);
             } else {
-                setError(err.response?.data?.message || 'Login failed. Please try again.');
+                setError(err.response?.data?.message || 'Login failed. Please check your details and try again.');
             }
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex">
-            <div className="flex-1 flex items-center justify-center p-8 relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="w-full max-w-md"
-                >
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 cursor-pointer"
-                    >
-                        <ArrowLeft size={18} />
-                        <span>Back to Home</span>
+        <AuthShell
+            title="Welcome back"
+            subtitle="Sign in to continue your learning journey."
+            footer={
+                <>
+                    Don&apos;t have an account?{' '}
+                    <Link href="/auth/register" className="font-medium text-white underline-offset-4 hover:underline">
+                        Create one for free
                     </Link>
+                </>
+            }
+        >
+            <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Role selector */}
+                <div role="radiogroup" aria-label="Sign in as" className="grid grid-cols-2 gap-1 rounded-xl border border-white/[0.07] bg-white/[0.02] p-1">
+                    {roles.map((r) => (
+                        <button
+                            key={r.value}
+                            type="button"
+                            role="radio"
+                            aria-checked={role === r.value}
+                            onClick={() => setRole(r.value)}
+                            className={cn(
+                                'flex h-9 items-center justify-center gap-2 rounded-lg text-sm font-medium transition-all',
+                                role === r.value
+                                    ? 'bg-white/[0.08] text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.07),0_1px_2px_rgba(0,0,0,0.4)]'
+                                    : 'text-gray-500 hover:text-gray-300'
+                            )}
+                        >
+                            <r.icon size={15} />
+                            {r.label}
+                        </button>
+                    ))}
+                </div>
 
-                    <Link href="/" className="flex items-center space-x-2 mb-8">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">CS</span>
-                        </div>
-                        <span className="text-xl font-bold gradient-text">CodeSprint Labs</span>
-                    </Link>
-
-                    <div className="mb-8">
-                        <h1 className="text-4xl font-bold mb-2">Welcome Back!</h1>
-                        <p className="text-gray-400">Sign in to continue your learning journey</p>
+                {error && (
+                    <div role="alert" className="flex items-start gap-2.5 rounded-lg border border-red-500/25 bg-red-500/[0.08] p-3 text-sm text-red-300">
+                        <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                        <span>{error}</span>
                     </div>
+                )}
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {error && (
-                            <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
-                                {error}
-                            </div>
-                        )}
+                <Input
+                    label="Email address"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    icon={<Mail size={17} />}
+                    required
+                    autoFocus
+                />
 
-                        <Input
-                            label="Email Address"
-                            type="email"
-                            placeholder="you@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            icon={<Mail size={18} />}
-                            required
-                        />
-
-                        <div className="relative">
-                            <Input
-                                label="Password"
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                icon={<Lock size={18} />}
-                                required
-                            />
+                <div>
+                    <div className="mb-1.5 flex items-center justify-between">
+                        <label htmlFor="password" className="text-sm font-medium text-gray-200">Password</label>
+                        <Link href="/contact" className="text-xs text-gray-500 transition-colors hover:text-white">
+                            Forgot password?
+                        </Link>
+                    </div>
+                    <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        icon={<Lock size={17} />}
+                        required
+                        rightElement={
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-[42px] text-gray-400 hover:text-white transition-colors"
+                                className="rounded-md p-2 text-gray-500 transition-colors hover:text-white"
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
                             >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                             </button>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Login As</label>
-                            <div className="relative">
-                                <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <select
-                                    value={role}
-                                    onChange={(e) => setRole(e.target.value as UserRole)}
-                                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-                                >
-                                    <option value="student" className="bg-gray-900">Student</option>
-                                    <option value="admin" className="bg-gray-900">Admin</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <label className="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" className="w-4 h-4 rounded border-white/10 bg-white/5 text-purple-600 focus:ring-purple-500" />
-                                <span className="text-sm text-gray-400">Remember me</span>
-                            </label>
-                            <Link href="/auth/forgot-password" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                                Forgot password?
-                            </Link>
-                        </div>
-
-                        <Button type="submit" variant="primary" className="w-full" size="lg" isLoading={isLoading}>
-                            Sign In
-                        </Button>
-                    </form>
-
-                    <p className="mt-8 text-center text-gray-400">
-                        Don't have an account?{' '}
-                        <Link href="/auth/register" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
-                            Sign up for free
-                        </Link>
-                    </p>
-                </motion.div>
-            </div>
-
-            <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-                className="hidden lg:flex flex-1 items-center justify-center relative overflow-hidden"
-            >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-pink-900/30"></div>
-                <div className="relative z-10 w-full h-full">
-                    <FloatingRocket />
+                        }
+                    />
                 </div>
-                <div className="absolute bottom-10 left-10 right-10 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Start Your Journey Today</h2>
-                    <p className="text-gray-300">Join thousands of students building their tech careers</p>
-                </div>
-            </motion.div>
-        </div>
+
+                <Button type="submit" variant="primary" className="w-full" size="lg" isLoading={isLoading}>
+                    Sign in as {role === 'admin' ? 'admin' : 'student'}
+                </Button>
+            </form>
+        </AuthShell>
     );
 }

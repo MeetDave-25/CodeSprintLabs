@@ -20,52 +20,57 @@ class CreateIndexes extends Command
      *
      * @var string
      */
-    protected $description = 'Create necessary indexes for MongoDB collections';
+    protected $description = 'Create necessary database performance indexes';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->info('Creating indexes for MongoDB collections...');
+        $connection = config('database.default');
+        $this->info("Creating performance indexes for connection: {$connection}...");
 
         try {
-            // Users Collection
-            $this->info('Indexing users collection...');
-            
-            Schema::connection('mongodb')->table('users', function ($collection) {
-                // Unique email index
-                $collection->index('email', null, null, ['unique' => true, 'background' => true]);
-                $this->info('  - Created unique index on email');
-                
-                // Role index for filtering
-                $collection->index('role', null, null, ['background' => true]);
-                $this->info('  - Created index on role');
-                
-                // Status index
-                $collection->index('status', null, null, ['background' => true]);
-                $this->info('  - Created index on status');
+            if ($connection === 'pgsql') {
+                $this->info('Creating PostgreSQL performance indexes on Neon...');
 
-                // Combined index for common queries might be useful later, but sticking to basics for now
-            });
-            
-            // Internships Collection (Good to have)
-            $this->info('Indexing internships collection...');
-            Schema::connection('mongodb')->table('internships', function ($collection) {
-                $collection->index('status', null, null, ['background' => true]);
-                $this->info('  - Created index on status');
-            });
+                $indexes = [
+                    'CREATE INDEX IF NOT EXISTS idx_users_role ON users (role)',
+                    'CREATE INDEX IF NOT EXISTS idx_users_status ON users (status)',
+                    'CREATE INDEX IF NOT EXISTS idx_internships_active ON internships ("isActive")',
+                    'CREATE INDEX IF NOT EXISTS idx_internships_domain ON internships (domain)',
+                    'CREATE INDEX IF NOT EXISTS idx_courses_active ON courses ("isActive")',
+                    'CREATE INDEX IF NOT EXISTS idx_tasks_active ON tasks ("isActive")',
+                    'CREATE INDEX IF NOT EXISTS idx_tasks_internship ON tasks ("internshipId")',
+                    'CREATE INDEX IF NOT EXISTS idx_tasks_course ON tasks ("courseId")',
+                    'CREATE INDEX IF NOT EXISTS idx_submissions_status ON submissions (status)',
+                    'CREATE INDEX IF NOT EXISTS idx_submissions_student ON submissions ("studentId")',
+                    'CREATE INDEX IF NOT EXISTS idx_payments_status ON payments (status)',
+                    'CREATE INDEX IF NOT EXISTS idx_enrollment_requests_status ON enrollment_requests (status)',
+                    'CREATE INDEX IF NOT EXISTS idx_enrollment_requests_user ON enrollment_requests ("userId")',
+                ];
 
-             // Courses Collection 
-             $this->info('Indexing courses collection...');
-             Schema::connection('mongodb')->table('courses', function ($collection) {
-                 $collection->index('status', null, null, ['background' => true]);
-                 $this->info('  - Created index on status');
-             });
+                foreach ($indexes as $sql) {
+                    DB::statement($sql);
+                    $this->info("  - Executed: {$sql}");
+                }
+            } elseif ($connection === 'mongodb') {
+                $this->info('Creating MongoDB indexes...');
+                Schema::connection('mongodb')->table('users', function ($collection) {
+                    $collection->index('email', null, null, ['unique' => true, 'background' => true]);
+                    $collection->index('role', null, null, ['background' => true]);
+                    $collection->index('status', null, null, ['background' => true]);
+                });
+                Schema::connection('mongodb')->table('internships', function ($collection) {
+                    $collection->index('status', null, null, ['background' => true]);
+                });
+                Schema::connection('mongodb')->table('courses', function ($collection) {
+                    $collection->index('status', null, null, ['background' => true]);
+                });
+            }
 
-            $this->info('Indexes created successfully!');
+            $this->info('All database indexes created successfully!');
             return 0;
-
         } catch (\Exception $e) {
             $this->error('Failed to create indexes: ' . $e->getMessage());
             return 1;

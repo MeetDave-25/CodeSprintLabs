@@ -165,7 +165,7 @@ export default function AdminCertificatesPage() {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-purple-400">{stats.thisMonth}</div>
+                        <div className="text-2xl font-bold text-brand-400">{stats.thisMonth}</div>
                         <div className="text-sm text-gray-400">This Month</div>
                     </CardContent>
                 </Card>
@@ -182,7 +182,7 @@ export default function AdminCertificatesPage() {
                                 placeholder="Search by name, email, or certificate code..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </div>
                         <div className="flex gap-2">
@@ -191,7 +191,7 @@ export default function AdminCertificatesPage() {
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${statusFilter === status
-                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                        ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                         : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                         }`}
                                 >
@@ -211,7 +211,7 @@ export default function AdminCertificatesPage() {
                 <CardContent>
                     {isLoading ? (
                         <div className="flex items-center justify-center py-12">
-                            <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                            <Loader2 className="w-8 h-8 animate-spin text-brand-500" />
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -248,7 +248,7 @@ export default function AdminCertificatesPage() {
                                                 )}
                                             </td>
                                             <td className="py-4 px-4">
-                                                <div className="font-mono text-sm text-purple-400">{getCertificateCode(cert)}</div>
+                                                <div className="font-mono text-sm text-brand-400">{getCertificateCode(cert)}</div>
                                             </td>
                                             <td className="py-4 px-4">
                                                 <div className="text-sm">

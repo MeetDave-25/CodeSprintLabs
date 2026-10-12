@@ -297,7 +297,7 @@ export default function ProfilePage() {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
-                    <Loader2 className="w-12 h-12 animate-spin text-purple-500 mx-auto mb-4" />
+                    <Loader2 className="w-12 h-12 animate-spin text-brand-500 mx-auto mb-4" />
                     <p className="text-gray-400">Loading profile...</p>
                 </div>
             </div>
@@ -339,11 +339,11 @@ export default function ProfilePage() {
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Left Column - Profile Card */}
                 <div className="lg:col-span-1">
-                    <Card glow className="sticky top-6">
+                    <Card glow className="sticky top-24">
                         <CardContent className="p-6 text-center">
                             {/* Profile Picture */}
                             <div className="relative inline-block mb-4">
-                                <div className="w-32 h-32 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto">
+                                <div className="w-32 h-32 bg-brand-400 on-neon hover:bg-brand-300 rounded-full flex items-center justify-center mx-auto">
                                     <User size={64} className="text-white" />
                                 </div>
                             </div>
@@ -402,7 +402,7 @@ export default function ProfilePage() {
                             >
                                 <Card>
                                     <CardContent className="p-4 text-center">
-                                        <stat.icon className="w-6 h-6 mx-auto mb-2 text-purple-400" />
+                                        <stat.icon className="w-6 h-6 mx-auto mb-2 text-brand-400" />
                                         <div className="text-2xl font-bold gradient-text">{stat.value}</div>
                                         <div className="text-xs text-gray-400">{stat.label}</div>
                                     </CardContent>
@@ -427,7 +427,7 @@ export default function ProfilePage() {
                                                 type="text"
                                                 value={profileData.name}
                                                 onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                                 placeholder="Enter your full name"
                                             />
                                         ) : (
@@ -456,7 +456,7 @@ export default function ProfilePage() {
                                                 type="tel"
                                                 value={profileData.phone}
                                                 onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                                 placeholder="+91 98765 43210"
                                             />
                                         ) : (
@@ -472,7 +472,7 @@ export default function ProfilePage() {
                                                 type="text"
                                                 value={profileData.city}
                                                 onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                                 placeholder="e.g., Mumbai"
                                             />
                                         ) : (
@@ -490,7 +490,7 @@ export default function ProfilePage() {
                                             type="text"
                                             value={profileData.location}
                                             onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                             placeholder="e.g., Andheri West, Maharashtra"
                                         />
                                     ) : (
@@ -507,7 +507,7 @@ export default function ProfilePage() {
                                             value={profileData.bio}
                                             onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
                                             rows={3}
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 resize-none"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 resize-none"
                                             placeholder="Tell us about yourself..."
                                         />
                                     ) : (
@@ -524,7 +524,7 @@ export default function ProfilePage() {
                     <Card glow>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <GraduationCap size={20} className="text-purple-400" />
+                                <GraduationCap size={20} className="text-brand-400" />
                                 Academic Information
                             </CardTitle>
                             <CardDescription>Your college and course details</CardDescription>
@@ -539,7 +539,7 @@ export default function ProfilePage() {
                                                 type="text"
                                                 value={profileData.collegeName}
                                                 onChange={(e) => setProfileData({ ...profileData, collegeName: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                                 placeholder="e.g., IIT Delhi"
                                             />
                                         ) : (
@@ -556,7 +556,7 @@ export default function ProfilePage() {
                                                 type="text"
                                                 value={profileData.course}
                                                 onChange={(e) => setProfileData({ ...profileData, course: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                                 placeholder="e.g., B.Tech Computer Science"
                                             />
                                         ) : (
@@ -576,7 +576,7 @@ export default function ProfilePage() {
                                                 type="text"
                                                 value={profileData.enrollmentNumber}
                                                 onChange={(e) => setProfileData({ ...profileData, enrollmentNumber: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                                 placeholder="e.g., 2024CS001"
                                             />
                                         ) : (
@@ -593,7 +593,7 @@ export default function ProfilePage() {
                                                 type="text"
                                                 value={profileData.rollNumber}
                                                 onChange={(e) => setProfileData({ ...profileData, rollNumber: e.target.value })}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500"
                                                 placeholder="e.g., 101"
                                             />
                                         ) : (
@@ -619,7 +619,7 @@ export default function ProfilePage() {
                                 {profileData.skills.map((skill) => (
                                     <span
                                         key={skill}
-                                        className="px-4 py-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-full text-sm font-semibold flex items-center gap-2"
+                                        className="px-4 py-2 bg-gradient-to-r from-brand-600/20 to-brand-600/20 border border-brand-500/30 rounded-full text-sm font-semibold flex items-center gap-2"
                                     >
                                         {skill}
                                         {isEditing && (
@@ -640,11 +640,11 @@ export default function ProfilePage() {
                                             onChange={(e) => setNewSkill(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && addSkill()}
                                             placeholder="Add skill"
-                                            className="px-3 py-2 bg-white/5 border border-white/10 rounded-full text-sm focus:outline-none focus:border-purple-500 w-32"
+                                            className="px-3 py-2 bg-white/5 border border-white/10 rounded-full text-sm focus:outline-none focus:border-brand-500 w-32"
                                         />
                                         <button 
                                             onClick={addSkill}
-                                            className="px-3 py-2 border-2 border-dashed border-white/20 rounded-full text-sm font-semibold hover:border-purple-500 transition-colors"
+                                            className="px-3 py-2 border-2 border-dashed border-white/20 rounded-full text-sm font-semibold hover:border-brand-500 transition-colors"
                                         >
                                             + Add
                                         </button>
@@ -741,16 +741,16 @@ export default function ProfilePage() {
                                         {/* File Upload */}
                                         <div>
                                             <label 
-                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:border-purple-500 transition-colors bg-white/5"
+                                                className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:border-brand-500 transition-colors bg-white/5"
                                             >
                                                 <div className="flex flex-col items-center justify-center py-4">
                                                     {resumeUploading ? (
-                                                        <Loader2 className="w-10 h-10 mb-2 text-purple-400 animate-spin" />
+                                                        <Loader2 className="w-10 h-10 mb-2 text-brand-400 animate-spin" />
                                                     ) : (
                                                         <Upload className="w-10 h-10 mb-2 text-gray-400" />
                                                     )}
                                                     <p className="mb-1 text-sm text-gray-400">
-                                                        <span className="font-semibold text-purple-400">Click to upload</span>
+                                                        <span className="font-semibold text-brand-400">Click to upload</span>
                                                     </p>
                                                     <p className="text-xs text-gray-500">PDF, DOC, DOCX (Max 5MB)</p>
                                                 </div>

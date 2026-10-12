@@ -3,15 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Certificate extends Model
+class Certificate extends BaseModel
 {
     use HasFactory;
 
-    protected $connection = 'mongodb';
-    protected $collection = 'certificates';
+    protected $table = 'certificates';
 
     protected $fillable = [
         'studentId',

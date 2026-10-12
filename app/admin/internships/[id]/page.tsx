@@ -478,8 +478,8 @@ export default function AdminInternshipDetailPage() {
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                                    <Users size={20} className="text-purple-400" />
+                                <div className="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center">
+                                    <Users size={20} className="text-brand-400" />
                                 </div>
                                 <div>
                                     <div className="text-2xl font-bold">{internship.enrolled}</div>
@@ -569,7 +569,7 @@ export default function AdminInternshipDetailPage() {
                                                 value={formData.description}
                                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                                 rows={4}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                             />
                                         </div>
                                         <div className="grid md:grid-cols-2 gap-4">
@@ -578,7 +578,7 @@ export default function AdminInternshipDetailPage() {
                                                 <select
                                                     value={formData.difficulty || 'Beginner'}
                                                     onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                                                    className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                                    className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                                 >
                                                     <option value="Beginner">Beginner</option>
                                                     <option value="Intermediate">Intermediate</option>
@@ -598,7 +598,7 @@ export default function AdminInternshipDetailPage() {
                                             <label className="block text-sm font-medium mb-2">Languages / Technologies</label>
                                             <div className="flex flex-wrap gap-2 mb-2">
                                                 {languages.map((lang, idx) => (
-                                                    <span key={idx} className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm flex items-center gap-2">
+                                                    <span key={idx} className="px-3 py-1 bg-brand-500/20 text-brand-400 rounded-full text-sm flex items-center gap-2">
                                                         {lang}
                                                         <button onClick={() => setLanguages(languages.filter((_, i) => i !== idx))} className="hover:text-red-400">
                                                             <X size={14} />
@@ -612,7 +612,7 @@ export default function AdminInternshipDetailPage() {
                                                     value={newLanguage}
                                                     onChange={(e) => setNewLanguage(e.target.value)}
                                                     placeholder="Add language (e.g., JavaScript)"
-                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter' && newLanguage.trim()) {
                                                             e.preventDefault();
@@ -652,7 +652,7 @@ export default function AdminInternshipDetailPage() {
                                                     value={newLearning}
                                                     onChange={(e) => setNewLearning(e.target.value)}
                                                     placeholder="Add learning outcome"
-                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter' && newLearning.trim()) {
                                                             e.preventDefault();
@@ -678,7 +678,7 @@ export default function AdminInternshipDetailPage() {
                                             <div className="space-y-2 mb-2">
                                                 {requirements.map((item, idx) => (
                                                     <div key={idx} className="flex items-center gap-2 p-2 bg-white/5 rounded-lg">
-                                                        <span className="text-purple-400">•</span>
+                                                        <span className="text-brand-400">•</span>
                                                         <span className="flex-1 text-sm">{item}</span>
                                                         <button onClick={() => setRequirements(requirements.filter((_, i) => i !== idx))} className="text-gray-400 hover:text-red-400">
                                                             <X size={14} />
@@ -692,7 +692,7 @@ export default function AdminInternshipDetailPage() {
                                                     value={newRequirement}
                                                     onChange={(e) => setNewRequirement(e.target.value)}
                                                     placeholder="Add requirement"
-                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter' && newRequirement.trim()) {
                                                             e.preventDefault();
@@ -718,7 +718,7 @@ export default function AdminInternshipDetailPage() {
                                             <div className="space-y-2 mb-2">
                                                 {syllabus.sort((a, b) => a.week - b.week).map((item, idx) => (
                                                     <div key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
-                                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
+                                                        <div className="w-10 h-10 rounded-lg bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center flex-shrink-0">
                                                             <span className="font-bold text-sm">W{item.week}</span>
                                                         </div>
                                                         <span className="flex-1 text-sm">{item.topic}</span>
@@ -735,14 +735,14 @@ export default function AdminInternshipDetailPage() {
                                                     onChange={(e) => setNewSyllabusWeek(parseInt(e.target.value) || 1)}
                                                     placeholder="Week"
                                                     min={1}
-                                                    className="w-20 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                    className="w-20 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                                 />
                                                 <input
                                                     type="text"
                                                     value={newSyllabusTopic}
                                                     onChange={(e) => setNewSyllabusTopic(e.target.value)}
                                                     placeholder="Week topic"
-                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                    className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter' && newSyllabusTopic.trim()) {
                                                             e.preventDefault();
@@ -787,7 +787,7 @@ export default function AdminInternshipDetailPage() {
                                                 <label className="text-sm text-gray-400">Languages / Technologies</label>
                                                 <div className="flex flex-wrap gap-2 mt-1">
                                                     {languages.map((lang, idx) => (
-                                                        <span key={idx} className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">
+                                                        <span key={idx} className="px-3 py-1 bg-brand-500/20 text-brand-400 rounded-full text-sm">
                                                             {lang}
                                                         </span>
                                                     ))}
@@ -817,7 +817,7 @@ export default function AdminInternshipDetailPage() {
                                                 <div className="mt-2 space-y-2">
                                                     {syllabus.sort((a, b) => a.week - b.week).map((item, idx) => (
                                                         <div key={idx} className="flex items-center gap-3 p-2 bg-white/5 rounded-lg">
-                                                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
+                                                            <div className="w-8 h-8 rounded-lg bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center flex-shrink-0">
                                                                 <span className="font-bold text-xs">W{item.week}</span>
                                                             </div>
                                                             <span className="text-sm text-gray-300">{item.topic}</span>
@@ -850,7 +850,7 @@ export default function AdminInternshipDetailPage() {
                                             className="flex items-center justify-between p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all"
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-sm font-bold">
+                                                <div className="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center text-sm font-bold">
                                                     {index + 1}
                                                 </div>
                                                 <div>
@@ -911,7 +911,7 @@ export default function AdminInternshipDetailPage() {
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white font-bold">
+                                                            <div className="w-10 h-10 rounded-full bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center text-white font-bold">
                                                                 {student.studentName?.charAt(0)?.toUpperCase() || 'S'}
                                                             </div>
                                                             <div>
@@ -940,7 +940,7 @@ export default function AdminInternshipDetailPage() {
                                                         {/* Progress bar */}
                                                         <div className="mt-2 w-full bg-gray-700 rounded-full h-2">
                                                             <div 
-                                                                className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all"
+                                                                className="bg-brand-400 on-neon hover:bg-brand-300 h-2 rounded-full transition-all"
                                                                 style={{ width: `${progressPercent}%` }}
                                                             />
                                                         </div>
@@ -1073,7 +1073,7 @@ export default function AdminInternshipDetailPage() {
                                         value={editingTask.description || ''}
                                         onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
                                         rows={3}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         placeholder="Task description..."
                                     />
                                 </div>
@@ -1083,7 +1083,7 @@ export default function AdminInternshipDetailPage() {
                                         <select
                                             value={editingTask.difficulty}
                                             onChange={(e) => setEditingTask({ ...editingTask, difficulty: e.target.value })}
-                                            className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                            className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                         >
                                             <option value="Easy">Easy</option>
                                             <option value="Medium">Medium</option>
@@ -1098,7 +1098,7 @@ export default function AdminInternshipDetailPage() {
                                             onChange={(e) => setEditingTask({ ...editingTask, dayNumber: e.target.value ? parseInt(e.target.value) : 1 })}
                                             min={1}
                                             placeholder="1"
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         />
                                     </div>
                                 </div>
@@ -1149,7 +1149,7 @@ export default function AdminInternshipDetailPage() {
                                 {/* Student Info */}
                                 <div className="p-4 bg-white/5 rounded-lg">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white font-bold text-lg">
+                                        <div className="w-12 h-12 rounded-full bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center text-white font-bold text-lg">
                                             {selectedStudent.studentName?.charAt(0)?.toUpperCase() || 'S'}
                                         </div>
                                         <div>
@@ -1177,7 +1177,7 @@ export default function AdminInternshipDetailPage() {
                                             max="50"
                                             value={completionMarks}
                                             onChange={(e) => setCompletionMarks(parseInt(e.target.value))}
-                                            className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                                            className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-brand-600"
                                         />
                                         <div className="w-20 text-center">
                                             <span className="text-2xl font-bold">{completionMarks}</span>
@@ -1209,7 +1209,7 @@ export default function AdminInternshipDetailPage() {
                                         value={completionFeedback}
                                         onChange={(e) => setCompletionFeedback(e.target.value)}
                                         rows={3}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         placeholder="Add feedback for the student..."
                                     />
                                 </div>
@@ -1221,7 +1221,7 @@ export default function AdminInternshipDetailPage() {
                                         id="issueCertificate"
                                         checked={issueCertificateOnComplete}
                                         onChange={(e) => setIssueCertificateOnComplete(e.target.checked)}
-                                        className="w-5 h-5 rounded bg-white/5 border-white/10 text-purple-600 focus:ring-purple-500"
+                                        className="w-5 h-5 rounded bg-white/5 border-white/10 text-brand-600 focus:ring-brand-500"
                                     />
                                     <label htmlFor="issueCertificate" className="text-sm cursor-pointer">
                                         Issue certificate immediately

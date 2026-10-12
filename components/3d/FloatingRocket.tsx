@@ -17,7 +17,7 @@ const RocketParticles = () => {
             {[...Array(4)].map((_, i) => (
                 <motion.div
                     key={i}
-                    className="absolute w-2 h-2 bg-purple-400 rounded-full"
+                    className="absolute w-2 h-2 bg-brand-400 rounded-full"
                     style={{
                         left: '50%',
                         top: '50%',
@@ -89,7 +89,7 @@ export const FloatingRocket: React.FC<FloatingRocketProps> = ({ className = '' }
                     <path
                         d="M100 20 L120 60 L120 130 L80 130 L80 60 Z"
                         fill="url(#rocketBody)"
-                        stroke="#667eea"
+                        stroke="#c6ff2e"
                         strokeWidth="2"
                     />
 
@@ -97,13 +97,13 @@ export const FloatingRocket: React.FC<FloatingRocketProps> = ({ className = '' }
                     <path
                         d="M100 10 L120 60 L80 60 Z"
                         fill="url(#noseCone)"
-                        stroke="#a855f7"
+                        stroke="#c6ff2e"
                         strokeWidth="2"
                     />
 
                     {/* Window */}
-                    <circle cx="100" cy="70" r="12" fill="url(#window)" stroke="#667eea" strokeWidth="2" />
-                    <circle cx="100" cy="70" r="8" fill="#1a1a2e" opacity="0.3" />
+                    <circle cx="100" cy="70" r="12" fill="url(#window)" stroke="#c6ff2e" strokeWidth="2" />
+                    <circle cx="100" cy="70" r="8" fill="#141414" opacity="0.3" />
 
                     {/* Text: "CodeSprint Labs" on rocket body */}
                     <text
@@ -135,7 +135,7 @@ export const FloatingRocket: React.FC<FloatingRocketProps> = ({ className = '' }
                     <path
                         d="M80 100 L60 140 L80 130 Z"
                         fill="url(#fin)"
-                        stroke="#ec4899"
+                        stroke="#f5f4ef"
                         strokeWidth="2"
                     />
 
@@ -143,31 +143,31 @@ export const FloatingRocket: React.FC<FloatingRocketProps> = ({ className = '' }
                     <path
                         d="M120 100 L140 140 L120 130 Z"
                         fill="url(#fin)"
-                        stroke="#ec4899"
+                        stroke="#f5f4ef"
                         strokeWidth="2"
                     />
 
                     {/* Details/Stripes */}
-                    <rect x="85" y="85" width="30" height="3" fill="#a855f7" opacity="0.6" rx="1.5" />
-                    <rect x="85" y="115" width="30" height="3" fill="#a855f7" opacity="0.6" rx="1.5" />
+                    <rect x="85" y="85" width="30" height="3" fill="#c6ff2e" opacity="0.6" rx="1.5" />
+                    <rect x="85" y="115" width="30" height="3" fill="#c6ff2e" opacity="0.6" rx="1.5" />
 
                     {/* Gradients */}
                     <defs>
                         <linearGradient id="rocketBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#667eea" />
-                            <stop offset="100%" stopColor="#764ba2" />
+                            <stop offset="0%" stopColor="#c6ff2e" />
+                            <stop offset="100%" stopColor="#86b300" />
                         </linearGradient>
                         <linearGradient id="noseCone" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#a855f7" />
-                            <stop offset="100%" stopColor="#ec4899" />
+                            <stop offset="0%" stopColor="#c6ff2e" />
+                            <stop offset="100%" stopColor="#f5f4ef" />
                         </linearGradient>
                         <linearGradient id="fin" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#ec4899" />
-                            <stop offset="100%" stopColor="#f093fb" />
+                            <stop offset="0%" stopColor="#f5f4ef" />
+                            <stop offset="100%" stopColor="#e2ff8c" />
                         </linearGradient>
                         <radialGradient id="window">
                             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-                            <stop offset="100%" stopColor="#667eea" stopOpacity="0.6" />
+                            <stop offset="100%" stopColor="#c6ff2e" stopOpacity="0.6" />
                         </radialGradient>
                         <linearGradient id="flame1" x1="0%" y1="0%" x2="0%" y2="100%">
                             <stop offset="0%" stopColor="#fbbf24" />
@@ -196,7 +196,7 @@ export const FloatingRocket: React.FC<FloatingRocketProps> = ({ className = '' }
                         ease: 'easeInOut',
                     }}
                 >
-                    <div className="w-full h-full bg-gradient-to-r from-purple-600 to-pink-600 rounded-full" />
+                    <div className="w-full h-full bg-brand-400 on-neon hover:bg-brand-300 rounded-full" />
                 </motion.div>
             </motion.div>
         </div>

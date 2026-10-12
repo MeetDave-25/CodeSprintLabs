@@ -286,7 +286,7 @@ export default function AdminTaskLibraryPage() {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-purple-400">{stats.totalPoints}</div>
+                        <div className="text-2xl font-bold text-brand-400">{stats.totalPoints}</div>
                         <div className="text-sm text-gray-400">Total Points</div>
                     </CardContent>
                 </Card>
@@ -303,7 +303,7 @@ export default function AdminTaskLibraryPage() {
                                 placeholder="Search task templates..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </div>
                         <div className="flex gap-2">
@@ -312,7 +312,7 @@ export default function AdminTaskLibraryPage() {
                                     key={difficulty}
                                     onClick={() => setDifficultyFilter(difficulty)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${difficultyFilter === difficulty
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                         }`}
                                 >
@@ -354,7 +354,7 @@ export default function AdminTaskLibraryPage() {
                                             </div>
                                             <div>
                                                 <div className="text-sm text-gray-400">Points</div>
-                                                <div className="font-semibold text-purple-400">{task.points}</div>
+                                                <div className="font-semibold text-brand-400">{task.points}</div>
                                             </div>
                                             <div>
                                                 <div className="text-sm text-gray-400">Domain</div>
@@ -450,14 +450,14 @@ export default function AdminTaskLibraryPage() {
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Assign to Internship *</label>
                                 <select
-                                    className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white appearance-none cursor-pointer"
-                                    style={{ color: 'white', backgroundColor: '#1a1a24' }}
+                                    className="w-full bg-[#141414] border border-white/10 rounded p-2 text-white appearance-none cursor-pointer"
+                                    style={{ color: 'white', backgroundColor: '#141414' }}
                                     value={newTaskData.internshipId}
                                     onChange={e => setNewTaskData({ ...newTaskData, internshipId: e.target.value })}
                                 >
-                                    <option value="" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Select an internship</option>
+                                    <option value="" style={{ backgroundColor: '#141414', color: 'white' }}>Select an internship</option>
                                     {internships.map(internship => (
-                                        <option key={internship.id} value={internship.id} style={{ backgroundColor: '#1a1a24', color: 'white' }}>
+                                        <option key={internship.id} value={internship.id} style={{ backgroundColor: '#141414', color: 'white' }}>
                                             {internship.title}
                                         </option>
                                     ))}
@@ -467,14 +467,14 @@ export default function AdminTaskLibraryPage() {
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Difficulty</label>
                                     <select
-                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white appearance-none cursor-pointer"
-                                        style={{ color: 'white', backgroundColor: '#1a1a24' }}
+                                        className="w-full bg-[#141414] border border-white/10 rounded p-2 text-white appearance-none cursor-pointer"
+                                        style={{ color: 'white', backgroundColor: '#141414' }}
                                         value={newTaskData.difficulty}
                                         onChange={e => setNewTaskData({ ...newTaskData, difficulty: e.target.value as any })}
                                     >
-                                        <option value="Easy" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Easy</option>
-                                        <option value="Medium" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Medium</option>
-                                        <option value="Hard" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Hard</option>
+                                        <option value="Easy" style={{ backgroundColor: '#141414', color: 'white' }}>Easy</option>
+                                        <option value="Medium" style={{ backgroundColor: '#141414', color: 'white' }}>Medium</option>
+                                        <option value="Hard" style={{ backgroundColor: '#141414', color: 'white' }}>Hard</option>
                                     </select>
                                 </div>
                                 <div>
@@ -543,14 +543,14 @@ export default function AdminTaskLibraryPage() {
                                     </p>
                                     <label className="block text-sm text-gray-400 mb-2">Select Internship *</label>
                                     <select
-                                        className="w-full bg-[#1a1a24] border border-white/10 rounded p-3 text-white appearance-none cursor-pointer"
-                                        style={{ color: 'white', backgroundColor: '#1a1a24' }}
+                                        className="w-full bg-[#141414] border border-white/10 rounded p-3 text-white appearance-none cursor-pointer"
+                                        style={{ color: 'white', backgroundColor: '#141414' }}
                                         value={selectedInternshipId}
                                         onChange={e => setSelectedInternshipId(e.target.value)}
                                     >
-                                        <option value="" style={{ backgroundColor: '#1a1a24', color: 'white' }}>Select an internship</option>
+                                        <option value="" style={{ backgroundColor: '#141414', color: 'white' }}>Select an internship</option>
                                         {internships.filter(i => i.id !== selectedTask.internshipId).map(internship => (
-                                            <option key={internship.id} value={internship.id} style={{ backgroundColor: '#1a1a24', color: 'white' }}>
+                                            <option key={internship.id} value={internship.id} style={{ backgroundColor: '#141414', color: 'white' }}>
                                                 {internship.title}
                                             </option>
                                         ))}

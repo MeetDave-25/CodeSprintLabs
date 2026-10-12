@@ -70,7 +70,7 @@ function InternshipsPageContent() {
 
             {/* Hero Section */}
             <section className="pt-32 pb-16 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-brand-900/20 to-transparent"></div>
                 <div className="container mx-auto px-4 relative z-10">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -107,7 +107,7 @@ function InternshipsPageContent() {
                                 <select
                                     value={selectedDomain}
                                     onChange={(e) => setSelectedDomain(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                                 >
                                     {domains.map(domain => (
                                         <option key={domain} value={domain} className="bg-gray-900">
@@ -122,7 +122,7 @@ function InternshipsPageContent() {
                                 <select
                                     value={selectedDifficulty}
                                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
                                 >
                                     {difficulties.map(difficulty => (
                                         <option key={difficulty} value={difficulty} className="bg-gray-900">
@@ -192,7 +192,7 @@ function InternshipsPageContent() {
                                         <div className="mt-4">
                                             <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                                 <div
-                                                    className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
+                                                    className="h-full bg-brand-400 on-neon hover:bg-brand-300"
                                                     style={{ width: `${(internship.enrolled / internship.maxStudents) * 100}%` }}
                                                 />
                                             </div>

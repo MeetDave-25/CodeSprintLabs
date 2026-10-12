@@ -44,43 +44,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = async (email: string, password: string, role: UserRole) => {
-        try {
-            // Updated to use the correct endpoint structure
-            // Your API uses /auth/login for login
-            const response = await api.post('/auth/login', { email, password });
+        // Make the API call — let errors bubble up with their full axios shape
+        const response = await api.post('/auth/login', { email, password });
 
-            // The API returns { message, user, token, ... }
-            const { user: userData, token } = response.data;
+        // The API returns { message, user, token, ... }
+        const { user: userData, token } = response.data;
 
-            // Ensure the user role matches the requested role for safety/UX
-            // (Optional: you might want to allow it and just redirect based on actual role)
-            if (userData.role !== role && role !== 'admin') {
-                // Allow admin to login as student if needed, or strictly enforce:
-                // if (userData.role !== role) throw new Error('Role mismatch');
-            }
-
-            // Save token and user
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(userData));
-
-            setUser(userData);
-
-            // Redirect based on role
-            const redirectPath = userData.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
-
-            // Check if there's a return URL
-            const params = new URLSearchParams(window.location.search);
-            const returnUrl = params.get('returnUrl');
-
-            if (returnUrl && returnUrl.startsWith('/')) {
-                router.push(returnUrl);
-            } else {
-                router.push(redirectPath);
-            }
-        } catch (error: any) {
-            console.error('Login error:', error);
-            throw new Error(error.response?.data?.message || 'Login failed');
+        // Enforce role: if user selected "admin" but their account is "student", reject
+        if (userData.role !== role) {
+            throw {
+                response: {
+                    data: {
+                        message: `This account is not registered as ${role}. Please select the correct role.`,
+                    },
+                },
+            };
         }
+
+        // Save token and user
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+
+        setUser(userData);
+        // Redirect is handled by the login page after this promise resolves
     };
 
     const logout = async () => {

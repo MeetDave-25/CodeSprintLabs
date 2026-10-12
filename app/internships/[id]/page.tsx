@@ -159,7 +159,7 @@ export default function InternshipDetailPage() {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="w-12 h-12 animate-spin text-purple-500 mx-auto mb-4" />
+                    <Loader2 className="w-12 h-12 animate-spin text-brand-500 mx-auto mb-4" />
                     <p className="text-gray-400">Loading...</p>
                 </div>
             </div>
@@ -315,7 +315,7 @@ export default function InternshipDetailPage() {
                                 <div className="space-y-3">
                                     {internship.syllabus.map((item: any) => (
                                         <div key={item.week} className="flex items-start gap-4 p-3 bg-white/5 rounded-lg">
-                                            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center flex-shrink-0">
+                                            <div className="w-12 h-12 rounded-lg bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center flex-shrink-0">
                                                 <span className="font-bold">W{item.week}</span>
                                             </div>
                                             <div>
@@ -337,7 +337,7 @@ export default function InternshipDetailPage() {
                                 <ul className="space-y-2">
                                     {internship.requirements.map((req: string, index: number) => (
                                         <li key={index} className="flex items-start gap-2">
-                                            <span className="text-purple-400">•</span>
+                                            <span className="text-brand-400">•</span>
                                             <span className="text-gray-400">{req}</span>
                                         </li>
                                     ))}
@@ -404,7 +404,7 @@ export default function InternshipDetailPage() {
                                         <div className="mb-4">
                                             <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden mb-2">
                                                 <div
-                                                    className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
+                                                    className="h-full bg-brand-400 on-neon hover:bg-brand-300"
                                                     style={{ width: `${(internship.enrolled / internship.maxStudents) * 100}%` }}
                                                 />
                                             </div>
@@ -463,7 +463,7 @@ export default function InternshipDetailPage() {
                     <div className="bg-[#0f0f13] border border-white/10 rounded-xl p-6 w-full max-w-md">
                         <h2 className="text-2xl font-bold mb-2">Request Enrollment</h2>
                         <p className="text-gray-400 mb-4">
-                            Submit your enrollment request for <span className="text-purple-400">{internship.title}</span>
+                            Submit your enrollment request for <span className="text-brand-400">{internship.title}</span>
                         </p>
 
                         <div className="bg-white/5 rounded-lg p-4 mb-4">
@@ -490,7 +490,7 @@ export default function InternshipDetailPage() {
                                 onChange={(e) => setEnrollMessage(e.target.value)}
                                 placeholder="Tell us why you're interested in this internship..."
                                 rows={3}
-                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </div>
 
@@ -507,7 +507,7 @@ export default function InternshipDetailPage() {
                                         className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all ${
                                             useProfileResume && !resumeFile
                                                 ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border-2 border-green-500/50'
-                                                : 'bg-white/5 border-2 border-white/10 hover:border-purple-500/50'
+                                                : 'bg-white/5 border-2 border-white/10 hover:border-brand-500/50'
                                         }`}
                                         onClick={() => {
                                             setUseProfileResume(true);
@@ -544,13 +544,13 @@ export default function InternshipDetailPage() {
                                 {!resumeFile ? (
                                     <label 
                                         className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-lg cursor-pointer transition-colors bg-white/5 ${
-                                            !useProfileResume || resumeFile ? 'border-purple-500/50' : 'border-white/20 hover:border-purple-500'
+                                            !useProfileResume || resumeFile ? 'border-brand-500/50' : 'border-white/20 hover:border-brand-500'
                                         }`}
                                     >
                                         <div className="flex flex-col items-center justify-center py-4">
                                             <Upload className="w-6 h-6 mb-2 text-gray-400" />
                                             <p className="mb-1 text-sm text-gray-400">
-                                                <span className="font-semibold text-purple-400">Upload new resume</span>
+                                                <span className="font-semibold text-brand-400">Upload new resume</span>
                                             </p>
                                             <p className="text-xs text-gray-500">PDF, DOC, DOCX (MAX. 5MB)</p>
                                         </div>
@@ -572,12 +572,12 @@ export default function InternshipDetailPage() {
                                         />
                                     </label>
                                 ) : (
-                                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-2 border-purple-500/50 rounded-lg">
+                                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-brand-500/10 to-brand-500/10 border-2 border-brand-500/50 rounded-lg">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-5 h-5 rounded-full border-2 border-purple-500 bg-purple-500 flex items-center justify-center">
+                                            <div className="w-5 h-5 rounded-full border-2 border-brand-500 bg-brand-400 on-neon flex items-center justify-center">
                                                 <CheckCircle size={12} className="text-white" />
                                             </div>
-                                            <FileText className="w-6 h-6 text-purple-400" />
+                                            <FileText className="w-6 h-6 text-brand-400" />
                                             <div>
                                                 <p className="text-sm font-medium text-white">{resumeFile.name}</p>
                                                 <p className="text-xs text-gray-400">

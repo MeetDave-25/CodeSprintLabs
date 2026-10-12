@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export interface CardProps {
@@ -12,6 +11,8 @@ export interface CardProps {
     onClick?: () => void;
 }
 
+// Plain div (no per-card motion): hundreds of cards render across the app,
+// and calm hover states read more premium than scaling.
 export const Card: React.FC<CardProps> = ({
     children,
     className,
@@ -19,21 +20,24 @@ export const Card: React.FC<CardProps> = ({
     glow = false,
     onClick
 }) => {
+    const interactive = hover3d || !!onClick;
+
     return (
-        <motion.div
-            whileHover={hover3d ? { scale: 1.01 } : { scale: 1.005 }}
-            transition={{ duration: 0.2 }}
+        <div
             className={cn(
-                'glass rounded-xl p-6 transition-all duration-300',
-                glow && 'hover:shadow-glow',
-                hover3d && 'card-3d',
+                'surface rounded-xl p-6 transition-[transform,border-color,box-shadow] duration-200 ease-out',
+                interactive && 'hover:-translate-y-0.5 hover:border-white/[0.12] hover:shadow-elevated',
+                glow && 'hover:shadow-glow hover:border-brand-500/30',
                 onClick && 'cursor-pointer',
                 className
             )}
             onClick={onClick}
+            onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
         >
             {children}
-        </motion.div>
+        </div>
     );
 };
 
@@ -53,7 +57,7 @@ export const CardTitle: React.FC<{ children: React.ReactNode; className?: string
     className
 }) => {
     return (
-        <h3 className={cn('text-xl font-bold text-white', className)}>
+        <h3 className={cn('text-lg font-semibold tracking-tight text-white', className)}>
             {children}
         </h3>
     );
@@ -64,7 +68,7 @@ export const CardDescription: React.FC<{ children: React.ReactNode; className?: 
     className
 }) => {
     return (
-        <p className={cn('text-gray-400 text-sm mt-1', className)}>
+        <p className={cn('text-gray-400 text-sm mt-1 leading-relaxed', className)}>
             {children}
         </p>
     );
@@ -86,7 +90,7 @@ export const CardFooter: React.FC<{ children: React.ReactNode; className?: strin
     className
 }) => {
     return (
-        <div className={cn('mt-4 pt-4 border-t border-white/10', className)}>
+        <div className={cn('mt-4 pt-4 border-t border-white/[0.07]', className)}>
             {children}
         </div>
     );

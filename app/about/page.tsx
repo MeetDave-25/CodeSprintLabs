@@ -77,7 +77,7 @@ export default function AboutPage() {
                     name: 'Rajesh Kumar',
                     role: 'Founder & CEO',
                     bio: '15+ years in tech education and software development',
-                    gradient: 'from-purple-600 to-pink-600',
+                    gradient: 'from-brand-400 to-brand-300 on-neon',
                 },
                 {
                     _id: '2',
@@ -198,7 +198,7 @@ export default function AboutPage() {
                                 >
                                     <Card className="text-center">
                                         <CardContent className="p-6">
-                                            <stat.icon className="w-8 h-8 mx-auto mb-3 text-purple-400" />
+                                            <stat.icon className="w-8 h-8 mx-auto mb-3 text-brand-400" />
                                             <div className="text-3xl font-bold gradient-text mb-1">{stat.value}</div>
                                             <div className="text-sm text-gray-400">{stat.label}</div>
                                         </CardContent>
@@ -221,7 +221,7 @@ export default function AboutPage() {
                         >
                             <Card hover3d glow className="h-full">
                                 <CardHeader>
-                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center mb-4">
+                                    <div className="w-14 h-14 rounded-xl bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center mb-4">
                                         <Target size={28} className="text-white" />
                                     </div>
                                     <CardTitle className="text-3xl">Our Mission</CardTitle>
@@ -285,7 +285,7 @@ export default function AboutPage() {
                             >
                                 <Card hover3d className="h-full">
                                     <CardHeader>
-                                        <value.icon className="w-10 h-10 mb-4 text-purple-400" />
+                                        <value.icon className="w-10 h-10 mb-4 text-brand-400" />
                                         <CardTitle>{value.title}</CardTitle>
                                         <CardDescription>{value.description}</CardDescription>
                                     </CardHeader>
@@ -351,7 +351,7 @@ export default function AboutPage() {
                                         </div>
                                         <CardHeader>
                                             <CardTitle>{member.name}</CardTitle>
-                                            <div className="text-purple-400 font-semibold mb-2">{member.role}</div>
+                                            <div className="text-brand-400 font-semibold mb-2">{member.role}</div>
                                             {member.bio && <CardDescription>{member.bio}</CardDescription>}
                                             
                                             {/* Social Links */}
@@ -442,7 +442,7 @@ export default function AboutPage() {
                         viewport={{ once: true }}
                         className="relative overflow-hidden rounded-3xl"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-90"></div>
+                        <div className="absolute inset-0 bg-brand-400 on-neon hover:bg-brand-300 opacity-90"></div>
                         <div className="relative z-10 px-8 py-16 md:py-24 text-center">
                             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
                                 Ready to Join Us?
@@ -451,7 +451,7 @@ export default function AboutPage() {
                                 Start your journey with CodeSprint Labs and transform your career
                             </p>
                             <Link href="/auth/register">
-                                <Button variant="secondary" size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
+                                <Button variant="secondary" size="lg" className="bg-white text-brand-600 hover:bg-gray-100">
                                     Get Started Today
                                     <ArrowRight className="ml-2" size={20} />
                                 </Button>

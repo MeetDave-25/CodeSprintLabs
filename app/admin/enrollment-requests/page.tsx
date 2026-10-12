@@ -391,11 +391,11 @@ export default function AdminEnrollmentRequestsPage() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="cursor-pointer hover:border-purple-500/50 transition-all" onClick={() => setStatusFilter('all')}>
+                <Card className="cursor-pointer hover:border-brand-500/50 transition-all" onClick={() => setStatusFilter('all')}>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                                <FileText size={24} className="text-purple-400" />
+                            <div className="w-12 h-12 rounded-lg bg-brand-500/20 flex items-center justify-center">
+                                <FileText size={24} className="text-brand-400" />
                             </div>
                             <div>
                                 <div className="text-3xl font-bold gradient-text">{stats.total}</div>
@@ -417,7 +417,7 @@ export default function AdminEnrollmentRequestsPage() {
                                 placeholder="Search by student name, email, or internship..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </div>
                         <div className="flex gap-2">
@@ -427,7 +427,7 @@ export default function AdminEnrollmentRequestsPage() {
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${
                                         statusFilter === status
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                     }`}
                                 >
@@ -466,7 +466,7 @@ export default function AdminEnrollmentRequestsPage() {
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         {/* Student Info */}
                                         <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white font-bold text-lg">
+                                            <div className="w-12 h-12 rounded-full bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center text-white font-bold text-lg">
                                                 {request.studentName.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
@@ -492,7 +492,7 @@ export default function AdminEnrollmentRequestsPage() {
                                         {/* Internship Info */}
                                         <div className="md:text-right">
                                             <div className="flex items-center gap-2 mb-1 md:justify-end">
-                                                <Briefcase size={16} className="text-purple-400" />
+                                                <Briefcase size={16} className="text-brand-400" />
                                                 <span className="font-semibold">{request.internshipTitle}</span>
                                             </div>
                                             <div className="text-sm text-gray-400">
@@ -793,7 +793,7 @@ export default function AdminEnrollmentRequestsPage() {
                                             onChange={(e) => setActionNote(e.target.value)}
                                             placeholder="Add a note for this action..."
                                             rows={3}
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         />
                                     </div>
                                     <div className="flex gap-3">
@@ -875,7 +875,7 @@ export default function AdminEnrollmentRequestsPage() {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => handleDownloadMOU(selectedRequest.id, selectedRequest.studentName)}
-                                                className="border-purple-500/50 hover:bg-purple-500/20"
+                                                className="border-brand-500/50 hover:bg-brand-500/20"
                                             >
                                                 <Download size={14} className="mr-2" />
                                                 Download MOU

@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
-    protected $connection = 'mongodb';
-    protected $collection = 'users';
+    protected $table = 'users';
+
+    protected $appends = ['id', '_id'];
 
     protected $fillable = [
         'name',
@@ -60,6 +61,11 @@ class User extends Authenticatable implements JWTSubject
         'tasksCompleted' => 'integer',
         'coursesCompleted' => 'integer',
         'verification_code_expires_at' => 'datetime',
+        'joinedDate' => 'datetime',
+        'resumeUpdatedAt' => 'datetime',
+        'skills' => 'array',
+        'enrolledInternships' => 'array',
+        'enrolledCourses' => 'array',
     ];
 
     protected $attributes = [
@@ -68,10 +74,49 @@ class User extends Authenticatable implements JWTSubject
         'totalPoints' => 0,
         'tasksCompleted' => 0,
         'coursesCompleted' => 0,
-        'skills' => [],
-        'enrolledInternships' => [],
-        'enrolledCourses' => [],
+        'skills' => '[]',
+        'enrolledInternships' => '[]',
+        'enrolledCourses' => '[]',
     ];
+
+    public function getIdAttribute($value = null)
+    {
+        return isset($this->attributes['id']) ? (string) $this->attributes['id'] : ($value ? (string) $value : null);
+    }
+
+    public function getUnderscoreIdAttribute()
+    {
+        return isset($this->attributes['id']) ? (string) $this->attributes['id'] : null;
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new class($query) extends Builder {
+            public function where($column, $operator = null, $value = null, $boolean = 'and')
+            {
+                if ($column === '_id' || $column === ($this->model->getTable() . '._id')) {
+                    $column = $this->model->getTable() . '.id';
+                }
+                return parent::where($column, $operator, $value, $boolean);
+            }
+
+            public function whereIn($column, $values, $boolean = 'and', $not = false)
+            {
+                if ($column === '_id' || $column === ($this->model->getTable() . '._id')) {
+                    $column = $this->model->getTable() . '.id';
+                }
+                return parent::whereIn($column, $values, $boolean, $not);
+            }
+
+            public function whereNotIn($column, $values, $boolean = 'and')
+            {
+                if ($column === '_id' || $column === ($this->model->getTable() . '._id')) {
+                    $column = $this->model->getTable() . '.id';
+                }
+                return parent::whereNotIn($column, $values, $boolean);
+            }
+        };
+    }
 
     public function isAdmin(): bool
     {
@@ -111,7 +156,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTIdentifier()
     {
-        return $this->getKey();
+        return (string) $this->getKey();
     }
 
     /**

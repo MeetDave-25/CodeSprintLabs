@@ -3,16 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
 
-class EnrollmentRequest extends Model
+class EnrollmentRequest extends BaseModel
 {
     use HasFactory;
     
-    protected $connection = 'mongodb';
-    protected $collection = 'enrollment_requests';
-
-    protected $appends = ['id'];
+    protected $table = 'enrollment_requests';
 
     protected $fillable = [
         'userId',
@@ -98,21 +94,12 @@ class EnrollmentRequest extends Model
         'completionRequested' => false,
         'completionStatus' => 'not_requested',
         'completionLetterGenerated' => false,
+        'tasksCompleted' => 0,
+        'totalTasks' => 0,
+        'totalPoints' => 0,
         'withdrawalRequested' => false,
         'withdrawalStatus' => 'not_requested',
     ];
-
-    /**
-     * Get the id attribute as string
-     */
-    public function getIdAttribute($value = null)
-    {
-        $id = $this->attributes['id'] ?? $this->attributes['_id'] ?? null;
-        if ($id instanceof \MongoDB\BSON\ObjectId) {
-            return (string) $id;
-        }
-        return $id;
-    }
 
     /**
      * Get the user who requested enrollment

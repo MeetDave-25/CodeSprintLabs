@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
-
-class TeamMember extends Model
+class TeamMember extends BaseModel
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'team_members';
+    protected $table = 'team_members';
 
     protected $fillable = [
         'name',

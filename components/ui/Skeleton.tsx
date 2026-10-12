@@ -9,7 +9,8 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     className = '',
     variant = 'rectangular'
 }) => {
-    const baseClasses = 'animate-pulse bg-gray-700/50';
+    const baseClasses =
+        'animate-shimmer bg-[length:200%_100%] bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.09)_50%,rgba(255,255,255,0.04)_100%)]';
 
     const variantClasses = {
         text: 'h-4 rounded',

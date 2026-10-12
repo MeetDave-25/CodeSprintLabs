@@ -1,43 +1,55 @@
-'use client';
-
 import React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export interface BadgeProps {
     children: React.ReactNode;
-    variant?: 'default' | 'success' | 'warning' | 'danger' | 'info';
+    variant?: 'default' | 'success' | 'warning' | 'danger' | 'info' | 'brand';
     className?: string;
     pulse?: boolean;
+    dot?: boolean;
 }
+
+const variants = {
+    default: 'bg-white/[0.06] text-gray-300 ring-white/10',
+    success: 'bg-emerald-500/10 text-emerald-300 ring-emerald-500/25',
+    warning: 'bg-amber-500/10 text-amber-300 ring-amber-500/25',
+    danger: 'bg-red-500/10 text-red-300 ring-red-500/25',
+    info: 'bg-sky-500/10 text-sky-300 ring-sky-500/25',
+    brand: 'bg-brand-500/10 text-brand-300 ring-brand-500/25',
+};
+
+const dots = {
+    default: 'bg-gray-400',
+    success: 'bg-emerald-400',
+    warning: 'bg-amber-400',
+    danger: 'bg-red-400',
+    info: 'bg-sky-400',
+    brand: 'bg-brand-400',
+};
 
 const Badge: React.FC<BadgeProps> = ({
     children,
     variant = 'default',
     className,
-    pulse = false
+    pulse = false,
+    dot = false,
 }) => {
-    const variants = {
-        default: 'bg-gray-600 text-white',
-        success: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
-        warning: 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white',
-        danger: 'bg-gradient-to-r from-red-500 to-pink-500 text-white',
-        info: 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white',
-    };
-
     return (
-        <motion.span
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+        <span
             className={cn(
-                'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold',
+                'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ring-1 ring-inset whitespace-nowrap',
                 variants[variant],
-                pulse && 'animate-pulse',
                 className
             )}
         >
+            {(dot || pulse) && (
+                <span className="relative flex h-1.5 w-1.5">
+                    {pulse && <span className={cn('absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping', dots[variant])} />}
+                    <span className={cn('relative inline-flex h-1.5 w-1.5 rounded-full', dots[variant])} />
+                </span>
+            )}
             {children}
-        </motion.span>
+        </span>
     );
 };
 

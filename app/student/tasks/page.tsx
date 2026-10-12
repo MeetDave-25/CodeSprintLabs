@@ -239,37 +239,37 @@ export default function TasksPage() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold gradient-text">{stats.total}</div>
                         <div className="text-sm text-gray-400">Total Tasks</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold text-yellow-400">{stats.pending}</div>
                         <div className="text-sm text-gray-400">Not Started</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold text-blue-400">{tasks.filter(t => t.status === 'pending').length}</div>
                         <div className="text-sm text-gray-400">Under Review</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold text-green-400">{stats.completed}</div>
                         <div className="text-sm text-gray-400">Approved</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold text-red-400">{stats.rejected}</div>
                         <div className="text-sm text-gray-400">Needs Revision</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-[#1a1a2e]/90 backdrop-blur-md">
+                <Card className="bg-[#141414]/90 backdrop-blur-md">
                     <CardContent className="p-4">
                         <div className="text-2xl font-bold gradient-text">{stats.totalPoints}</div>
                         <div className="text-sm text-gray-400">Points Earned</div>
@@ -295,7 +295,7 @@ export default function TasksPage() {
                             <Card hover3d glow className="cursor-pointer">
                                 <CardHeader>
                                     <div className="flex items-center gap-2 mb-2">
-                                        <Briefcase size={20} className="text-purple-400" />
+                                        <Briefcase size={20} className="text-brand-400" />
                                         <CardTitle className="text-lg">{internship.title}</CardTitle>
                                     </div>
                                     <div className="space-y-2">
@@ -305,7 +305,7 @@ export default function TasksPage() {
                                         </div>
                                         <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
+                                                className="h-full bg-brand-400 on-neon hover:bg-brand-300"
                                                 style={{ width: `${internship.progress}%` }}
                                             />
                                         </div>
@@ -320,7 +320,7 @@ export default function TasksPage() {
                     ))}
                     {internships.length === 0 && !isLoading && (
                         <div className="col-span-2 text-center py-8 text-gray-400">
-                            No internships enrolled yet. <Link href="/internships" className="text-purple-400 hover:underline">Browse internships</Link>
+                            No internships enrolled yet. <Link href="/internships" className="text-brand-400 hover:underline">Browse internships</Link>
                         </div>
                     )}
                 </div>
@@ -337,7 +337,7 @@ export default function TasksPage() {
                                 key={status}
                                 onClick={() => setSelectedStatus(status)}
                                 className={`px-4 py-2 rounded-lg capitalize transition-all ${selectedStatus === status
-                                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                    ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                     : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                     }`}
                             >
@@ -356,7 +356,7 @@ export default function TasksPage() {
                                 key={source}
                                 onClick={() => setSelectedSource(source)}
                                 className={`px-4 py-2 rounded-lg capitalize transition-all ${selectedSource === source
-                                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                    ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                     : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                     }`}
                             >
@@ -390,7 +390,7 @@ export default function TasksPage() {
                                         <div className="flex items-center gap-2 flex-wrap">
                                             {/* Source Badge - More Prominent */}
                                             <span className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 ${task.source === 'internship'
-                                                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                                                ? 'bg-brand-500/20 text-brand-300 border border-brand-500/30'
                                                 : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                                                 }`}>
                                                 {task.source === 'internship' ? (
@@ -421,7 +421,7 @@ export default function TasksPage() {
                                     <div className="space-y-3">
                                         <div className="flex items-center gap-2 text-sm">
                                             {task.source === 'internship' ? (
-                                                <Briefcase size={16} className="text-purple-400" />
+                                                <Briefcase size={16} className="text-brand-400" />
                                             ) : (
                                                 <BookOpen size={16} className="text-cyan-400" />
                                             )}
@@ -432,7 +432,7 @@ export default function TasksPage() {
                                                 <Calendar size={16} />
                                                 <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
                                             </div>
-                                            <div className="font-semibold text-purple-400">
+                                            <div className="font-semibold text-brand-400">
                                                 {task.points} points
                                             </div>
                                         </div>
@@ -529,7 +529,7 @@ export default function TasksPage() {
                                             onChange={(e) => setSubmissionLink(e.target.value)}
                                             placeholder="https://github.com/username/repository"
                                             required
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         />
                                     </div>
                                     <div>
@@ -539,7 +539,7 @@ export default function TasksPage() {
                                             value={submissionFile}
                                             onChange={(e) => setSubmissionFile(e.target.value)}
                                             placeholder="Any additional information..."
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 resize-none"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"
                                         />
                                     </div>
                                     <div className="flex gap-3">

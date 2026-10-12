@@ -17,8 +17,20 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import dynamic from 'next/dynamic';
 import { adminService } from '@/lib/services';
+
+// recharts (~100KB) loads only after the dashboard has rendered.
+const DashboardCharts = dynamic(() => import('./DashboardCharts'), {
+    ssr: false,
+    loading: () => (
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+            {[0, 1].map((i) => (
+                <div key={i} className="h-[388px] rounded-xl bg-white/[0.03] animate-pulse" />
+            ))}
+        </div>
+    ),
+});
 
 interface DashboardStats {
     totalStudents: number;
@@ -176,7 +188,7 @@ export default function AdminDashboard() {
             label: 'Active Internships',
             value: stats.activeInternships.toString(),
             icon: BookOpen,
-            color: 'from-purple-600 to-pink-600'
+            color: 'from-brand-400 to-brand-300 on-neon'
         },
         {
             label: 'Pending Submissions',
@@ -197,7 +209,7 @@ export default function AdminDashboard() {
     if (isLoading) {
         return (
             <div className="p-6 flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                <Loader2 className="w-8 h-8 animate-spin text-brand-500" />
             </div>
         );
     }
@@ -248,76 +260,7 @@ export default function AdminDashboard() {
                 ))}
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-6 mb-8">
-                {/* Student Growth Chart */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Student Growth</CardTitle>
-                        <CardDescription>Monthly student enrollment trends</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <LineChart data={monthlyData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                                <XAxis dataKey="month" stroke="#9ca3af" />
-                                <YAxis stroke="#9ca3af" />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: '#1a1a2e',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '8px'
-                                    }}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="students"
-                                    stroke="url(#lineGradient)"
-                                    strokeWidth={3}
-                                    dot={{ fill: '#667eea', r: 4 }}
-                                />
-                                <defs>
-                                    <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                                        <stop offset="0%" stopColor="#667eea" />
-                                        <stop offset="100%" stopColor="#ec4899" />
-                                    </linearGradient>
-                                </defs>
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-
-                {/* Revenue Chart */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Revenue Overview</CardTitle>
-                        <CardDescription>Monthly revenue from enrollments</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={monthlyData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                                <XAxis dataKey="month" stroke="#9ca3af" />
-                                <YAxis stroke="#9ca3af" />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: '#1a1a2e',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '8px'
-                                    }}
-                                    formatter={(value: number) => [formatCurrency(value), 'Revenue']}
-                                />
-                                <Bar dataKey="revenue" fill="url(#barGradient)" radius={[8, 8, 0, 0]} />
-                                <defs>
-                                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#10b981" />
-                                        <stop offset="100%" stopColor="#059669" />
-                                    </linearGradient>
-                                </defs>
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            </div>
+            <DashboardCharts monthlyData={monthlyData} />
 
             <div className="grid lg:grid-cols-2 gap-6">
                 {/* Recent Submissions */}
@@ -341,7 +284,7 @@ export default function AdminDashboard() {
                                         className="flex items-center justify-between p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all cursor-pointer"
                                     >
                                         <div className="flex items-center space-x-4">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                                            <div className="w-10 h-10 rounded-full bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center">
                                                 <span className="text-sm font-bold">{submission.student[0]}</span>
                                             </div>
                                             <div>

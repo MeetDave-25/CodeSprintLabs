@@ -18,10 +18,10 @@ function RotatingCube() {
         <mesh ref={meshRef}>
             <boxGeometry args={[2, 2, 2]} />
             <meshStandardMaterial
-                color="#667eea"
+                color="#c6ff2e"
                 metalness={0.8}
                 roughness={0.2}
-                emissive="#764ba2"
+                emissive="#86b300"
                 emissiveIntensity={0.5}
             />
         </mesh>
@@ -34,7 +34,7 @@ export const FloatingCube: React.FC<{ className?: string }> = ({ className }) =>
             <Canvas camera={{ position: [0, 0, 5] }}>
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} intensity={1} />
-                <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ec4899" />
+                <pointLight position={[-10, -10, -10]} intensity={0.5} color="#f5f4ef" />
                 <RotatingCube />
             </Canvas>
         </div>

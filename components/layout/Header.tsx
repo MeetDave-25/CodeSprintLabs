@@ -1,173 +1,199 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Bell, User, LogOut, Settings } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { Menu, X, LogOut, LayoutDashboard, Settings } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import { cn, getInitials } from '@/lib/utils';
 
-const Header: React.FC = () => {
+const navLinks = [
+    { href: '/internships', label: 'Internships' },
+    { href: '/courses', label: 'Courses' },
+    { href: '/verify-certificate', label: 'Verify certificate' },
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
+];
+
+/** Simple brand mark + wordmark. */
+export function Brand({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
+    return (
+        <Link href="/" className="flex items-center gap-2.5" aria-label="CodeSprint Labs home">
+            <span className={cn('flex h-7 w-7 items-center justify-center rounded-[8px]', tone === 'light' ? 'bg-ink-950 text-brand-400' : 'bg-brand-400 text-ink-950')}>
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden>
+                    <path d="M9 7l-5 5 5 5" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M13 8h7M13 12h5M13 16h3" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+                </svg>
+            </span>
+            <span className={cn('text-[15px] font-semibold tracking-[-0.01em]', tone === 'light' ? 'text-ink-950' : 'text-white')}>
+                CodeSprint Labs
+            </span>
+        </Link>
+    );
+}
+
+interface HeaderProps {
+    /** Light for the marketing home page, dark for the remaining dark pages. */
+    variant?: 'light' | 'dark';
+}
+
+const Header: React.FC<HeaderProps> = ({ variant = 'dark' }) => {
+    const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const userMenuRef = useRef<HTMLDivElement>(null);
     const { isAuthenticated, user, logout } = useAuth();
+    const light = variant === 'light';
 
-    const isLoggedIn = isAuthenticated;
-    const userRole = user?.role || 'student';
+    const isAdmin = user?.role === 'admin';
+    const dashboardHref = isAdmin ? '/admin/dashboard' : '/student/dashboard';
+    const settingsHref = isAdmin ? '/admin/settings' : '/student/profile';
 
-    const publicLinks = [
-        { href: '/', label: 'Home' },
-        { href: '/internships', label: 'Internships' },
-        { href: '/courses', label: 'Courses' },
-        { href: '/about', label: 'About' },
-        { href: '/contact', label: 'Contact' },
-    ];
+    useEffect(() => {
+        setMobileMenuOpen(false);
+        setUserMenuOpen(false);
+    }, [pathname]);
 
-    const studentLinks = [
-        { href: '/student/dashboard', label: 'Dashboard' },
-        { href: '/internships', label: 'Internships' },
-        { href: '/courses', label: 'Courses' },
-        { href: '/student/tasks', label: 'Tasks' },
-        { href: '/student/my-courses', label: 'My Courses' },
-    ];
+    useEffect(() => {
+        const onClick = (e: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
+        };
+        document.addEventListener('mousedown', onClick);
+        return () => document.removeEventListener('mousedown', onClick);
+    }, []);
 
-    const adminLinks = [
-        { href: '/admin/dashboard', label: 'Dashboard' },
-        { href: '/admin/students', label: 'Students' },
-        { href: '/admin/submissions', label: 'Submissions' },
-    ];
+    const linkCls = (active: boolean) =>
+        cn(
+            'text-[13px] transition-colors',
+            light
+                ? active ? 'text-ink-950' : 'text-cream-muted hover:text-ink-950'
+                : active ? 'text-white' : 'text-gray-400 hover:text-white'
+        );
 
-    const getNavLinks = () => {
-        if (!isLoggedIn) return publicLinks;
-        return userRole === 'admin' ? adminLinks : studentLinks;
-    };
-
-    const navLinks = getNavLinks();
+    const menuItem = cn(
+        'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm',
+        light ? 'text-ink-950 hover:bg-cream-2' : 'text-gray-200 hover:bg-white/[0.06]'
+    );
 
     return (
         <>
-        <header className="fixed top-0 left-0 right-0 z-50 glass-dark border-b border-white/10">
-            <nav className="container mx-auto px-4 py-4">
-                <div className="flex items-center justify-between">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">CS</span>
-                        </div>
-                        <span className="text-xl font-bold gradient-text hidden sm:block">
-                            CodeSprint Labs
-                        </span>
-                    </Link>
+            <header
+                className={cn(
+                    'fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl backdrop-saturate-150',
+                    light ? 'border-black/10 bg-cream/95' : 'border-white/[0.08] bg-ink-950/75'
+                )}
+            >
+                <nav className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5" aria-label="Primary">
+                    <Brand tone={light ? 'light' : 'dark'} />
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-8">
+                    <div className="hidden items-center gap-8 lg:flex">
                         {navLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="text-gray-300 hover:text-white transition-colors duration-300 relative group"
-                            >
+                            <Link key={link.href} href={link.href} className={linkCls(pathname.startsWith(link.href))} aria-current={pathname.startsWith(link.href) ? 'page' : undefined}>
                                 {link.label}
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
                             </Link>
                         ))}
                     </div>
 
-                    {/* Right Side Actions */}
-                    <div className="flex items-center space-x-4">
-                        {isLoggedIn ? (
+                    <div className="flex items-center gap-2">
+                        {isAuthenticated ? (
                             <>
-                                {/* Notifications */}
-                                <NotificationDropdown />
-
-                                {/* User Menu */}
-                                <div className="relative">
+                                <div className={light ? 'text-cream-muted' : ''}><NotificationDropdown /></div>
+                                <div className="relative" ref={userMenuRef}>
                                     <button
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center space-x-2 p-2 rounded-lg hover:bg-white/10 transition-colors"
+                                        className={cn('flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold', light ? 'bg-ink-950 text-brand-400' : 'bg-white/10 text-white')}
+                                        aria-label="Account menu"
+                                        aria-expanded={userMenuOpen}
                                     >
-                                        <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                                            <User size={16} />
-                                        </div>
+                                        {getInitials(user?.name || 'U')}
                                     </button>
-
                                     <AnimatePresence>
                                         {userMenuOpen && (
                                             <motion.div
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -10 }}
-                                                className="absolute right-0 mt-2 w-48 glass rounded-lg overflow-hidden"
+                                                initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                                                transition={{ duration: 0.12 }}
+                                                className={cn(
+                                                    'absolute right-0 mt-2 w-60 rounded-2xl border p-1.5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.25)]',
+                                                    light ? 'border-black/10 bg-cream' : 'border-white/10 bg-ink-850'
+                                                )}
                                             >
-                                                <Link
-                                                    href="/student/profile"
-                                                    className="flex items-center space-x-2 px-4 py-3 hover:bg-white/10 transition-colors"
-                                                >
-                                                    <Settings size={16} />
-                                                    <span>Profile</span>
-                                                </Link>
-                                                <button
-                                                    onClick={logout}
-                                                    className="w-full flex items-center space-x-2 px-4 py-3 hover:bg-white/10 transition-colors text-red-400"
-                                                >
-                                                    <LogOut size={16} />
-                                                    <span>Logout</span>
+                                                <div className="px-3 py-2">
+                                                    <div className={cn('truncate text-sm font-medium', light ? 'text-ink-950' : 'text-white')}>{user?.name}</div>
+                                                    <div className={cn('truncate text-xs', light ? 'text-cream-muted' : 'text-gray-500')}>{user?.email}</div>
+                                                </div>
+                                                <Link href={dashboardHref} className={menuItem}><LayoutDashboard size={15} /> Dashboard</Link>
+                                                <Link href={settingsHref} className={menuItem}><Settings size={15} /> {isAdmin ? 'Settings' : 'Profile'}</Link>
+                                                <button onClick={logout} className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-red-500 hover:bg-red-500/10">
+                                                    <LogOut size={15} /> Log out
                                                 </button>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
                                 </div>
+                                <Link href={dashboardHref} className={cn('hidden rounded-full px-4 py-1.5 text-[13px] font-medium sm:inline-flex', light ? 'bg-brand-400 text-ink-950 hover:bg-brand-300' : 'bg-white text-navy-950 hover:bg-gray-200')}>
+                                    Dashboard
+                                </Link>
                             </>
                         ) : (
-                            <div className="hidden md:flex items-center space-x-4">
-                                <Button href="/auth/login" variant="ghost">Login</Button>
-                                <Button href="/auth/register" variant="primary">Get Started</Button>
-                            </div>
+                            <>
+                                <Link href="/auth/login" className={cn('hidden px-3 py-1.5 text-[13px] sm:inline-flex', light ? 'text-ink-950 hover:opacity-60' : 'text-gray-300 hover:text-white')}>
+                                    Sign in
+                                </Link>
+                                <Link href="/auth/register" className={cn('hidden rounded-full px-4 py-1.5 text-[13px] font-medium sm:inline-flex', light ? 'bg-brand-400 text-ink-950 hover:bg-brand-300' : 'bg-white text-navy-950 hover:bg-gray-200')}>
+                                    Get started
+                                </Link>
+                            </>
                         )}
-
-                        {/* Mobile Menu Button */}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"
+                            className={cn('rounded-lg p-2 lg:hidden', light ? 'text-ink-950' : 'text-gray-300')}
+                            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+                            aria-expanded={mobileMenuOpen}
                         >
-                            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
                     </div>
-                </div>
+                </nav>
 
-                {/* Mobile Menu */}
                 <AnimatePresence>
                     {mobileMenuOpen && (
                         <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="md:hidden mt-4 space-y-2"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                            className="overflow-hidden lg:hidden"
                         >
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className="block px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
-                            {!isLoggedIn && (
-                                <div className="flex flex-col space-y-2 pt-4 border-t border-white/10">
-                                    <Button href="/auth/login" onClick={() => setMobileMenuOpen(false)} variant="ghost" className="w-full">Login</Button>
-                                    <Button href="/auth/register" onClick={() => setMobileMenuOpen(false)} variant="primary" className="w-full">Get Started</Button>
+                            <div className="mx-auto max-w-[1200px] px-5 pb-6 pt-2">
+                                {navLinks.map((link) => (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        className={cn('block border-b py-3.5 text-[17px] font-medium', light ? 'border-black/10 text-ink-950' : 'border-white/[0.08] text-white')}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))}
+                                <div className="mt-5 grid grid-cols-2 gap-3">
+                                    {isAuthenticated ? (
+                                        <Link href={dashboardHref} className="col-span-2 rounded-full bg-brand-400 py-3 text-center text-sm font-semibold text-ink-950">Go to dashboard</Link>
+                                    ) : (
+                                        <>
+                                            <Link href="/auth/login" className={cn('rounded-full border py-3 text-center text-sm font-medium', light ? 'border-black/15 text-ink-950' : 'border-white/15 text-white')}>Sign in</Link>
+                                            <Link href="/auth/register" className="rounded-full bg-brand-400 py-3 text-center text-sm font-semibold text-ink-950">Get started</Link>
+                                        </>
+                                    )}
                                 </div>
-                            )}
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </nav>
-        </header>
-
-        <div className="h-16 md:h-20" aria-hidden />
+            </header>
+            <div className="h-14" aria-hidden />
         </>
     );
 };

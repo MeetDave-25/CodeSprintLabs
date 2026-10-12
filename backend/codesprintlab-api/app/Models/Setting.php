@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
-
-class Setting extends Model
+class Setting extends BaseModel
 {
-    protected $connection = 'mongodb';
-    protected $collection = 'settings';
+    protected $table = 'settings';
 
     protected $fillable = [
         'key',

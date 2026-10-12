@@ -276,7 +276,7 @@ export default function CourseDetailPage() {
 
                             <div className="flex flex-wrap gap-6 text-sm text-gray-400 mb-8">
                                 <div className="flex items-center gap-2">
-                                    <Clock size={18} className="text-purple-400" />
+                                    <Clock size={18} className="text-brand-400" />
                                     <span>{course.duration}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -321,7 +321,7 @@ export default function CourseDetailPage() {
                             animate={{ opacity: 1, scale: 1 }}
                             className="relative"
                         >
-                            <div className={`aspect-video rounded-2xl bg-gradient-to-br ${course.image} flex items-center justify-center shadow-2xl shadow-purple-500/20`}>
+                            <div className={`aspect-video rounded-2xl bg-gradient-to-br ${course.image} flex items-center justify-center shadow-2xl shadow-brand-500/20`}>
                                 <PlayCircle size={64} className="text-white/80" />
                             </div>
                         </motion.div>
@@ -388,7 +388,7 @@ export default function CourseDetailPage() {
                                 <ul className="space-y-2">
                                     {course.requirements.map((req, index) => (
                                         <li key={index} className="flex items-start gap-2 text-gray-300">
-                                            <span className="text-purple-400">•</span>
+                                            <span className="text-brand-400">•</span>
                                             {req}
                                         </li>
                                     ))}
@@ -404,19 +404,19 @@ export default function CourseDetailPage() {
                                 <h3 className="font-bold text-lg mb-4">This course includes:</h3>
                                 <ul className="space-y-4 text-sm text-gray-300">
                                     <li className="flex items-center gap-3">
-                                        <PlayCircle size={18} className="text-purple-400" />
+                                        <PlayCircle size={18} className="text-brand-400" />
                                         <span>{course.duration} on-demand video</span>
                                     </li>
                                     <li className="flex items-center gap-3">
-                                        <FileText size={18} className="text-purple-400" />
+                                        <FileText size={18} className="text-brand-400" />
                                         <span>Assignments & Quizzes</span>
                                     </li>
                                     <li className="flex items-center gap-3">
-                                        <Award size={18} className="text-purple-400" />
+                                        <Award size={18} className="text-brand-400" />
                                         <span>Certificate of completion</span>
                                     </li>
                                     <li className="flex items-center gap-3">
-                                        <Clock size={18} className="text-purple-400" />
+                                        <Clock size={18} className="text-brand-400" />
                                         <span>Full lifetime access</span>
                                     </li>
                                 </ul>

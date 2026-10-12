@@ -208,7 +208,7 @@ export default function AdminInternshipsPage() {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-purple-400">{stats.totalEnrolled}</div>
+                        <div className="text-2xl font-bold text-brand-400">{stats.totalEnrolled}</div>
                         <div className="text-sm text-gray-400">Total Enrolled</div>
                     </CardContent>
                 </Card>
@@ -225,7 +225,7 @@ export default function AdminInternshipsPage() {
                                 placeholder="Search internships..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </div>
                         <div className="flex gap-2">
@@ -234,7 +234,7 @@ export default function AdminInternshipsPage() {
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${statusFilter === status
-                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                        ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                         : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                         }`}
                                 >
@@ -289,7 +289,7 @@ export default function AdminInternshipsPage() {
                                             <Users size={16} />
                                             Enrolled
                                         </span>
-                                        <span className="font-semibold text-purple-400">{internship.enrolled}</span>
+                                        <span className="font-semibold text-brand-400">{internship.enrolled}</span>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
@@ -365,7 +365,7 @@ export default function AdminInternshipsPage() {
                                     <div>
                                         <label className="block text-sm text-gray-400 mb-1">Type *</label>
                                         <select
-                                            className="w-full bg-[#1a1a24] border border-white/10 rounded p-2 text-white [&>option]:bg-[#1a1a24] [&>option]:text-white"
+                                            className="w-full bg-[#141414] border border-white/10 rounded p-2 text-white [&>option]:bg-[#141414] [&>option]:text-white"
                                             value={newInternshipData.type}
                                             onChange={e => setNewInternshipData({ ...newInternshipData, type: e.target.value })}
                                         >
@@ -496,7 +496,7 @@ export default function AdminInternshipsPage() {
                                         id="featured"
                                         checked={newInternshipData.isFeatured}
                                         onChange={e => setNewInternshipData({ ...newInternshipData, isFeatured: e.target.checked })}
-                                        className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                                        className="w-4 h-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                                     />
                                     <label htmlFor="featured" className="text-sm text-gray-400">Mark as Featured</label>
                                 </div>

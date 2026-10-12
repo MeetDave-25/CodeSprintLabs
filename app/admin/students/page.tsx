@@ -152,7 +152,7 @@ export default function AdminStudentsPage() {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-purple-400">{stats.avgPoints}</div>
+                        <div className="text-2xl font-bold text-brand-400">{stats.avgPoints}</div>
                         <div className="text-sm text-gray-400">Avg Points</div>
                     </CardContent>
                 </Card>
@@ -177,7 +177,7 @@ export default function AdminStudentsPage() {
                                     <select
                                         value={internshipFilter}
                                         onChange={(e) => setInternshipFilter(e.target.value)}
-                                        className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                        className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                     >
                                         <option value="all">All Internships</option>
                                         {availableInternships.map((internship) => (
@@ -189,7 +189,7 @@ export default function AdminStudentsPage() {
                                 </div>
 
                                 {internshipFilter !== 'all' && (
-                                    <div className="flex items-center gap-2 p-3 bg-purple-500/20 rounded-lg">
+                                    <div className="flex items-center gap-2 p-3 bg-brand-500/20 rounded-lg">
                                         <span className="text-sm">
                                             Showing <span className="font-bold">{students.length}</span> student(s) enrolled in <span className="font-bold">{internshipFilter}</span>
                                         </span>
@@ -218,7 +218,7 @@ export default function AdminStudentsPage() {
                                 placeholder="Search by name or email..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                             />
                         </div>
                         <div className="flex gap-2">
@@ -227,7 +227,7 @@ export default function AdminStudentsPage() {
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-4 py-2 rounded-lg capitalize transition-all ${statusFilter === status
-                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                        ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                         : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                         }`}
                                 >
@@ -247,7 +247,7 @@ export default function AdminStudentsPage() {
                 <CardContent>
                     {isLoading ? (
                         <div className="flex items-center justify-center py-12">
-                            <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                            <Loader2 className="w-8 h-8 animate-spin text-brand-500" />
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -297,7 +297,7 @@ export default function AdminStudentsPage() {
                                                 </div>
                                             </td>
                                             <td className="py-4 px-4">
-                                                <div className="flex items-center gap-1 text-purple-400 font-semibold">
+                                                <div className="flex items-center gap-1 text-brand-400 font-semibold">
                                                     <Award size={16} />
                                                     {student.totalPoints || 0}
                                                 </div>
@@ -365,28 +365,28 @@ export default function AdminStudentsPage() {
                                     <div>
                                         <div className="text-sm text-gray-400 mb-1">Email</div>
                                         <div className="flex items-center gap-2">
-                                            <Mail size={16} className="text-purple-400" />
+                                            <Mail size={16} className="text-brand-400" />
                                             {selectedStudent.email}
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-sm text-gray-400 mb-1">Phone</div>
                                         <div className="flex items-center gap-2">
-                                            <Phone size={16} className="text-purple-400" />
+                                            <Phone size={16} className="text-brand-400" />
                                             {selectedStudent.phone || 'Not provided'}
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-sm text-gray-400 mb-1">Joined Date</div>
                                         <div className="flex items-center gap-2">
-                                            <Calendar size={16} className="text-purple-400" />
+                                            <Calendar size={16} className="text-brand-400" />
                                             {new Date(selectedStudent.created_at).toLocaleDateString()}
                                         </div>
                                     </div>
                                     <div>
                                         <div className="text-sm text-gray-400 mb-1">Total Points</div>
                                         <div className="flex items-center gap-2">
-                                            <Award size={16} className="text-purple-400" />
+                                            <Award size={16} className="text-brand-400" />
                                             {selectedStudent.totalPoints || 0}
                                         </div>
                                     </div>
@@ -409,7 +409,7 @@ export default function AdminStudentsPage() {
 
                                 <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
                                     <div className="text-center">
-                                        <div className="text-2xl font-bold text-purple-400">{selectedStudent.coursesEnrolled || 0}</div>
+                                        <div className="text-2xl font-bold text-brand-400">{selectedStudent.coursesEnrolled || 0}</div>
                                         <div className="text-sm text-gray-400">Courses Enrolled</div>
                                     </div>
                                     <div className="text-center">

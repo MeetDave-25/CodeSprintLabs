@@ -20,7 +20,7 @@ class TempAdminSeeder extends Seeder
             ['email' => 'admin@codesprintlab.com'],
             [
                 'name' => 'Admin User',
-                'password' => Hash::make('password'),
+                'password' => 'password',
                 'role' => 'admin',
                 'email_verified_at' => now(),
                 'status' => 'active',
@@ -31,7 +31,7 @@ class TempAdminSeeder extends Seeder
         $admin->update([
             'role' => 'admin',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'), 
+            'password' => 'password', 
         ]);
 
         // Create or Update Student User
@@ -39,7 +39,7 @@ class TempAdminSeeder extends Seeder
             ['email' => 'student@codesprintlab.com'],
             [
                 'name' => 'Student User',
-                'password' => Hash::make('password'),
+                'password' => 'password',
                 'role' => 'student',
                 'email_verified_at' => now(),
                 'status' => 'active',
@@ -49,7 +49,7 @@ class TempAdminSeeder extends Seeder
         $student->update([
             'role' => 'student',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => 'password',
         ]);
 
         $this->command->info('User accounts seeded successfully!');

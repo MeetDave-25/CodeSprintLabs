@@ -222,7 +222,7 @@ export default function WithdrawalRequestsPage() {
                         placeholder="Search by student name, email, or internship..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                     />
                 </div>
                 <div className="flex gap-2">
@@ -232,7 +232,7 @@ export default function WithdrawalRequestsPage() {
                             onClick={() => setFilter(status)}
                             className={`px-4 py-2 rounded-lg capitalize transition-colors ${
                                 filter === status
-                                    ? 'bg-purple-600 text-white'
+                                    ? 'bg-brand-400 on-neon'
                                     : 'bg-white/5 text-gray-400 hover:bg-white/10'
                             }`}
                         >
@@ -339,7 +339,7 @@ export default function WithdrawalRequestsPage() {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-[#1a1a2e] border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                            className="bg-[#141414] border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Modal Header */}
@@ -371,7 +371,7 @@ export default function WithdrawalRequestsPage() {
                                 {/* Student Info */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-3">
-                                        <h3 className="font-semibold text-purple-400">Student Details</h3>
+                                        <h3 className="font-semibold text-brand-400">Student Details</h3>
                                         <div className="space-y-2 text-sm">
                                             <div className="flex items-center gap-2">
                                                 <User size={14} className="text-gray-400" />
@@ -500,7 +500,7 @@ export default function WithdrawalRequestsPage() {
                                                 onChange={(e) => setAdminNote(e.target.value)}
                                                 placeholder="Add a note for the student..."
                                                 rows={3}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                             />
                                         </div>
 

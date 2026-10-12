@@ -24,10 +24,10 @@ interface EnrolledCourse {
 
 const gradients = [
     'from-blue-500 to-cyan-500',
-    'from-purple-500 to-pink-500',
+    'from-brand-500 to-brand-500',
     'from-green-500 to-emerald-500',
     'from-orange-500 to-red-500',
-    'from-indigo-500 to-purple-500',
+    'from-indigo-500 to-brand-500',
 ];
 
 export default function MyCoursesPage() {
@@ -108,7 +108,7 @@ export default function MyCoursesPage() {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-purple-400">{stats.certificates}</div>
+                        <div className="text-2xl font-bold text-brand-400">{stats.certificates}</div>
                         <div className="text-sm text-gray-400">Certificates</div>
                     </CardContent>
                 </Card>
@@ -134,7 +134,7 @@ export default function MyCoursesPage() {
                                 <div className="p-6">
                                     <div className="flex items-start justify-between mb-4">
                                         <div>
-                                            <div className="text-sm text-purple-400 mb-1">{course.category}</div>
+                                            <div className="text-sm text-brand-400 mb-1">{course.category}</div>
                                             <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
                                             <div className="text-sm text-gray-400">
                                                 Instructor: {course.instructor}

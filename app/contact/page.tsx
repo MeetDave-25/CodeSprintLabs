@@ -136,14 +136,14 @@ export default function ContactPage() {
                             >
                                 <Card hover3d className="text-center h-full">
                                     <CardContent className="p-6">
-                                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center mx-auto mb-4">
+                                        <div className="w-14 h-14 rounded-xl bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center mx-auto mb-4">
                                             <info.icon size={28} className="text-white" />
                                         </div>
                                         <h3 className="text-lg font-semibold mb-2">{info.title}</h3>
                                         {info.link ? (
                                             <a
                                                 href={info.link}
-                                                className="text-gray-400 hover:text-purple-400 transition-colors"
+                                                className="text-gray-400 hover:text-brand-400 transition-colors"
                                             >
                                                 {info.value}
                                             </a>
@@ -170,7 +170,7 @@ export default function ContactPage() {
                             <Card glow>
                                 <CardHeader>
                                     <div className="flex items-center gap-3 mb-2">
-                                        <MessageSquare className="text-purple-400" size={28} />
+                                        <MessageSquare className="text-brand-400" size={28} />
                                         <CardTitle className="text-3xl">Send us a Message</CardTitle>
                                     </div>
                                     <CardDescription>
@@ -203,7 +203,7 @@ export default function ContactPage() {
                                                     value={formData.name}
                                                     onChange={handleChange}
                                                     required
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 transition-colors"
                                                     placeholder="John Doe"
                                                 />
                                             </div>
@@ -219,7 +219,7 @@ export default function ContactPage() {
                                                     value={formData.email}
                                                     onChange={handleChange}
                                                     required
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 transition-colors"
                                                     placeholder="john@example.com"
                                                 />
                                             </div>
@@ -235,7 +235,7 @@ export default function ContactPage() {
                                                     value={formData.subject}
                                                     onChange={handleChange}
                                                     required
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 transition-colors"
                                                     placeholder="How can we help?"
                                                 />
                                             </div>
@@ -251,7 +251,7 @@ export default function ContactPage() {
                                                     onChange={handleChange}
                                                     required
                                                     rows={6}
-                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 transition-colors resize-none"
                                                     placeholder="Tell us more about your inquiry..."
                                                 />
                                             </div>

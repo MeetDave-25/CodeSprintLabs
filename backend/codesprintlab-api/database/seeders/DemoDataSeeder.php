@@ -28,7 +28,7 @@ class DemoDataSeeder extends Seeder
             ['email' => 'admin@codesprintlabs.com'],
             [
                 'name' => 'Admin User',
-                'password' => Hash::make('admin123'),
+                'password' => 'admin123',
                 'role' => 'admin',
                 'status' => 'active',
                 'email_verified_at' => now(),
@@ -53,7 +53,7 @@ class DemoDataSeeder extends Seeder
                 ['email' => $data['email']],
                 [
                     'name' => $data['name'],
-                    'password' => Hash::make('student123'),
+                    'password' => 'student123',
                     'role' => 'student',
                     'status' => 'active',
                     'email_verified_at' => now(),

@@ -331,8 +331,8 @@ export default function AdminCourseDetailPage() {
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                                    <Users size={20} className="text-purple-400" />
+                                <div className="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center">
+                                    <Users size={20} className="text-brand-400" />
                                 </div>
                                 <div>
                                     <div className="text-2xl font-bold">{currentCourse.enrolled}</div>
@@ -427,7 +427,7 @@ export default function AdminCourseDetailPage() {
                                                 value={formData.description}
                                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                                 rows={4}
-                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                             />
                                         </div>
                                     </>
@@ -469,7 +469,7 @@ export default function AdminCourseDetailPage() {
                                         <div key={chapter.id} className="border border-white/10 rounded-lg p-4">
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-sm font-bold">
+                                                    <div className="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center text-sm font-bold">
                                                         {chapterIndex + 1}
                                                     </div>
                                                     <div>
@@ -603,7 +603,7 @@ export default function AdminCourseDetailPage() {
                                         value={editingChapter.description || ''}
                                         onChange={(e) => setEditingChapter({ ...editingChapter, description: e.target.value })}
                                         rows={3}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         placeholder="Chapter description..."
                                     />
                                 </div>
@@ -652,7 +652,7 @@ export default function AdminCourseDetailPage() {
                                         value={editingTask.description || ''}
                                         onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
                                         rows={3}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
                                         placeholder="Task description..."
                                     />
                                 </div>
@@ -661,7 +661,7 @@ export default function AdminCourseDetailPage() {
                                     <select
                                         value={editingTask.difficulty}
                                         onChange={(e) => setEditingTask({ ...editingTask, difficulty: e.target.value })}
-                                        className="w-full px-4 py-3 bg-[#1a1a2e] border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 [&>option]:bg-[#1a1a2e] [&>option]:text-white"
+                                        className="w-full px-4 py-3 bg-[#141414] border border-white/10 rounded-lg text-white focus:outline-none focus:border-brand-500 [&>option]:bg-[#141414] [&>option]:text-white"
                                     >
                                         <option value="Easy">Easy</option>
                                         <option value="Medium">Medium</option>

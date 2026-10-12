@@ -100,7 +100,7 @@ export default function CoursesPage() {
                                 placeholder="Search courses..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                                className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-brand-500 transition-colors"
                             />
                         </div>
                     </motion.div>
@@ -123,7 +123,7 @@ export default function CoursesPage() {
                                         key={category}
                                         onClick={() => setSelectedCategory(category)}
                                         className={`px-4 py-2 rounded-lg transition-all ${selectedCategory === category
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                             }`}
                                     >
@@ -145,7 +145,7 @@ export default function CoursesPage() {
                                         key={difficulty}
                                         onClick={() => setSelectedDifficulty(difficulty)}
                                         className={`px-4 py-2 rounded-lg transition-all ${selectedDifficulty === difficulty
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
                                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                             }`}
                                     >

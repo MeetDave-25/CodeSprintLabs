@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
+import PageLoader from '@/components/ui/PageLoader';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -29,14 +30,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requir
 
     // Show loading state
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-400">Loading...</p>
-                </div>
-            </div>
-        );
+        return <PageLoader />;
     }
 
     // Don't render children if not authenticated or wrong role

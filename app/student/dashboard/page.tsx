@@ -18,6 +18,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import Badge from '@/components/ui/Badge';
 import ProgressBar from '@/components/ui/ProgressBar';
 import Button from '@/components/ui/Button';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 
@@ -139,14 +140,24 @@ export default function StudentDashboard() {
     const stats = [
         { label: 'Tasks Completed', value: studentData.tasksCompleted, icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
         { label: 'Current Streak', value: `${studentData.streak} days`, icon: Zap, color: 'from-orange-500 to-red-500' },
-        { label: 'Total Points', value: studentData.points, icon: Award, color: 'from-purple-600 to-pink-600' },
+        { label: 'Total Points', value: studentData.points, icon: Award, color: 'from-brand-400 to-brand-300 on-neon' },
         { label: 'Progress', value: `${studentData.progress}%`, icon: TrendingUp, color: 'from-cyan-500 to-blue-500' },
     ];
 
     if (isLoading) {
         return (
-            <div className="p-6 flex items-center justify-center min-h-[400px]">
-                <div className="text-gray-400">Loading dashboard...</div>
+            <div className="p-6">
+                <div className="max-w-7xl mx-auto" aria-busy="true" aria-label="Loading dashboard">
+                    <Skeleton className="h-10 w-72 mb-3" />
+                    <Skeleton className="h-5 w-56 mb-8" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-36 rounded-xl" />)}
+                    </div>
+                    <div className="grid lg:grid-cols-3 gap-6">
+                        <Skeleton className="h-80 rounded-xl lg:col-span-2" />
+                        <Skeleton className="h-80 rounded-xl" />
+                    </div>
+                </div>
             </div>
         );
     }
@@ -196,7 +207,7 @@ export default function StudentDashboard() {
                     <div className="lg:col-span-2 space-y-6">
                         {/* Current Internship */}
                         <Link href={currentInternshipId ? `/student/my-internships/${currentInternshipId}` : '/internships'}>
-                            <Card className="cursor-pointer hover:border-purple-500/50 transition-all">
+                            <Card className="cursor-pointer hover:border-brand-500/50 transition-all">
                                 <CardHeader>
                                     <div className="flex items-center justify-between">
                                         <div>
@@ -228,7 +239,7 @@ export default function StudentDashboard() {
                                             <div className="text-xs text-gray-400">Remaining</div>
                                         </div>
                                     </div>
-                                    <div className="mt-4 text-sm text-center text-purple-400">
+                                    <div className="mt-4 text-sm text-center text-brand-400">
                                         Click to view all tasks →
                                     </div>
                                 </CardContent>
@@ -330,7 +341,7 @@ export default function StudentDashboard() {
                                 <div className="space-y-3">
                                     {upcomingDeadlines.map((deadline, index) => (
                                         <div key={index} className="flex items-start space-x-3">
-                                            <Calendar size={18} className="text-purple-500 mt-1" />
+                                            <Calendar size={18} className="text-brand-500 mt-1" />
                                             <div className="flex-1">
                                                 <div className="font-semibold text-sm">{deadline.task}</div>
                                                 <div className="text-xs text-gray-400">Due in {deadline.dueIn}</div>
@@ -346,9 +357,9 @@ export default function StudentDashboard() {
                         </Card>
 
                         {/* Achievement */}
-                        <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border-purple-500/30">
+                        <Card className="bg-gradient-to-br from-brand-600/20 to-brand-600/20 border-brand-500/30">
                             <CardContent className="p-6 text-center">
-                                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                                <div className="w-16 h-16 mx-auto mb-4 bg-brand-400 on-neon hover:bg-brand-300 rounded-full flex items-center justify-center">
                                     <Award size={32} className="text-white" />
                                 </div>
                                 <h3 className="font-bold mb-2">

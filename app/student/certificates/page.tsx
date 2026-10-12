@@ -94,11 +94,11 @@ export default function MyCertificatesPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                         >
-                            <Card className="hover:border-purple-500/50 transition-colors">
+                            <Card className="hover:border-brand-500/50 transition-colors">
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <div>
-                                            <div className="text-sm text-purple-400 mb-1">
+                                            <div className="text-sm text-brand-400 mb-1">
                                                 {cert.courseTitle ? 'Course Completion' : 'Internship Completion'}
                                             </div>
                                             <CardTitle className="text-xl mb-1">

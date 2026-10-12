@@ -88,7 +88,7 @@ export default function VerifyEmailPage() {
                     </Link>
 
                     <div className="mb-8">
-                        <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mb-6 text-purple-400">
+                        <div className="w-16 h-16 bg-brand-500/20 rounded-full flex items-center justify-center mb-6 text-brand-400">
                             <Mail size={32} />
                         </div>
                         <h1 className="text-3xl font-bold mb-2">Verify Your Email</h1>
@@ -130,7 +130,7 @@ export default function VerifyEmailPage() {
                                 type="button"
                                 onClick={handleResend}
                                 disabled={isResending}
-                                className="text-sm text-purple-400 hover:text-purple-300 transition-colors flex items-center justify-center gap-2 mx-auto disabled:opacity-50"
+                                className="text-sm text-brand-400 hover:text-brand-300 transition-colors flex items-center justify-center gap-2 mx-auto disabled:opacity-50"
                             >
                                 <RefreshCw size={14} className={isResending ? 'animate-spin' : ''} />
                                 {isResending ? 'Resending...' : 'Resend Code'}
@@ -146,7 +146,7 @@ export default function VerifyEmailPage() {
                 transition={{ duration: 0.6 }}
                 className="hidden lg:flex flex-1 items-center justify-center relative overflow-hidden"
             >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-pink-900/30"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-900/30 to-brand-900/30"></div>
                 <div className="relative z-10 w-full h-full">
                     <FloatingRocket />
                 </div>
