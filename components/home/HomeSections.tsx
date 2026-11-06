@@ -302,10 +302,10 @@ export function Founder() {
                 <FadeIn className="mx-auto flex max-w-3xl flex-col items-center gap-7 text-center md:flex-row md:text-left">
                     <div className="h-28 w-28 shrink-0 overflow-hidden rounded-full bg-cream-3 ring-4 ring-brand-400">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src="/founder/parth-arms-crossed.webp" alt={FOUNDER.name} className="h-auto w-full translate-y-1 scale-[1.9] object-cover object-top [transform-origin:50%_8%]" loading="lazy" />
+                        <img src="/founder/parth-new.png" alt={FOUNDER.name} className="h-full w-full object-cover object-top" loading="lazy" />
                     </div>
                     <div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-cream-muted">Founder</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-cream-muted">CEO & Founder</div>
                         <div className="mt-1 text-[28px] font-bold tracking-[-0.03em] text-ink-950">{FOUNDER.name}</div>
                         <p className="mt-1.5 text-[15px] leading-relaxed text-cream-muted">{FOUNDER.role}</p>
                         <a href={FOUNDER.portfolio} target="_blank" rel="noopener noreferrer" className="group mt-3 inline-flex items-center gap-1.5 text-[14px] font-medium text-ink-950 underline underline-offset-4">

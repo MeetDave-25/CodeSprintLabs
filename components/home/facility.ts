@@ -11,9 +11,9 @@ export const FACILITY = {
     phoneHref: 'tel:+918160901481',
 };
 
-// Founder credit (compact strip + footer). Role line from his public portfolio.
+// Founder credit (compact strip + footer).
 export const FOUNDER = {
     name: 'Parth D. Joshi',
-    role: 'Founder of CodeSprint Labs · Assistant Professor at L J College of Computer Applications, teaching since 2015.',
+    role: 'CEO & Founder of CodeSprint Labs',
     portfolio: 'https://parth-joshi-portfolio.vercel.app/',
 };

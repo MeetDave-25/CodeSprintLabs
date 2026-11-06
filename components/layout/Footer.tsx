@@ -73,8 +73,8 @@ const Footer: React.FC<{ variant?: 'light' | 'dark' }> = ({ variant = 'dark' }) 
                 </div>
 
                 {light && (
-                    <div className="select-none overflow-hidden px-4 pb-3 pt-10" aria-hidden>
-                        <div className="whitespace-nowrap text-center text-[12.8vw] font-bold leading-[0.85] tracking-[-0.06em] text-white/[0.07]">
+                    <div className="select-none overflow-hidden px-2 pb-3 pt-10" aria-hidden>
+                        <div className="text-center text-[12.8vw] font-bold leading-[0.85] tracking-[-0.06em] text-white/[0.07] break-keep">
                             CodeSprint<span className="text-brand-400/60">Labs</span>
                         </div>
                     </div>
