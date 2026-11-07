@@ -28,8 +28,6 @@ services:
         value: error
       - key: DB_CONNECTION
         value: pgsql
-      - key: DB_URL
-        value: "postgresql://neondb_owner:npg_kdDX2wa3uLWI@ep-green-base-b3tkxuoh-pooler.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&options=endpoint%3Dep-green-base-b3tkxuoh-pooler"
       - key: DB_PORT
         value: 5432
       - key: DB_DATABASE
