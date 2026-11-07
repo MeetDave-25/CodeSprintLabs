@@ -16,13 +16,6 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        if ($request->isMethod('get')) {
-            return response()->json([
-                'message' => 'Please submit credentials via POST to log in.',
-                'status' => 'ready'
-            ]);
-        }
-
         try {
             $request->validate([
                 'email' => 'required|email',

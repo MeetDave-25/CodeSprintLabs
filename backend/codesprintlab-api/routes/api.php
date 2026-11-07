@@ -34,7 +34,7 @@ Route::get('/health', function () {
 // Public routes
 Route::prefix('auth')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
-    Route::match(['get', 'post'], '/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login');
     Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:api');
     Route::get('/me', [LoginController::class, 'me'])->middleware('auth:api');
     
