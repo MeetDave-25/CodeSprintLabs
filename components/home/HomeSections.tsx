@@ -305,7 +305,7 @@ export function Founder() {
                         <img src="/founder/parth-new.png" alt={FOUNDER.name} className="h-full w-full object-cover object-top" loading="lazy" />
                     </div>
                     <div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-cream-muted">CEO & Founder</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-cream-muted">Founder & CEO</div>
                         <div className="mt-1 text-[28px] font-bold tracking-[-0.03em] text-ink-950">{FOUNDER.name}</div>
                         <p className="mt-1.5 text-[15px] leading-relaxed text-cream-muted">{FOUNDER.role}</p>
                         <a href={FOUNDER.portfolio} target="_blank" rel="noopener noreferrer" className="group mt-3 inline-flex items-center gap-1.5 text-[14px] font-medium text-ink-950 underline underline-offset-4">

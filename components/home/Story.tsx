@@ -68,7 +68,6 @@ const CHAPTERS: Chapter[] = [
         body: 'Every submission gets specific feedback, so tomorrow’s task is better than today’s.',
         bg: CREAM, fg: INK, rot: 2,
         main: { src: '/story/review.png', w: 536, h: 267, size: 'w-[min(90%,560px)]' },
-        extra: { layer: { src: '/story/mentor.png', w: 291, h: 900, size: 'w-full' }, from: 'left', wrapper: 'left-[-3%] bottom-[1%] w-[22%] max-w-[160px] lg:left-[-8%] lg:w-[24%]' },
     },
     {
         kicker: 'Certify',

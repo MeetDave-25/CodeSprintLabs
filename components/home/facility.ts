@@ -14,6 +14,6 @@ export const FACILITY = {
 // Founder credit (compact strip + footer).
 export const FOUNDER = {
     name: 'Parth D. Joshi',
-    role: 'CEO & Founder of CodeSprint Labs',
+    role: 'Founder & CEO of CodeSprint Labs',
     portfolio: 'https://parth-joshi-portfolio.vercel.app/',
 };
