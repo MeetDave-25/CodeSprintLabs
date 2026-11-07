@@ -16,51 +16,54 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
             ]);
-        }
 
-        // Check if user is blocked
-        if ($user->status === 'blocked') {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'message' => 'The provided credentials are incorrect.',
+                    'errors' => [
+                        'email' => ['The provided credentials are incorrect.']
+                    ]
+                ], 422);
+            }
+
+            // Check if user is blocked
+            if ($user->status === 'blocked') {
+                return response()->json([
+                    'message' => 'Your account has been blocked. Please contact support.',
+                ], 403);
+            }
+
+            // Create JWT token
+            $token = JWTAuth::fromUser($user);
+
             return response()->json([
-                'message' => 'Your account has been blocked. Please contact support.',
-            ], 403);
+                'message' => 'Login successful',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'avatar' => $user->avatar,
+                    'totalPoints' => $user->totalPoints,
+                ],
+                'token' => $token,
+                'token_type' => 'bearer',
+            ]);
+        } catch (\Throwable $e) {
+            \Log::error('Login error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            return response()->json([
+                'message' => 'Login failed: ' . $e->getMessage(),
+                'error' => $e->getMessage(),
+                'file' => basename($e->getFile()) . ':' . $e->getLine()
+            ], 500);
         }
-
-        // Check if verified (DISABLED FOR DEVELOPMENT - No SMTP needed)
-        // if (!$user->email_verified_at && !$user->provider_id) {
-        //      return response()->json([
-        //          'message' => 'Email not verified. Please verify your email.',
-        //          'action' => 'verify_email',
-        //          'email' => $user->email
-        //      ], 403);
-        // }
-
-        // Create JWT token
-        $token = JWTAuth::fromUser($user);
-
-        return response()->json([
-            'message' => 'Login successful',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'avatar' => $user->avatar,
-                'totalPoints' => $user->totalPoints,
-            ],
-            'token' => $token,
-            'token_type' => 'bearer',
-        ]);
     }
 
     /**
