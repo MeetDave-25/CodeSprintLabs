@@ -33,24 +33,6 @@ class TempAdminSeeder extends Seeder
             'password' => Hash::make('Admin@123'), 
         ]);
 
-        // Also ensure admin@codesprintlab.com exists
-        $admin2 = User::firstOrCreate(
-            ['email' => 'admin@codesprintlab.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('Admin@123'),
-                'role' => 'admin',
-                'email_verified_at' => now(),
-                'status' => 'active',
-            ]
-        );
-
-        $admin2->update([
-            'role' => 'admin',
-            'email_verified_at' => now(),
-            'password' => Hash::make('Admin@123'),
-        ]);
-
         // Create or Update Student User
         $student = User::firstOrCreate(
             ['email' => 'student@codesprintlab.com'],
@@ -71,7 +53,6 @@ class TempAdminSeeder extends Seeder
 
         $this->command->info('User accounts seeded successfully!');
         $this->command->info('Admin: admin@codesprintlabs.com / Admin@123');
-        $this->command->info('Admin: admin@codesprintlab.com / Admin@123');
         $this->command->info('Student: student@codesprintlab.com / Student@123');
     }
 }
