@@ -17,21 +17,38 @@ class TempAdminSeeder extends Seeder
     {
         // Create or Update Admin User
         $admin = User::firstOrCreate(
-            ['email' => 'admin@codesprintlab.com'],
+            ['email' => 'admin@codesprintlabs.com'],
             [
                 'name' => 'Admin User',
-                'password' => 'password',
+                'password' => Hash::make('Admin@123'),
                 'role' => 'admin',
                 'email_verified_at' => now(),
                 'status' => 'active',
             ]
         );
 
-        // Ensure critical fields are set even if user existed but was different
         $admin->update([
             'role' => 'admin',
             'email_verified_at' => now(),
-            'password' => 'password', 
+            'password' => Hash::make('Admin@123'), 
+        ]);
+
+        // Also ensure admin@codesprintlab.com exists
+        $admin2 = User::firstOrCreate(
+            ['email' => 'admin@codesprintlab.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('Admin@123'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+                'status' => 'active',
+            ]
+        );
+
+        $admin2->update([
+            'role' => 'admin',
+            'email_verified_at' => now(),
+            'password' => Hash::make('Admin@123'),
         ]);
 
         // Create or Update Student User
@@ -39,7 +56,7 @@ class TempAdminSeeder extends Seeder
             ['email' => 'student@codesprintlab.com'],
             [
                 'name' => 'Student User',
-                'password' => 'password',
+                'password' => Hash::make('Student@123'),
                 'role' => 'student',
                 'email_verified_at' => now(),
                 'status' => 'active',
@@ -49,11 +66,12 @@ class TempAdminSeeder extends Seeder
         $student->update([
             'role' => 'student',
             'email_verified_at' => now(),
-            'password' => 'password',
+            'password' => Hash::make('Student@123'),
         ]);
 
         $this->command->info('User accounts seeded successfully!');
-        $this->command->info('Admin: admin@codesprintlab.com / password');
-        $this->command->info('Student: student@codesprintlab.com / password');
+        $this->command->info('Admin: admin@codesprintlabs.com / Admin@123');
+        $this->command->info('Admin: admin@codesprintlab.com / Admin@123');
+        $this->command->info('Student: student@codesprintlab.com / Student@123');
     }
 }
