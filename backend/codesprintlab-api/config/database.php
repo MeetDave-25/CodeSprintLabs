@@ -95,7 +95,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => env('DB_SSLMODE', 'require'),
+            'sslmode' => trim(rtrim(env('DB_SSLMODE', 'require'), '_"\' ')),
             'options' => [],
         ],
 
