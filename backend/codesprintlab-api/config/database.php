@@ -96,7 +96,12 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'require'),
-            'neon_endpoint' => env('DB_NEON_ENDPOINT', ''),
+            // Neon PostgreSQL: pass endpoint in PDO options to fix SNI on older libpq
+            'options' => env('DB_NEON_ENDPOINT') ? [
+                PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
+            ] : [],
+            // Neon needs endpoint in connection options for environments without SNI support
+            'connect_via_database' => env('DB_NEON_ENDPOINT', null),
         ],
 
         'sqlsrv' => [
