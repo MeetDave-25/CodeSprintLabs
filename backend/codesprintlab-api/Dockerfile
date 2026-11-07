@@ -26,17 +26,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files first for better caching
-COPY composer.json composer.lock ./
-
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# Copy the rest of the application
+# Copy all application files
 COPY . .
 
-# Run composer scripts after copying all files
-RUN composer dump-autoload --optimize
+# Install dependencies and optimize autoloader with ignore platform reqs
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-mongodb
 
 # Cache config and routes
 RUN php artisan config:clear && \
