@@ -43,10 +43,16 @@ export default function LoginPage() {
             const fallback = role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
             router.push(getReturnUrl(role) ?? fallback);
         } catch (err: any) {
+            console.error('Login error details:', err);
             if (err.response?.data?.action === 'verify_email') {
                 router.push(`/auth/verify-email?email=${encodeURIComponent(err.response.data.email)}`);
             } else {
-                setError(err.response?.data?.message || 'Login failed. Please check your details and try again.');
+                const detailedError =
+                    err.response?.data?.message ||
+                    err.response?.data?.error ||
+                    (err.message ? `${err.name}: ${err.message}` : null) ||
+                    'Login failed. Please check your details and try again.';
+                setError(detailedError);
             }
             setIsLoading(false);
         }
