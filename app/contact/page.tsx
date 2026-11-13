@@ -23,14 +23,19 @@ export default function ContactPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState('');
     const [supportEmail, setSupportEmail] = useState('support@codesprintlabs.com');
+    const [phone, setPhone] = useState('+91 81609 01481');
+    const [address, setAddress] = useState('Bangalore, Karnataka, India');
     const router = useRouter();
 
     useEffect(() => {
         const fetchSettings = async () => {
             try {
                 const response = await publicService.getSettings();
-                if (response.data && response.data.data && response.data.data.supportEmail) {
-                    setSupportEmail(response.data.data.supportEmail);
+                const s = response.data?.data;
+                if (s) {
+                    if (s.supportEmail) setSupportEmail(s.supportEmail);
+                    if (s.phone) setPhone(s.phone);
+                    if (s.address) setAddress(s.address);
                 }
             } catch (error) {
                 console.error('Failed to fetch settings:', error);
@@ -85,13 +90,13 @@ export default function ContactPage() {
         {
             icon: Phone,
             title: 'Phone',
-            value: '+91 81609 01481',
-            link: 'tel:+918160901481',
+            value: phone,
+            link: phone ? `tel:${phone.replace(/\s+/g, '')}` : null,
         },
         {
             icon: MapPin,
             title: 'Address',
-            value: 'Bangalore, Karnataka, India',
+            value: address,
             link: null,
         },
     ];

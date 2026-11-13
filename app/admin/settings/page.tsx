@@ -18,6 +18,8 @@ interface PlatformSettings {
     siteName: string;
     siteEmail: string;
     supportEmail: string;
+    phone: string;
+    address: string;
     enableNotifications: boolean;
     enableEmailAlerts: boolean;
     maintenanceMode: boolean;
@@ -36,6 +38,8 @@ export default function AdminSettingsPage() {
         siteName: 'CodeSprint Labs',
         siteEmail: 'admin@codesprintlabs.com',
         supportEmail: 'support@codesprintlabs.com',
+        phone: '',
+        address: '',
         enableNotifications: true,
         enableEmailAlerts: true,
         maintenanceMode: false,
@@ -270,6 +274,18 @@ export default function AdminSettingsPage() {
                             type="email"
                             value={settings.supportEmail}
                             onChange={(e) => setSettings({ ...settings, supportEmail: e.target.value })}
+                        />
+                        <Input
+                            label="Contact Phone"
+                            value={settings.phone}
+                            onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
+                            placeholder="+91 00000 00000"
+                        />
+                        <Input
+                            label="Address"
+                            value={settings.address}
+                            onChange={(e) => setSettings({ ...settings, address: e.target.value })}
+                            placeholder="City, State, Country"
                         />
                     </CardContent>
                 </Card>

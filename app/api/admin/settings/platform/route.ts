@@ -23,6 +23,8 @@ export async function GET(request: NextRequest) {
                         siteName: r.siteName || r.platformName || 'CodeSprint Labs',
                         siteEmail: r.siteEmail || r.platformEmail || 'admin@codesprintlabs.com',
                         supportEmail: r.supportEmail || 'support@codesprintlabs.com',
+                        phone: r.phone || '',
+                        address: r.address || '',
                         enableNotifications: r.enableNotifications ?? true,
                         enableEmailAlerts: r.enableEmailAlerts ?? true,
                         maintenanceMode: r.maintenanceMode ?? false,
@@ -38,6 +40,8 @@ export async function GET(request: NextRequest) {
                 siteName: 'CodeSprint Labs',
                 siteEmail: 'admin@codesprintlabs.com',
                 supportEmail: 'support@codesprintlabs.com',
+                phone: '',
+                address: '',
                 enableNotifications: true,
                 enableEmailAlerts: true,
                 maintenanceMode: false,
@@ -77,6 +81,8 @@ export async function PUT(request: NextRequest) {
                     "siteName" TEXT,
                     "siteEmail" TEXT,
                     "supportEmail" TEXT,
+                    "phone" TEXT,
+                    "address" TEXT,
                     "enableNotifications" BOOLEAN DEFAULT true,
                     "enableEmailAlerts" BOOLEAN DEFAULT true,
                     "maintenanceMode" BOOLEAN DEFAULT false,
@@ -84,6 +90,10 @@ export async function PUT(request: NextRequest) {
                     "updatedAt" TIMESTAMPTZ DEFAULT NOW()
                 )
             `;
+
+            // Add columns if table existed without them
+            await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS "phone" TEXT`.catch(() => {});
+            await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS "address" TEXT`.catch(() => {});
 
             const existing = await sql`SELECT id FROM settings LIMIT 1`;
 
@@ -93,6 +103,8 @@ export async function PUT(request: NextRequest) {
                         "siteName" = COALESCE(${resolvedSiteName}, "siteName"),
                         "siteEmail" = COALESCE(${resolvedSiteEmail}, "siteEmail"),
                         "supportEmail" = COALESCE(${supportEmail ?? null}, "supportEmail"),
+                        "phone" = COALESCE(${body.phone ?? null}, "phone"),
+                        "address" = COALESCE(${body.address ?? null}, "address"),
                         "enableNotifications" = COALESCE(${enableNotifications ?? null}, "enableNotifications"),
                         "enableEmailAlerts" = COALESCE(${enableEmailAlerts ?? null}, "enableEmailAlerts"),
                         "maintenanceMode" = COALESCE(${maintenanceMode ?? null}, "maintenanceMode"),
@@ -102,8 +114,8 @@ export async function PUT(request: NextRequest) {
                 `;
             } else {
                 await sql`
-                    INSERT INTO settings ("siteName", "siteEmail", "supportEmail", "enableNotifications", "enableEmailAlerts", "maintenanceMode", "allowRegistration", "updatedAt")
-                    VALUES (${resolvedSiteName}, ${resolvedSiteEmail}, ${supportEmail ?? null}, ${enableNotifications ?? true}, ${enableEmailAlerts ?? true}, ${maintenanceMode ?? false}, ${allowRegistration ?? true}, NOW())
+                    INSERT INTO settings ("siteName", "siteEmail", "supportEmail", "phone", "address", "enableNotifications", "enableEmailAlerts", "maintenanceMode", "allowRegistration", "updatedAt")
+                    VALUES (${resolvedSiteName}, ${resolvedSiteEmail}, ${supportEmail ?? null}, ${body.phone ?? null}, ${body.address ?? null}, ${enableNotifications ?? true}, ${enableEmailAlerts ?? true}, ${maintenanceMode ?? false}, ${allowRegistration ?? true}, NOW())
                 `;
             }
         } catch (dbError: any) {

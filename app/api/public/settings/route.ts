@@ -6,6 +6,8 @@ export const runtime = 'nodejs';
 const defaults = {
     platformName: 'CodeSprint Labs',
     supportEmail: 'support@codesprintlabs.com',
+    phone: '',
+    address: '',
     allowRegistrations: true,
     maintenanceMode: false,
 };
