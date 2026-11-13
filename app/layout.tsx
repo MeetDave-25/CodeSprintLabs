@@ -69,7 +69,7 @@ export const viewport: Viewport = {
     colorScheme: 'dark',
 };
 
-const GTM_ID = 'GTM-PD4Z7D6D';
+const GTM_ID = 'GTM-P6MMB4TH';
 
 export default function RootLayout({
     children,
