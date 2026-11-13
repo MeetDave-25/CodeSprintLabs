@@ -33,6 +33,19 @@ const nextConfig = {
         ];
     },
 
+    // Rewrites: local app/api/* routes execute first; unmigrated endpoints proxy cleanly without browser CORS
+    async rewrites() {
+        const backendUrl = process.env.BACKEND_API_URL || 'https://codesprintlabs.onrender.com';
+        return {
+            fallback: [
+                {
+                    source: '/api/:path*',
+                    destination: `${backendUrl}/api/:path*`,
+                },
+            ],
+        };
+    },
+
     webpack: (config) => {
         config.externals.push({
             'utf-8-validate': 'commonjs utf-8-validate',

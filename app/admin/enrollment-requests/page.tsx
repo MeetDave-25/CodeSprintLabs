@@ -141,7 +141,7 @@ export default function AdminEnrollmentRequestsPage() {
                     responseType: 'blob'
                 });
                 
-                const contentType = blobResponse.headers['content-type'] || 'application/pdf';
+                const contentType = String(blobResponse.headers['content-type'] || 'application/pdf');
                 const blob = new Blob([blobResponse.data], { type: contentType });
                 const url = window.URL.createObjectURL(blob);
                 window.open(url, '_blank');
@@ -177,7 +177,7 @@ export default function AdminEnrollmentRequestsPage() {
                     responseType: 'blob'
                 });
                 
-                const contentType = blobResponse.headers['content-type'] || 'application/pdf';
+                const contentType = String(blobResponse.headers['content-type'] || 'application/pdf');
                 const blob = new Blob([blobResponse.data], { type: contentType });
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
