@@ -22,8 +22,8 @@ export async function POST(
                 "userId" TEXT NOT NULL,
                 "internshipId" TEXT NOT NULL,
                 status TEXT NOT NULL DEFAULT 'pending',
-                "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
         `.catch(() => {});
         // If the table was previously created with UUID columns, convert them to TEXT
@@ -65,7 +65,7 @@ export async function POST(
             INSERT INTO enrollment_requests (
                 "userId", "internshipId", status,
                 "resumeGoogleDriveUrl", "coverLetter",
-                "createdAt", "updatedAt"
+                created_at, updated_at
             )
             VALUES (
                 ${String(authUser.id)}, ${String(internshipId)}, 'pending',

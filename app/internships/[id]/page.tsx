@@ -449,8 +449,8 @@ export default function InternshipDetailPage() {
 
             {/* Enrollment Request Modal */}
             {showRequestModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-[#0f0f13] border border-white/10 rounded-xl p-6 w-full max-w-md">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className="bg-[#0f0f13] border border-white/10 rounded-xl p-6 w-full max-w-md mx-auto my-auto">
                         <h2 className="text-2xl font-bold mb-2">Request Enrollment</h2>
                         <p className="text-gray-400 mb-4">
                             Submit your enrollment request for <span className="text-brand-400">{internship.title}</span>
