@@ -352,7 +352,11 @@ export default function AboutPage() {
                                         <CardHeader>
                                             <CardTitle>{member.name}</CardTitle>
                                             <div className="text-brand-400 font-semibold mb-2">{member.role}</div>
-                                            {member.bio && <CardDescription>{member.bio}</CardDescription>}
+                                            {member.bio && (
+                                                <CardDescription className="line-clamp-3">
+                                                    {member.bio}
+                                                </CardDescription>
+                                            )}
                                             
                                             {/* Social Links */}
                                             {(member.linkedin || member.github || member.twitter) && (

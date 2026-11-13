@@ -72,3 +72,93 @@ export function formatTask(t: any) {
         updated_at: t.updated_at,
     };
 }
+
+export function formatCourse(c: any) {
+    if (!c) return null;
+    return {
+        id: String(c.id),
+        _id: String(c.id),
+        title: c.title || '',
+        description: c.description || '',
+        instructor: c.instructor || '',
+        price: c.price !== null && c.price !== undefined ? Number(c.price) : 0,
+        duration: c.duration || '',
+        level: c.level || 'Beginner',
+        category: c.category || 'General',
+        thumbnail: c.thumbnail || null,
+        enrolled: Number(c.enrolled) || 0,
+        rating: c.rating !== null && c.rating !== undefined ? Number(c.rating) : 0,
+        modules: safeJson(c.modules, []),
+        isActive: Boolean(c.isActive),
+        createdBy: c.createdBy || null,
+        created_at: c.created_at,
+        updated_at: c.updated_at,
+    };
+}
+
+export function formatSubmission(s: any) {
+    if (!s) return null;
+    return {
+        id: String(s.id),
+        _id: String(s.id),
+        studentId: s.studentId ? String(s.studentId) : null,
+        studentName: s.studentName || '',
+        taskId: s.taskId ? String(s.taskId) : null,
+        taskTitle: s.taskTitle || '',
+        githubLink: s.githubLink || null,
+        fileUrl: s.fileUrl || null,
+        screenshotUrl: s.screenshotUrl || null,
+        notes: s.notes || null,
+        submittedAt: s.submittedAt ? new Date(s.submittedAt).toISOString() : null,
+        status: s.status || 'pending',
+        feedback: s.feedback || null,
+        reviewedBy: s.reviewedBy ? String(s.reviewedBy) : null,
+        reviewedAt: s.reviewedAt ? new Date(s.reviewedAt).toISOString() : null,
+        pointsAwarded: Number(s.pointsAwarded) || 0,
+        created_at: s.created_at,
+        updated_at: s.updated_at,
+    };
+}
+
+export function formatCertificate(cert: any) {
+    if (!cert) return null;
+    return {
+        id: String(cert.id),
+        _id: String(cert.id),
+        studentId: cert.studentId ? String(cert.studentId) : null,
+        studentName: cert.studentName || '',
+        internshipId: cert.internshipId ? String(cert.internshipId) : null,
+        internshipTitle: cert.internshipTitle || null,
+        courseId: cert.courseId ? String(cert.courseId) : null,
+        courseTitle: cert.courseTitle || null,
+        issueDate: cert.issueDate ? new Date(cert.issueDate).toISOString() : null,
+        certificateUrl: cert.certificateUrl || null,
+        verificationCode: cert.verificationCode || '',
+        issuedBy: cert.issuedBy || 'CodeSprint Labs',
+        marks: cert.marks !== null && cert.marks !== undefined ? Number(cert.marks) : null,
+        grade: cert.grade || null,
+        created_at: cert.created_at,
+        updated_at: cert.updated_at,
+    };
+}
+
+export function formatTeamMember(m: any) {
+    if (!m) return null;
+    return {
+        id: String(m.id),
+        _id: String(m.id),
+        name: m.name || '',
+        role: m.role || '',
+        bio: m.bio || '',
+        email: m.email || '',
+        phone: m.phone || '',
+        image: m.image || '',
+        linkedin: m.linkedin || '',
+        github: m.github || '',
+        twitter: m.twitter || '',
+        gradient: m.gradient || 'from-purple-600 to-pink-600',
+        order: Number(m.order) || 0,
+        isActive: Boolean(m.isActive),
+    };
+}
+
