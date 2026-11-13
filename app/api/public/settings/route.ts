@@ -5,9 +5,9 @@ export const runtime = 'nodejs';
 
 const defaults = {
     platformName: 'CodeSprint Labs',
-    supportEmail: 'support@codesprintlabs.com',
-    phone: '',
-    address: '',
+    supportEmail: 'codesprintlabs@gmail.com',
+    phone: '+91 81609 01481',
+    address: 'Ahmedabad, Gujarat, India',
     allowRegistrations: true,
     maintenanceMode: false,
 };

@@ -22,9 +22,9 @@ export default function ContactPage() {
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState('');
-    const [supportEmail, setSupportEmail] = useState('support@codesprintlabs.com');
+    const [supportEmail, setSupportEmail] = useState('codesprintlabs@gmail.com');
     const [phone, setPhone] = useState('+91 81609 01481');
-    const [address, setAddress] = useState('Bangalore, Karnataka, India');
+    const [address, setAddress] = useState('Ahmedabad, Gujarat, India');
     const router = useRouter();
 
     useEffect(() => {
