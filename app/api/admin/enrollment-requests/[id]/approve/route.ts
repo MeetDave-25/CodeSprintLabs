@@ -15,7 +15,7 @@ export async function POST(
         }
 
         // Ensure optional columns exist
-        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "approvedBy" UUID`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "approvedBy" TEXT`.catch(() => {});
         await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "approvedAt" TIMESTAMPTZ`.catch(() => {});
         await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "adminNote" TEXT`.catch(() => {});
         await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "startDate" TIMESTAMPTZ`.catch(() => {});
@@ -23,7 +23,12 @@ export async function POST(
         await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "mouGenerated" BOOLEAN DEFAULT false`.catch(() => {});
         await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "offerLetterGenerated" BOOLEAN DEFAULT false`.catch(() => {});
 
-        const rows = await sql`SELECT * FROM enrollment_requests WHERE id = ${params.id} LIMIT 1`;
+        const rows = await sql`
+            SELECT e.*, i.duration as "internshipDuration"
+            FROM enrollment_requests e
+            LEFT JOIN internships i ON i.id::text = e."internshipId"::text
+            WHERE e.id = ${params.id} LIMIT 1
+        `;
         if (!rows || rows.length === 0) {
             return NextResponse.json({ message: 'Enrollment request not found' }, { status: 404 });
         }
@@ -36,23 +41,23 @@ export async function POST(
         const body = await request.json().catch(() => ({}));
         const note = body.note || '';
 
-        // Calculate start and end dates
+        // Calculate start and end dates from internship duration
         const startDate = new Date();
-        const durationMatch = String(enrollment.duration || '4').match(/\d+/);
+        const durationMatch = String(enrollment.internshipDuration || enrollment.duration || '4 weeks').match(/\d+/);
         const durationWeeks = durationMatch ? parseInt(durationMatch[0]) : 4;
         const endDate = new Date(startDate.getTime() + durationWeeks * 7 * 24 * 60 * 60 * 1000);
 
         const updated = await sql`
             UPDATE enrollment_requests SET
                 status = 'approved',
-                "approvedBy" = ${authUser.id},
+                "approvedBy" = ${String(authUser.id)},
                 "approvedAt" = NOW(),
                 "adminNote" = ${note},
                 "startDate" = ${startDate.toISOString()},
                 "endDate" = ${endDate.toISOString()},
                 "mouGenerated" = true,
                 "offerLetterGenerated" = true,
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${params.id}
             RETURNING *
         `;

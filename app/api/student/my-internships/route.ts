@@ -18,14 +18,16 @@ export async function GET(request: NextRequest) {
                 e."startDate", e."endDate", e."approvedAt",
                 i.id, i.title, i.description, i."companyName", i.type, i.location,
                 i.stipend, i.duration, i.tags,
-                (SELECT COUNT(*) FROM tasks t WHERE t."internshipId" = i.id::text AND t."isActive" = true) as "totalTasks",
+                (SELECT COUNT(*) FROM tasks t WHERE t."internshipId"::text = i.id::text AND t."isActive" = true) as "totalTasks",
                 (SELECT COUNT(*) FROM submissions s
                     JOIN tasks t2 ON t2.id::text = s."taskId"::text
-                    WHERE t2."internshipId" = i.id::text AND s."userId" = ${authUser.id} AND s.status = 'approved'
+                    WHERE t2."internshipId"::text = i.id::text
+                      AND s."studentId"::text = ${String(authUser.id)}
+                      AND s.status = 'approved'
                 ) as "completedTasks"
             FROM enrollment_requests e
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-            WHERE e."userId" = ${authUser.id} AND e.status = 'approved'
+            WHERE e."userId"::text = ${String(authUser.id)} AND e.status = 'approved'
             ORDER BY e."approvedAt" DESC
         `;
 

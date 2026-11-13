@@ -35,7 +35,7 @@ export async function POST(
                 status = 'rejected',
                 "rejectedAt" = NOW(),
                 "adminNote" = ${note},
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${params.id}
             RETURNING *
         `;

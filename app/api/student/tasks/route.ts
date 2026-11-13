@@ -14,12 +14,12 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const source = searchParams.get('source'); // 'internship' | 'course'
 
-        // Get student's enrolled internship IDs
+        // Get student's enrolled internship IDs (userId stored as TEXT)
         const enrollments = await sql`
             SELECT "internshipId" FROM enrollment_requests
-            WHERE "userId" = ${authUser.id} AND status = 'approved'
+            WHERE "userId"::text = ${String(authUser.id)} AND status = 'approved'
         `;
-        const internshipIds = enrollments.map((e: any) => e.internshipId);
+        const internshipIds = enrollments.map((e: any) => String(e.internshipId));
 
         let tasks: any[] = [];
 
@@ -27,10 +27,10 @@ export async function GET(request: NextRequest) {
             const internshipTasks = await sql`
                 SELECT t.*, i.title as "internshipTitle"
                 FROM tasks t
-                LEFT JOIN internships i ON i.id::text = t."internshipId"
-                WHERE t."internshipId" = ANY(${internshipIds}::text[])
+                LEFT JOIN internships i ON i.id::text = t."internshipId"::text
+                WHERE t."internshipId"::text = ANY(${internshipIds})
                 AND t."isActive" = true
-                ORDER BY t."order" ASC
+                ORDER BY t."dayNumber" ASC NULLS LAST, t.id ASC
             `;
             tasks = [...tasks, ...internshipTasks.map((t: any) => ({ ...t, source: 'internship' }))];
         }

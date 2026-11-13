@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
             FROM enrollment_requests e
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
             WHERE e."userId" = ${authUser.id}
-            ORDER BY e."createdAt" DESC
+            ORDER BY e.created_at DESC
         `;
 
         return NextResponse.json({ status: 'success', data: rows });

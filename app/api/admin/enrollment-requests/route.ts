@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
             WHERE 1=1
             ${status && status !== 'all' ? sql`AND e.status = ${status}` : sql``}
             ${internshipId ? sql`AND e."internshipId" = ${internshipId}` : sql``}
-            ORDER BY e."createdAt" DESC
+            ORDER BY e.created_at DESC
         `;
 
         return NextResponse.json({ status: 'success', data: rows });
