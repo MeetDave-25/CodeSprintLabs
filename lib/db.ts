@@ -11,3 +11,4 @@ const databaseUrl =
  */
 export const sql = neon(databaseUrl);
 export default sql;
+
