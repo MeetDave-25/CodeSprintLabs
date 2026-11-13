@@ -50,6 +50,8 @@ interface Internship {
     enrolled: number;
     isActive: boolean;
     startDate: string;
+    endDate?: string;
+    applicationDeadline?: string;
     description: string;
     requirements: string[];
     languages: string[];
@@ -226,6 +228,9 @@ export default function AdminInternshipDetailPage() {
         try {
             const updatedData = {
                 ...formData,
+                startDate: formData.startDate ? formData.startDate : null,
+                endDate: formData.endDate ? formData.endDate : null,
+                applicationDeadline: formData.applicationDeadline ? formData.applicationDeadline : null,
                 requirements,
                 whatYouWillLearn,
                 languages,
@@ -311,6 +316,9 @@ export default function AdminInternshipDetailPage() {
             try {
                 const updatedData = {
                     ...formData,
+                    startDate: formData.startDate ? formData.startDate : null,
+                    endDate: formData.endDate ? formData.endDate : null,
+                    applicationDeadline: formData.applicationDeadline ? formData.applicationDeadline : null,
                     requirements,
                     whatYouWillLearn,
                     languages,
@@ -367,6 +375,9 @@ export default function AdminInternshipDetailPage() {
             try {
                 const updatedData = {
                     ...formData,
+                    startDate: formData.startDate ? formData.startDate : null,
+                    endDate: formData.endDate ? formData.endDate : null,
+                    applicationDeadline: formData.applicationDeadline ? formData.applicationDeadline : null,
                     requirements,
                     whatYouWillLearn,
                     languages,

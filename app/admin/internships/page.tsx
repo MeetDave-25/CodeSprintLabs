@@ -82,6 +82,12 @@ export default function AdminInternshipsPage() {
         try {
             const payload = {
                 ...newInternshipData,
+                location: newInternshipData.location.trim() || 'Remote',
+                stipend: newInternshipData.stipend.trim() || 'Unpaid',
+                type: newInternshipData.type || 'Remote',
+                startDate: newInternshipData.startDate ? newInternshipData.startDate : null,
+                endDate: newInternshipData.endDate ? newInternshipData.endDate : null,
+                applicationDeadline: newInternshipData.applicationDeadline ? newInternshipData.applicationDeadline : null,
                 price: newInternshipData.price ? parseFloat(newInternshipData.price) : 0,
                 maxStudents: 100,
                 isActive: true,

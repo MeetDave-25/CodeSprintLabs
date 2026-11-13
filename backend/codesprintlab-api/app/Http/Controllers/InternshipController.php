@@ -48,12 +48,12 @@ class InternshipController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'companyName' => 'required|string|max:255',
-            'location' => 'required|string',
-            'type' => 'required|string', // e.g. Remote, On-site
-            'stipend' => 'required|string',
-            'applicationDeadline' => 'nullable|date',
-            'startDate' => 'nullable|date',
-            'endDate' => 'nullable|date',
+            'location' => 'nullable|string',
+            'type' => 'nullable|string', // e.g. Remote, On-site
+            'stipend' => 'nullable|string',
+            'applicationDeadline' => 'nullable',
+            'startDate' => 'nullable',
+            'endDate' => 'nullable',
             'domain' => 'required|string',
             'description' => 'nullable|string',
             'duration' => 'required|string',
@@ -76,9 +76,27 @@ class InternshipController extends Controller
         $internshipData = $request->except('tasks');
         
         // Set defaults
-        $internshipData['description'] = $internshipData['description'] ?? 'No description provided';
-        $internshipData['difficulty'] = $internshipData['difficulty'] ?? 'Beginner';
-        $internshipData['maxStudents'] = $internshipData['maxStudents'] ?? 100;
+        $internshipData['location'] = !empty($internshipData['location']) ? $internshipData['location'] : 'Remote';
+        $internshipData['type'] = !empty($internshipData['type']) ? $internshipData['type'] : 'Remote';
+        $internshipData['stipend'] = !empty($internshipData['stipend']) ? $internshipData['stipend'] : 'Unpaid';
+        $internshipData['description'] = !empty($internshipData['description']) ? $internshipData['description'] : 'No description provided';
+        $internshipData['difficulty'] = !empty($internshipData['difficulty']) ? $internshipData['difficulty'] : 'Beginner';
+        $internshipData['maxStudents'] = !empty($internshipData['maxStudents']) ? (int)$internshipData['maxStudents'] : 100;
+        $internshipData['price'] = isset($internshipData['price']) && $internshipData['price'] !== '' ? (float)$internshipData['price'] : 0;
+
+        // Ensure date fields are null if empty string
+        foreach (['startDate', 'endDate', 'applicationDeadline'] as $dateField) {
+            if (empty($internshipData[$dateField])) {
+                $internshipData[$dateField] = null;
+            }
+        }
+
+        // Ensure array fields are arrays
+        foreach (['languages', 'skills', 'responsibilities', 'requirements', 'whatYouWillLearn', 'syllabus'] as $arrField) {
+            if (!isset($internshipData[$arrField]) || !is_array($internshipData[$arrField])) {
+                $internshipData[$arrField] = [];
+            }
+        }
         
         try {
             // Get creator ID safely
@@ -148,6 +166,14 @@ class InternshipController extends Controller
         }
 
         $internshipData = $request->except('tasks');
+
+        // Ensure date fields are null if empty string
+        foreach (['startDate', 'endDate', 'applicationDeadline'] as $dateField) {
+            if (array_key_exists($dateField, $internshipData) && empty($internshipData[$dateField])) {
+                $internshipData[$dateField] = null;
+            }
+        }
+
         $internship->update($internshipData);
 
         // Handle Tasks Sync
@@ -164,24 +190,24 @@ class InternshipController extends Controller
             $keepTaskIds = array_filter(array_column($tasks, 'id'), fn($id) => !str_starts_with($id, 't')); // Filter out temp IDs like "t1"
 
             // Delete tasks not in the list
-            $internship->tasks()->whereNotIn('_id', $keepTaskIds)->delete();
+            $internship->tasks()->whereNotIn('id', $keepTaskIds)->delete();
 
             foreach ($tasks as $taskData) {
                 $taskData['internshipId'] = $internship->id;
                 $taskData['source'] = 'internship';
 
                 if (isset($taskData['id']) && !str_starts_with($taskData['id'], 't')) {
-                    // Update existing task - remove id to avoid MongoDB _id conflict
                     $taskId = $taskData['id'];
                     unset($taskData['id']);
-                    unset($taskData['_id']); // Also remove _id if present
-                    unset($taskData['status']); // Remove legacy status field
-                    \App\Models\Task::where('_id', $taskId)->update($taskData);
+                    unset($taskData['_id']);
+                    unset($taskData['status']);
+                    \App\Models\Task::where('id', $taskId)->update($taskData);
                     Log::info('Updated existing task', ['taskId' => $taskId]);
                 } else {
                     // Create new task (remove temp ID)
                     unset($taskData['id']);
-                    unset($taskData['status']); // Remove legacy status field
+                    unset($taskData['_id']);
+                    unset($taskData['status']);
                     $newTask = \App\Models\Task::create($taskData);
                     Log::info('Created new task', ['newTaskId' => $newTask->id, 'title' => $newTask->title]);
                 }
