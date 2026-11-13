@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Edit, Trash2, CheckCircle, Copy, Send, X, Loader2 } from 'lucide-react';
+import { Plus, Search, Trash2, CheckCircle, Copy, Send, X, Loader2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -54,6 +54,10 @@ export default function AdminTaskLibraryPage() {
 
     // Assignment data
     const [selectedInternshipId, setSelectedInternshipId] = useState('');
+
+    // Bulk select
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
     // Fetch tasks and internships
     useEffect(() => {
@@ -239,6 +243,43 @@ export default function AdminTaskLibraryPage() {
         }
     };
 
+    const handleBulkDelete = async (deleteAll = false) => {
+        const count = deleteAll ? tasks.length : selectedIds.size;
+        if (!confirm(`Are you sure you want to delete ${deleteAll ? 'ALL' : count} task(s)? This cannot be undone.`)) return;
+        setIsBulkDeleting(true);
+        try {
+            await api.delete('/admin/tasks/bulk-delete', {
+                data: deleteAll ? { deleteAll: true } : { ids: Array.from(selectedIds) },
+            });
+            if (deleteAll) {
+                setTasks([]);
+            } else {
+                setTasks(prev => prev.filter(t => !selectedIds.has(t.id)));
+            }
+            setSelectedIds(new Set());
+        } catch (error: any) {
+            alert(error.response?.data?.message || 'Failed to delete tasks');
+        } finally {
+            setIsBulkDeleting(false);
+        }
+    };
+
+    const toggleSelect = (id: string) => {
+        setSelectedIds(prev => {
+            const n = new Set(prev);
+            n.has(id) ? n.delete(id) : n.add(id);
+            return n;
+        });
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === filteredTasks.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(filteredTasks.map(t => t.id)));
+        }
+    };
+
     // Open assign modal
     const openAssignModal = (task: Task) => {
         setSelectedTask(task);
@@ -324,6 +365,47 @@ export default function AdminTaskLibraryPage() {
                 </CardContent>
             </Card>
 
+            {/* Bulk Action Toolbar */}
+            {tasks.length > 0 && (
+                <div className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl">
+                    <div className="flex items-center gap-3">
+                        <input
+                            type="checkbox"
+                            checked={filteredTasks.length > 0 && selectedIds.size === filteredTasks.length}
+                            onChange={toggleSelectAll}
+                            className="w-4 h-4 accent-brand-400 cursor-pointer"
+                        />
+                        <span className="text-sm text-gray-400">
+                            {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        {selectedIds.size > 0 && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/30"
+                                onClick={() => handleBulkDelete(false)}
+                                disabled={isBulkDeleting}
+                            >
+                                {isBulkDeleting ? <Loader2 size={14} className="mr-2 animate-spin" /> : <Trash2 size={14} className="mr-2" />}
+                                Delete Selected ({selectedIds.size})
+                            </Button>
+                        )}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-400 hover:bg-red-500/10 border border-red-500/40"
+                            onClick={() => handleBulkDelete(true)}
+                            disabled={isBulkDeleting || tasks.length === 0}
+                        >
+                            {isBulkDeleting ? <Loader2 size={14} className="mr-2 animate-spin" /> : <Trash2 size={14} className="mr-2" />}
+                            Delete All ({tasks.length})
+                        </Button>
+                    </div>
+                </div>
+            )}
+
             {/* Tasks List */}
             <div className="space-y-4">
                 {filteredTasks.map((task, index) => (
@@ -333,9 +415,16 @@ export default function AdminTaskLibraryPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                     >
-                        <Card hover3d glow>
+                        <Card hover3d glow className={`transition-all ${selectedIds.has(task.id) ? 'ring-1 ring-brand-400/50' : ''}`}>
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between">
+                                    <div className="flex items-start gap-3 flex-1">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.has(task.id)}
+                                            onChange={() => toggleSelect(task.id)}
+                                            className="w-4 h-4 mt-1 accent-brand-400 cursor-pointer flex-shrink-0"
+                                        />
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
                                             <h3 className="text-xl font-bold">{task.title}</h3>
@@ -365,6 +454,7 @@ export default function AdminTaskLibraryPage() {
                                                 <div className="font-semibold text-xs">{getInternshipTitle(task.internshipId)}</div>
                                             </div>
                                         </div>
+                                    </div>
                                     </div>
                                     <div className="flex gap-2 ml-4">
                                         <Button
