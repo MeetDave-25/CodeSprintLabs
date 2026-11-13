@@ -88,7 +88,7 @@ export default function AboutPage() {
         `Maintained ${stats.successRate}% completion rate`,
         `Issued ${formatNumber(stats.certificatesIssued)} verifiable certificates`,
         `${stats.totalCourses}+ self-paced courses available`,
-        'Certificates verified by employers across India',
+        'Certificates with unique online verification codes',
         'Mentor-reviewed tasks for every enrolled student',
     ] : [];
 
@@ -106,7 +106,7 @@ export default function AboutPage() {
         {
             icon: Award,
             title: 'Quality First',
-            description: 'Industry-recognized curriculum designed by expert practitioners',
+            description: 'Practical curriculum designed by experienced practitioners',
         },
         {
             icon: Zap,

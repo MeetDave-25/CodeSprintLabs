@@ -108,15 +108,15 @@ export default function ContactPage() {
         },
         {
             question: 'Are the certificates recognized?',
-            answer: 'Yes, our certificates are industry-recognized and valued by top companies across India.',
+            answer: 'Yes, our certificates are issued with a unique verification code and can be verified online. They are valued by companies across India.',
         },
         {
             question: 'What is the refund policy?',
-            answer: 'We offer a 7-day money-back guarantee if you\'re not satisfied with the course content.',
+            answer: 'We offer a 7-day money-back guarantee if you are not satisfied with the course content.',
         },
         {
             question: 'Do you provide placement assistance?',
-            answer: 'Yes, we have partnerships with 50+ companies and provide dedicated placement support.',
+            answer: 'We provide career guidance, resume tips, and interview preparation resources to help students in their job search.',
         },
         {
             question: 'Can I switch between internships?',

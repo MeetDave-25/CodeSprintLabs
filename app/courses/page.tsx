@@ -89,7 +89,7 @@ export default function CoursesPage() {
                             Explore Our <span className="gradient-text">Courses</span>
                         </h1>
                         <p className="text-xl text-gray-400 mb-8">
-                            Level up your skills with industry-recognized courses taught by expert instructors
+                            Level up your skills with practical courses taught by experienced instructors
                         </p>
 
                         {/* Search Bar */}
