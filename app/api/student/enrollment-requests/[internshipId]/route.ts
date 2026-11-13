@@ -15,6 +15,20 @@ export async function POST(
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
+        // Ensure table and optional columns exist
+        await sql`
+            CREATE TABLE IF NOT EXISTS enrollment_requests (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                "userId" UUID NOT NULL,
+                "internshipId" UUID NOT NULL,
+                status TEXT NOT NULL DEFAULT 'pending',
+                "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+        `;
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "coverLetter" TEXT`;
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "resumeGoogleDriveUrl" TEXT`;
+
         const internshipId = params.internshipId;
 
         // Check internship exists
@@ -48,13 +62,11 @@ export async function POST(
             INSERT INTO enrollment_requests (
                 "userId", "internshipId", status,
                 "resumeGoogleDriveUrl", "coverLetter",
-                "studentName", "studentEmail",
                 "createdAt", "updatedAt"
             )
             VALUES (
                 ${authUser.id}, ${internshipId}, 'pending',
                 ${resumeGoogleDriveUrl || null}, ${coverLetter || null},
-                ${authUser.name}, ${authUser.email},
                 NOW(), NOW()
             )
             RETURNING *

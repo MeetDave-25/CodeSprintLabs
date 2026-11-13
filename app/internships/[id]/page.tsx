@@ -181,26 +181,16 @@ export default function InternshipDetailPage() {
 
     const handleEnroll = async () => {
         setIsEnrolling(true);
-        console.log('Enrolling in internship:', internshipId);
-        console.log('Request URL:', `/student/enrollment-requests/${internshipId}`);
         try {
-            // Create FormData to handle file upload
-            const formData = new FormData();
-            formData.append('message', enrollMessage);
-            
-            // Add resume - either from file upload or use profile resume
-            if (resumeFile) {
-                formData.append('resume', resumeFile);
-            } else if (useProfileResume && profileResume?.hasResume) {
-                formData.append('useProfileResume', 'true');
+            const payload: Record<string, string> = {
+                coverLetter: enrollMessage,
+            };
+
+            if (useProfileResume && profileResume?.hasResume && profileResume.resumeGoogleDriveUrl) {
+                payload.resumeGoogleDriveUrl = profileResume.resumeGoogleDriveUrl;
             }
 
-            // Submit enrollment request with resume
-            const res = await api.post(`/student/enrollment-requests/${internshipId}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const res = await api.post(`/student/enrollment-requests/${internshipId}`, payload);
             if (res.data.status === 'success') {
                 setRequestPending(true);
                 setShowRequestModal(false);
