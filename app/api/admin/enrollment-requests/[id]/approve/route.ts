@@ -14,6 +14,15 @@ export async function POST(
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
+        // Ensure optional columns exist
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "approvedBy" UUID`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "approvedAt" TIMESTAMPTZ`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "adminNote" TEXT`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "startDate" TIMESTAMPTZ`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "endDate" TIMESTAMPTZ`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "mouGenerated" BOOLEAN DEFAULT false`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "offerLetterGenerated" BOOLEAN DEFAULT false`.catch(() => {});
+
         const rows = await sql`SELECT * FROM enrollment_requests WHERE id = ${params.id} LIMIT 1`;
         if (!rows || rows.length === 0) {
             return NextResponse.json({ message: 'Enrollment request not found' }, { status: 404 });
