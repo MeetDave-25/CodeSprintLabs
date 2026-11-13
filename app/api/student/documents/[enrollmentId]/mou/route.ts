@@ -77,7 +77,7 @@ export async function GET(
         ];
 
         const pdfBuffer = buildPdf(sections, 'MOU');
-        return new NextResponse(pdfBuffer, {
+        return new NextResponse(new Uint8Array(pdfBuffer), {
             headers: {
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': `attachment; filename="MOU_${(e.studentName || 'student').replace(/\s+/g, '_')}.pdf"`,

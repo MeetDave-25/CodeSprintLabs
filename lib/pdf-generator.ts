@@ -23,7 +23,7 @@ export interface PdfSection {
     value?: string;
 }
 
-export function buildPdf(sections: PdfSection[], title: string): Buffer {
+export function buildPdf(sections: PdfSection[], title: string): Buffer<ArrayBuffer> {
     const W = 595, H = 842; // A4 points
     const margin = 60;
     const lineHeight = 18;
