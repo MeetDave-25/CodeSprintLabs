@@ -25,3 +25,4 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ count: 0 }, { status: 200 });
     }
 }
+
