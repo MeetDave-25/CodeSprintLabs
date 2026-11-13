@@ -21,6 +21,7 @@ const columns = [
         links: [
             { label: 'About', href: '/about' },
             { label: 'Contact', href: '/contact' },
+            { label: 'FAQ', href: '/faq' },
             { label: 'Founder', href: FOUNDER.portfolio, external: true },
         ],
     },
@@ -30,6 +31,13 @@ const columns = [
             { label: 'Sign in', href: '/auth/login' },
             { label: 'Create account', href: '/auth/register' },
             { label: 'Student dashboard', href: '/student/dashboard' },
+        ],
+    },
+    {
+        title: 'Legal',
+        links: [
+            { label: 'Privacy Policy', href: '/privacy' },
+            { label: 'Cookie Policy', href: '/cookies' },
         ],
     },
 ];
@@ -47,7 +55,7 @@ const Footer: React.FC<{ variant?: 'light' | 'dark' }> = ({ variant = 'dark' }) 
             <div className={cn('overflow-hidden bg-ink-950 text-white', light ? 'rounded-[36px]' : 'border-t border-white/[0.08]')}>
                 <div className="mx-auto max-w-[1200px] px-5 pt-14 md:px-8">
                     <div className="grid gap-10 md:grid-cols-12">
-                        <div className="md:col-span-5">
+                        <div className="md:col-span-4">
                             <Brand tone="dark" />
                             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/55">
                                 Structured internships, daily coding tasks, mentor reviews and certificates employers can verify.

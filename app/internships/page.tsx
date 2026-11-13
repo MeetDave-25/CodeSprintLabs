@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Search, Filter, Code, Users, Clock, ArrowRight, Star } from 'lucide-react';
+import { Search, Filter, Code, Users, Clock, ArrowRight } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Button from '@/components/ui/Button';
@@ -163,10 +163,6 @@ function InternshipsPageContent() {
                                             <Badge variant={getDifficultyColor(internship.difficulty) as any}>
                                                 {internship.difficulty}
                                             </Badge>
-                                            <div className="flex items-center text-yellow-500">
-                                                <Star size={16} fill="currentColor" />
-                                                <span className="ml-1 text-sm">4.8</span>
-                                            </div>
                                         </div>
                                         <CardTitle>{internship.title}</CardTitle>
                                         <CardDescription>{internship.description}</CardDescription>

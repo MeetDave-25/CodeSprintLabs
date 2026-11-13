@@ -20,7 +20,7 @@ interface Course {
     difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
     duration: string;
     students: number;
-    rating: number;
+    rating: number | null;
     price: number;
     instructor: string;
     image: string;
@@ -53,10 +53,10 @@ export default function CoursesPage() {
                         difficulty: c.level || 'Beginner',
                         duration: c.duration,
                         students: c.enrolled || 0,
-                        rating: c.rating || 5.0,
+                        rating: c.rating ?? null,
                         price: c.price,
                         instructor: c.instructor,
-                        image: 'from-blue-500 to-cyan-500' // Placeholder
+                        image: 'from-blue-500 to-cyan-500'
                     }));
                     setCourses(mappedCourses);
                 }
@@ -185,10 +185,12 @@ export default function CoursesPage() {
                                                 }`}>
                                                 {course.difficulty}
                                             </span>
-                                            <div className="flex items-center gap-1">
-                                                <Star size={16} className="text-yellow-400 fill-yellow-400" />
-                                                <span className="text-sm font-semibold">{course.rating}</span>
-                                            </div>
+                                            {course.rating !== null && (
+                                                <div className="flex items-center gap-1">
+                                                    <Star size={16} className="text-yellow-400 fill-yellow-400" />
+                                                    <span className="text-sm font-semibold">{course.rating}</span>
+                                                </div>
+                                            )}
                                         </div>
                                         <CardTitle>{course.title}</CardTitle>
                                         <CardDescription>{course.description}</CardDescription>

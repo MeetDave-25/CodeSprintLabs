@@ -50,15 +50,6 @@ export default function AboutPage() {
             setStats(response.data.data);
         } catch (error) {
             console.error('Error fetching stats:', error);
-            // Fallback to default stats
-            setStats({
-                totalStudents: 10000,
-                activeInternships: 25,
-                totalInternships: 50,
-                certificatesIssued: 5000,
-                totalCourses: 30,
-                successRate: 95
-            });
         } finally {
             setLoadingStats(false);
         }
@@ -70,37 +61,6 @@ export default function AboutPage() {
             setTeam(response.data.members || []);
         } catch (error) {
             console.error('Error fetching team:', error);
-            // Fallback to default team if API fails
-            setTeam([
-                {
-                    _id: '1',
-                    name: 'Rajesh Kumar',
-                    role: 'Founder & CEO',
-                    bio: '15+ years in tech education and software development',
-                    gradient: 'from-brand-400 to-brand-300 on-neon',
-                },
-                {
-                    _id: '2',
-                    name: 'Priya Sharma',
-                    role: 'Head of Curriculum',
-                    bio: 'Former Google engineer with passion for teaching',
-                    gradient: 'from-blue-500 to-cyan-500',
-                },
-                {
-                    _id: '3',
-                    name: 'Amit Patel',
-                    role: 'Lead Instructor',
-                    bio: 'Full-stack developer and mentor to 1000+ students',
-                    gradient: 'from-green-500 to-emerald-500',
-                },
-                {
-                    _id: '4',
-                    name: 'Sneha Reddy',
-                    role: 'Student Success Manager',
-                    bio: 'Dedicated to helping students achieve their goals',
-                    gradient: 'from-orange-500 to-red-500',
-                },
-            ]);
         } finally {
             setLoadingTeam(false);
         }
@@ -124,12 +84,12 @@ export default function AboutPage() {
 
     // Dynamic achievements based on real data
     const achievements = stats ? [
-        `Partnered with 50+ companies for placement opportunities`,
         `Trained over ${formatNumber(stats.totalStudents)} students across India`,
-        `Maintained ${stats.successRate}% student satisfaction rate`,
-        'Awarded "Best EdTech Platform 2024"',
-        `Issued ${formatNumber(stats.certificatesIssued)} certificates`,
-        '24/7 student support and mentorship',
+        `Maintained ${stats.successRate}% completion rate`,
+        `Issued ${formatNumber(stats.certificatesIssued)} verifiable certificates`,
+        `${stats.totalCourses}+ self-paced courses available`,
+        'Certificates verified by employers across India',
+        'Mentor-reviewed tasks for every enrolled student',
     ] : [];
 
     const values = [

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Button from '@/components/ui/Button';
@@ -16,9 +17,13 @@ export default function ContactPage() {
         email: '',
         subject: '',
         message: '',
+        _honeypot: '',
     });
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
     const [supportEmail, setSupportEmail] = useState('support@codesprintlabs.com');
+    const router = useRouter();
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -35,15 +40,32 @@ export default function ContactPage() {
         fetchSettings();
     }, []);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implement actual form submission
-        console.log('Form submitted:', formData);
-        setSubmitted(true);
-        setTimeout(() => {
-            setSubmitted(false);
-            setFormData({ name: '', email: '', subject: '', message: '' });
-        }, 3000);
+        setSubmitError('');
+        // Honeypot check — bots fill the hidden field, humans leave it blank
+        if (formData._honeypot) return;
+
+        setIsSubmitting(true);
+        try {
+            await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    subject: formData.subject,
+                    message: formData.message,
+                }),
+            });
+            setSubmitted(true);
+            setFormData({ name: '', email: '', subject: '', message: '', _honeypot: '' });
+            router.push('/thank-you?type=contact');
+        } catch {
+            setSubmitError('Something went wrong. Please try again or email us directly.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -192,6 +214,24 @@ export default function ContactPage() {
                                         </motion.div>
                                     ) : (
                                         <form onSubmit={handleSubmit} className="space-y-6">
+                                            {/* Honeypot — hidden from humans, bots fill it */}
+                                            <div style={{ display: 'none' }} aria-hidden="true">
+                                                <input
+                                                    type="text"
+                                                    name="_honeypot"
+                                                    value={formData._honeypot}
+                                                    onChange={handleChange}
+                                                    tabIndex={-1}
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+
+                                            {submitError && (
+                                                <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+                                                    {submitError}
+                                                </div>
+                                            )}
+
                                             <div>
                                                 <label htmlFor="name" className="block text-sm font-medium mb-2">
                                                     Full Name
@@ -256,9 +296,9 @@ export default function ContactPage() {
                                                 />
                                             </div>
 
-                                            <Button type="submit" variant="primary" size="lg" className="w-full">
-                                                Send Message
-                                                <Send className="ml-2" size={20} />
+                                            <Button type="submit" variant="primary" size="lg" className="w-full" isLoading={isSubmitting} disabled={isSubmitting}>
+                                                {isSubmitting ? 'Sending…' : 'Send Message'}
+                                                {!isSubmitting && <Send className="ml-2" size={20} />}
                                             </Button>
                                         </form>
                                     )}
