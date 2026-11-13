@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, CheckCircle, Clock, XCircle, Eye, ThumbsUp, ThumbsDown, X, Loader2 } from 'lucide-react';
+import { Search, Filter, CheckCircle, Clock, XCircle, Eye, ThumbsUp, ThumbsDown, X, Loader2, Trash2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -148,6 +148,16 @@ export default function AdminSubmissionsPage() {
             alert(error.response?.data?.message || 'Failed to reject submission');
         } finally {
             setIsProcessing(false);
+        }
+    };
+
+    const handleDelete = async (submissionId: string) => {
+        if (!confirm('Are you sure you want to delete this submission? This cannot be undone.')) return;
+        try {
+            await api.delete(`/admin/submissions/${submissionId}`);
+            setSubmissions(prev => prev.filter(s => s.id !== submissionId));
+        } catch (error: any) {
+            alert(error.response?.data?.message || 'Failed to delete submission');
         }
     };
 
@@ -417,6 +427,15 @@ export default function AdminSubmissionsPage() {
                                     >
                                         <Eye size={16} className="mr-2" />
                                         {submission.status === 'pending' ? 'Review' : 'View Details'}
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                        onClick={() => handleDelete(submission.id)}
+                                        title="Delete submission"
+                                    >
+                                        <Trash2 size={16} />
                                     </Button>
                                 </div>
                             </CardContent>
