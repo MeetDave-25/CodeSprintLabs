@@ -15,24 +15,24 @@ export async function POST(
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        // Ensure table and optional columns exist
+        // Ensure table and optional columns exist (use TEXT for IDs to support both int and UUID)
         await sql`
             CREATE TABLE IF NOT EXISTS enrollment_requests (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                "userId" UUID NOT NULL,
-                "internshipId" UUID NOT NULL,
+                "userId" TEXT NOT NULL,
+                "internshipId" TEXT NOT NULL,
                 status TEXT NOT NULL DEFAULT 'pending',
                 "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
         `;
-        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "coverLetter" TEXT`;
-        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "resumeGoogleDriveUrl" TEXT`;
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "coverLetter" TEXT`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "resumeGoogleDriveUrl" TEXT`.catch(() => {});
 
         const internshipId = params.internshipId;
 
         // Check internship exists
-        const internships = await sql`SELECT id, title, "isActive", "maxStudents" FROM internships WHERE id = ${internshipId} LIMIT 1`;
+        const internships = await sql`SELECT id, title, "isActive", "maxStudents" FROM internships WHERE id::text = ${String(internshipId)} LIMIT 1`;
         if (!internships || internships.length === 0) {
             return NextResponse.json({ message: 'Internship not found' }, { status: 404 });
         }
@@ -45,7 +45,7 @@ export async function POST(
         // Check already applied
         const existing = await sql`
             SELECT id, status FROM enrollment_requests
-            WHERE "userId" = ${authUser.id} AND "internshipId" = ${internshipId}
+            WHERE "userId" = ${String(authUser.id)} AND "internshipId" = ${String(internshipId)}
             LIMIT 1
         `;
 
@@ -65,7 +65,7 @@ export async function POST(
                 "createdAt", "updatedAt"
             )
             VALUES (
-                ${authUser.id}, ${internshipId}, 'pending',
+                ${String(authUser.id)}, ${String(internshipId)}, 'pending',
                 ${resumeGoogleDriveUrl || null}, ${coverLetter || null},
                 NOW(), NOW()
             )
