@@ -15,7 +15,7 @@ export async function POST(
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        // Ensure table and optional columns exist (use TEXT for IDs to support both int and UUID)
+        // Ensure table exists and ID columns are TEXT (not UUID) so integer internship IDs work
         await sql`
             CREATE TABLE IF NOT EXISTS enrollment_requests (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -25,7 +25,10 @@ export async function POST(
                 "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
-        `;
+        `.catch(() => {});
+        // If the table was previously created with UUID columns, convert them to TEXT
+        await sql`ALTER TABLE enrollment_requests ALTER COLUMN "userId" TYPE TEXT USING "userId"::text`.catch(() => {});
+        await sql`ALTER TABLE enrollment_requests ALTER COLUMN "internshipId" TYPE TEXT USING "internshipId"::text`.catch(() => {});
         await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "coverLetter" TEXT`.catch(() => {});
         await sql`ALTER TABLE enrollment_requests ADD COLUMN IF NOT EXISTS "resumeGoogleDriveUrl" TEXT`.catch(() => {});
 
@@ -78,7 +81,10 @@ export async function POST(
         );
     } catch (error: any) {
         console.error('POST /api/student/enrollment-requests error:', error);
-        return NextResponse.json({ message: 'Internal server error', error: error?.message }, { status: 500 });
+        return NextResponse.json({
+            message: error?.message || 'Internal server error',
+            detail: error?.detail || null,
+        }, { status: 500 });
     }
 }
 
