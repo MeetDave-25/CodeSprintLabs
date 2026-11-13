@@ -11,10 +11,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import Badge from '@/components/ui/Badge';
 import Input from '@/components/ui/Input';
 import { Internship } from '@/types';
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 
 function InternshipsPageContent() {
+    const { user } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedDomain, setSelectedDomain] = useState<string>('All');
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
@@ -196,12 +197,21 @@ function InternshipsPageContent() {
                                     </CardContent>
 
                                     <CardFooter>
-                                        <Link href={`/internships/${internship.id}`} className="w-full">
-                                            <Button variant="primary" className="w-full group">
-                                                Apply Now
-                                                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
-                                            </Button>
-                                        </Link>
+                                        {user ? (
+                                            <Link href={`/internships/${internship.id}`} className="w-full">
+                                                <Button variant="primary" className="w-full group">
+                                                    Apply Now
+                                                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
+                                                </Button>
+                                            </Link>
+                                        ) : (
+                                            <Link href={`/auth/login?redirect=/internships/${internship.id}`} className="w-full">
+                                                <Button variant="outline" className="w-full group">
+                                                    Login to Enroll
+                                                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
+                                                </Button>
+                                            </Link>
+                                        )}
                                     </CardFooter>
                                 </Card>
                             </motion.div>
@@ -226,9 +236,5 @@ function InternshipsPageContent() {
 }
 
 export default function InternshipsPage() {
-    return (
-        <ProtectedRoute>
-            <InternshipsPageContent />
-        </ProtectedRoute>
-    );
+    return <InternshipsPageContent />;
 }

@@ -82,8 +82,8 @@ const Footer: React.FC<{ variant?: 'light' | 'dark' }> = ({ variant = 'dark' }) 
 
                 {light && (
                     <div className="select-none overflow-hidden px-2 pb-3 pt-10" aria-hidden>
-                        <div className="text-center text-[12.8vw] font-bold leading-[0.85] tracking-[-0.06em] text-white/[0.07] break-keep">
-                            CodeSprint<span className="text-brand-400/60">Labs</span>
+                        <div className="text-center text-[12.8vw] font-bold leading-[0.85] tracking-[-0.06em] text-white/[0.15] break-keep">
+                            CodeSprint<span className="text-brand-400/80">Labs</span>
                         </div>
                     </div>
                 )}
@@ -93,7 +93,7 @@ const Footer: React.FC<{ variant?: 'light' | 'dark' }> = ({ variant = 'dark' }) 
                     <span className="flex flex-wrap gap-x-5 gap-y-1">
                         <a href={`mailto:${FACILITY.email}`} className="hover:text-white">{FACILITY.email}</a>
                         <a href={FACILITY.phoneHref} className="hover:text-white">{FACILITY.phone}</a>
-                        <span>{FACILITY.city.replace(', IN', ', India')}</span>
+                        <span>{FACILITY.city}</span>
                     </span>
                 </div>
             </div>
