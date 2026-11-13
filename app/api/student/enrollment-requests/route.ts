@@ -13,11 +13,15 @@ export async function GET(request: NextRequest) {
         }
 
         const rows = await sql`
-            SELECT e.*, i.title as "internshipTitle", i.description as "internshipDescription",
-                i."companyName", i.type, i.location, i.stipend, i.duration
+            SELECT e.*,
+                i.title as "internshipTitle",
+                i.description as "internshipDescription",
+                i.domain as "internshipDomain",
+                i.duration as "internshipDuration",
+                i."companyName", i.type, i.location, i.stipend
             FROM enrollment_requests e
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-            WHERE e."userId" = ${authUser.id}
+            WHERE e."userId"::text = ${String(authUser.id)}
             ORDER BY e.created_at DESC
         `;
 

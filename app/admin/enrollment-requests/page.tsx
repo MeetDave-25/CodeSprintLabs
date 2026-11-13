@@ -339,115 +339,81 @@ export default function AdminEnrollmentRequestsPage() {
     };
 
     if (isLoading) {
-        return <div className="p-6 text-center text-gray-400">Loading enrollment requests...</div>;
+        return <div className="p-4 text-center text-gray-400">Loading enrollment requests...</div>;
     }
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-4xl font-bold mb-2">Enrollment Requests</h1>
-                <p className="text-gray-400">Review and approve student enrollment requests</p>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-1">Enrollment Requests</h1>
+                <p className="text-sm text-gray-400">Review and approve student enrollment requests</p>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="cursor-pointer hover:border-yellow-500/50 transition-all" onClick={() => setStatusFilter('pending')}>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center">
-                                <Clock size={24} className="text-yellow-400" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                    { label: 'Pending', value: stats.pending, color: 'yellow', icon: <Clock size={20} className="text-yellow-400" />, filter: 'pending' as const },
+                    { label: 'Approved', value: stats.approved, color: 'green', icon: <UserCheck size={20} className="text-green-400" />, filter: 'approved' as const },
+                    { label: 'Rejected', value: stats.rejected, color: 'red', icon: <UserX size={20} className="text-red-400" />, filter: 'rejected' as const },
+                    { label: 'Total', value: stats.total, color: 'brand', icon: <FileText size={20} className="text-brand-400" />, filter: 'all' as const },
+                ].map(({ label, value, color, icon, filter }) => (
+                    <Card key={label} className={`cursor-pointer hover:border-${color}-500/50 transition-all`} onClick={() => setStatusFilter(filter)}>
+                        <CardContent className="p-3 sm:p-4">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-${color}-500/20 flex items-center justify-center shrink-0`}>
+                                    {icon}
+                                </div>
+                                <div>
+                                    <div className={`text-xl sm:text-2xl font-bold ${color === 'brand' ? 'gradient-text' : `text-${color}-400`}`}>{value}</div>
+                                    <div className="text-xs text-gray-400">{label}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-3xl font-bold text-yellow-400">{stats.pending}</div>
-                                <div className="text-sm text-gray-400">Pending</div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="cursor-pointer hover:border-green-500/50 transition-all" onClick={() => setStatusFilter('approved')}>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center">
-                                <UserCheck size={24} className="text-green-400" />
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold text-green-400">{stats.approved}</div>
-                                <div className="text-sm text-gray-400">Approved</div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="cursor-pointer hover:border-red-500/50 transition-all" onClick={() => setStatusFilter('rejected')}>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-red-500/20 flex items-center justify-center">
-                                <UserX size={24} className="text-red-400" />
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold text-red-400">{stats.rejected}</div>
-                                <div className="text-sm text-gray-400">Rejected</div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="cursor-pointer hover:border-brand-500/50 transition-all" onClick={() => setStatusFilter('all')}>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-brand-500/20 flex items-center justify-center">
-                                <FileText size={24} className="text-brand-400" />
-                            </div>
-                            <div>
-                                <div className="text-3xl font-bold gradient-text">{stats.total}</div>
-                                <div className="text-sm text-gray-400">Total</div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
 
             {/* Search and Filters */}
             <Card>
-                <CardContent className="p-4">
-                    <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                            <input
-                                type="text"
-                                placeholder="Search by student name, email, or internship..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
-                            />
-                        </div>
-                        <div className="flex gap-2">
-                            {(['all', 'pending', 'approved', 'rejected'] as const).map((status) => (
-                                <button
-                                    key={status}
-                                    onClick={() => setStatusFilter(status)}
-                                    className={`px-4 py-2 rounded-lg capitalize transition-all ${
-                                        statusFilter === status
-                                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
-                                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                                    }`}
-                                >
-                                    {status}
-                                </button>
-                            ))}
-                        </div>
+                <CardContent className="p-3 sm:p-4 space-y-3">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <input
+                            type="text"
+                            placeholder="Search student name, email or internship..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-gray-400 focus:outline-none focus:border-brand-500"
+                        />
+                    </div>
+                    <div className="grid grid-cols-4 gap-1.5">
+                        {(['all', 'pending', 'approved', 'rejected'] as const).map((status) => (
+                            <button
+                                key={status}
+                                onClick={() => setStatusFilter(status)}
+                                className={`py-2 rounded-lg capitalize text-xs sm:text-sm font-medium transition-all ${
+                                    statusFilter === status
+                                        ? 'bg-brand-400 text-white'
+                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                                }`}
+                            >
+                                {status}
+                            </button>
+                        ))}
                     </div>
                 </CardContent>
             </Card>
 
             {/* Requests List */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {filteredRequests.length === 0 ? (
                     <Card>
-                        <CardContent className="p-12 text-center">
-                            <AlertCircle size={48} className="mx-auto mb-4 text-gray-600" />
-                            <h3 className="text-xl font-bold mb-2">No Requests Found</h3>
-                            <p className="text-gray-400">
-                                {statusFilter === 'pending' 
+                        <CardContent className="p-10 text-center">
+                            <AlertCircle size={40} className="mx-auto mb-3 text-gray-600" />
+                            <h3 className="text-lg font-bold mb-1">No Requests Found</h3>
+                            <p className="text-gray-400 text-sm">
+                                {statusFilter === 'pending'
                                     ? 'No pending enrollment requests at the moment.'
                                     : 'No enrollment requests match your filters.'}
                             </p>
@@ -455,140 +421,78 @@ export default function AdminEnrollmentRequestsPage() {
                     </Card>
                 ) : (
                     filteredRequests.map((request, index) => (
-                        <motion.div
-                            key={request.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                        >
-                            <Card hover3d className={`${request.status === 'pending' ? 'border-yellow-500/30' : ''}`}>
-                                <CardContent className="p-6">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                        {/* Student Info */}
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 rounded-full bg-brand-400 on-neon hover:bg-brand-300 flex items-center justify-center text-white font-bold text-lg">
-                                                {request.studentName.charAt(0).toUpperCase()}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="font-bold text-lg">{request.studentName}</h3>
-                                                    {getStatusBadge(request.status)}
-                                                </div>
-                                                <div className="flex items-center gap-4 text-sm text-gray-400">
-                                                    <span className="flex items-center gap-1">
-                                                        <Mail size={14} />
-                                                        {request.studentEmail}
-                                                    </span>
-                                                    {request.studentPhone && (
-                                                        <span className="flex items-center gap-1">
-                                                            <Phone size={14} />
-                                                            {request.studentPhone}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
+                        <motion.div key={request.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
+                            <Card className={`${request.status === 'pending' ? 'border-yellow-500/30' : ''}`}>
+                                <CardContent className="p-4">
+                                    {/* Top row: avatar + name + badge */}
+                                    <div className="flex items-start gap-3 mb-3">
+                                        <div className="w-10 h-10 rounded-full bg-brand-500/30 border border-brand-500/40 flex items-center justify-center text-white font-bold shrink-0">
+                                            {(request.studentName || '?').charAt(0).toUpperCase()}
                                         </div>
-
-                                        {/* Internship Info */}
-                                        <div className="md:text-right">
-                                            <div className="flex items-center gap-2 mb-1 md:justify-end">
-                                                <Briefcase size={16} className="text-brand-400" />
-                                                <span className="font-semibold">{request.internshipTitle}</span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <h3 className="font-bold text-base">{request.studentName}</h3>
+                                                {getStatusBadge(request.status)}
                                             </div>
-                                            <div className="text-sm text-gray-400">
-                                                {request.internshipDomain} • {request.internshipDuration}
-                                            </div>
-                                            <div className="text-xs text-gray-500 mt-1">
-                                                <Calendar size={12} className="inline mr-1" />
-                                                Requested: {formatDate(request.created_at)}
-                                            </div>
-                                        </div>
-
-                                        {/* Actions */}
-                                        <div className="flex gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => {
-                                                    setSelectedRequest(request);
-                                                    setShowDetailModal(true);
-                                                }}
-                                            >
-                                                <Eye size={16} className="mr-1" />
-                                                View
-                                            </Button>
-                                            {request.status === 'pending' && (
-                                                <>
-                                                    <Button
-                                                        variant="primary"
-                                                        size="sm"
-                                                        onClick={() => {
-                                                            setSelectedRequest(request);
-                                                            setShowDetailModal(true);
-                                                        }}
-                                                    >
-                                                        <CheckCircle size={16} className="mr-1" />
-                                                        Review
-                                                    </Button>
-                                                </>
-                                            )}
-                                            {request.status === 'approved' && (
-                                                <>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handleDownloadMOU(request.id, request.studentName)}
-                                                        title="Download MOU"
-                                                    >
-                                                        <Download size={16} />
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handleDownloadOfferLetter(request.id, request.studentName)}
-                                                        title="Download Offer Letter"
-                                                    >
-                                                        <FileText size={16} />
-                                                    </Button>
-                                                </>
-                                            )}
+                                            <div className="text-xs text-gray-400 mt-0.5 truncate">{request.studentEmail}</div>
                                         </div>
                                     </div>
 
-                                    {/* Message Preview */}
+                                    {/* Internship info */}
+                                    <div className="flex items-start gap-2 mb-3 pl-0.5">
+                                        <Briefcase size={14} className="text-brand-400 mt-0.5 shrink-0" />
+                                        <div>
+                                            <div className="text-sm font-medium">{request.internshipTitle}</div>
+                                            <div className="text-xs text-gray-400">
+                                                {[request.internshipDomain, request.internshipDuration].filter(Boolean).join(' • ')}
+                                            </div>
+                                            <div className="text-xs text-gray-500 mt-0.5">
+                                                <Calendar size={11} className="inline mr-1" />
+                                                {formatDate(request.created_at)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Message preview */}
                                     {request.message && (
-                                        <div className="mt-4 p-3 bg-white/5 rounded-lg text-sm text-gray-400">
-                                            <span className="font-semibold text-gray-300">Message: </span>
-                                            {request.message.substring(0, 150)}
-                                            {request.message.length > 150 && '...'}
+                                        <div className="mb-3 p-2.5 bg-white/5 rounded-lg text-xs text-gray-400">
+                                            {request.message.substring(0, 120)}{request.message.length > 120 && '…'}
                                         </div>
                                     )}
 
-                                    {/* Resume and Documents Badges */}
-                                    <div className="mt-4 flex flex-wrap gap-2">
+                                    {/* Badges row */}
+                                    <div className="flex flex-wrap gap-1.5 mb-3">
                                         {hasResume(request) && (
-                                            <span 
-                                                className="cursor-pointer hover:opacity-80"
-                                                onClick={() => handleViewResume(request.id)}
-                                            >
-                                                <Badge variant="info">
-                                                    <FileUp size={12} className="mr-1" />
-                                                    Resume Attached
-                                                </Badge>
+                                            <span className="cursor-pointer hover:opacity-80" onClick={() => handleViewResume(request.id)}>
+                                                <Badge variant="info"><FileUp size={11} className="mr-1" />Resume</Badge>
                                             </span>
                                         )}
                                         {request.status === 'approved' && request.mouGenerated && (
+                                            <Badge variant="success"><FileText size={11} className="mr-1" />MOU</Badge>
+                                        )}
+                                        {request.status === 'approved' && request.offerLetterGenerated && (
+                                            <Badge variant="success"><FileText size={11} className="mr-1" />Offer Letter</Badge>
+                                        )}
+                                    </div>
+
+                                    {/* Action buttons */}
+                                    <div className="flex flex-wrap gap-2">
+                                        <Button variant="outline" size="sm" onClick={() => { setSelectedRequest(request); setShowDetailModal(true); }}>
+                                            <Eye size={14} className="mr-1" />View
+                                        </Button>
+                                        {request.status === 'pending' && (
+                                            <Button variant="primary" size="sm" onClick={() => { setSelectedRequest(request); setShowDetailModal(true); }}>
+                                                <CheckCircle size={14} className="mr-1" />Review
+                                            </Button>
+                                        )}
+                                        {request.status === 'approved' && (
                                             <>
-                                                <Badge variant="success">
-                                                    <FileText size={12} className="mr-1" />
-                                                    MOU Generated
-                                                </Badge>
-                                                {request.offerLetterGenerated && (
-                                                    <Badge variant="success">
-                                                        <FileText size={12} className="mr-1" />
-                                                        Offer Letter Generated
-                                                    </Badge>
-                                                )}
+                                                <Button variant="outline" size="sm" onClick={() => handleDownloadMOU(request.id, request.studentName)} title="Download MOU">
+                                                    <Download size={14} className="mr-1" />MOU
+                                                </Button>
+                                                <Button variant="outline" size="sm" onClick={() => handleDownloadOfferLetter(request.id, request.studentName)} title="Download Offer Letter">
+                                                    <FileText size={14} className="mr-1" />Offer
+                                                </Button>
                                             </>
                                         )}
                                     </div>
@@ -601,310 +505,159 @@ export default function AdminEnrollmentRequestsPage() {
 
             {/* Detail Modal */}
             {showDetailModal && selectedRequest && (
-                <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
-                    <div className="min-h-full flex items-center justify-center p-4 py-8">
+                <div className="fixed inset-0 bg-black/60 z-50 overflow-y-auto">
+                    <div className="min-h-full flex items-start sm:items-center justify-center p-3 sm:p-6 py-6">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.97 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-[#0f0f13] border border-white/10 rounded-xl p-6 w-full max-w-2xl relative"
+                        className="bg-[#0f0f13] border border-white/10 rounded-xl p-4 sm:p-6 w-full max-w-2xl"
                     >
-                        <div className="flex items-start justify-between mb-6">
+                        {/* Modal header */}
+                        <div className="flex items-start justify-between mb-4">
                             <div>
-                                <h2 className="text-2xl font-bold">Enrollment Request Details</h2>
-                                <p className="text-gray-400">Review and take action on this request</p>
+                                <h2 className="text-xl sm:text-2xl font-bold">Request Details</h2>
+                                <p className="text-xs text-gray-400">Review and take action</p>
                             </div>
-                            {getStatusBadge(selectedRequest.status)}
+                            <div className="flex items-center gap-2">
+                                {getStatusBadge(selectedRequest.status)}
+                                <button onClick={() => { setShowDetailModal(false); setSelectedRequest(null); setActionNote(''); }} className="ml-2 text-gray-400 hover:text-white p-1">✕</button>
+                            </div>
                         </div>
 
                         {/* Student Info */}
-                        <Card className="mb-4">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Student Information</CardTitle>
-                            </CardHeader>
+                        <Card className="mb-3">
+                            <CardHeader><CardTitle className="text-base">Student Information</CardTitle></CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-sm text-gray-400">Name</label>
-                                        <div className="font-semibold">{selectedRequest.studentName}</div>
-                                    </div>
-                                    <div>
-                                        <label className="text-sm text-gray-400">Email</label>
-                                        <div className="font-semibold">{selectedRequest.studentEmail}</div>
-                                    </div>
-                                    {selectedRequest.studentPhone && (
-                                        <div>
-                                            <label className="text-sm text-gray-400">Phone</label>
-                                            <div className="font-semibold">{selectedRequest.studentPhone}</div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {[
+                                        { label: 'Name', value: selectedRequest.studentName },
+                                        { label: 'Email', value: selectedRequest.studentEmail },
+                                        selectedRequest.studentPhone ? { label: 'Phone', value: selectedRequest.studentPhone } : null,
+                                        selectedRequest.studentCollegeName ? { label: 'College', value: selectedRequest.studentCollegeName } : null,
+                                        selectedRequest.studentCourse ? { label: 'Course', value: selectedRequest.studentCourse } : null,
+                                        selectedRequest.studentEnrollmentNumber ? { label: 'Enrollment No.', value: selectedRequest.studentEnrollmentNumber } : null,
+                                        selectedRequest.studentRollNumber ? { label: 'Roll No.', value: selectedRequest.studentRollNumber } : null,
+                                        (selectedRequest.studentCity || selectedRequest.studentLocation) ? { label: 'Location', value: [selectedRequest.studentCity, selectedRequest.studentLocation].filter(Boolean).join(', ') } : null,
+                                        { label: 'Requested On', value: formatDate(selectedRequest.created_at) },
+                                    ].filter(Boolean).map((item: any) => (
+                                        <div key={item.label}>
+                                            <p className="text-xs text-gray-400">{item.label}</p>
+                                            <p className="text-sm font-medium break-words">{item.value}</p>
                                         </div>
-                                    )}
-                                    {selectedRequest.studentCollegeName && (
-                                        <div>
-                                            <label className="text-sm text-gray-400">College/University</label>
-                                            <div className="font-semibold">{selectedRequest.studentCollegeName}</div>
-                                        </div>
-                                    )}
-                                    {selectedRequest.studentCourse && (
-                                        <div>
-                                            <label className="text-sm text-gray-400">Course/Degree</label>
-                                            <div className="font-semibold">{selectedRequest.studentCourse}</div>
-                                        </div>
-                                    )}
-                                    {selectedRequest.studentEnrollmentNumber && (
-                                        <div>
-                                            <label className="text-sm text-gray-400">Enrollment Number</label>
-                                            <div className="font-semibold">{selectedRequest.studentEnrollmentNumber}</div>
-                                        </div>
-                                    )}
-                                    {selectedRequest.studentRollNumber && (
-                                        <div>
-                                            <label className="text-sm text-gray-400">Roll Number</label>
-                                            <div className="font-semibold">{selectedRequest.studentRollNumber}</div>
-                                        </div>
-                                    )}
-                                    {(selectedRequest.studentCity || selectedRequest.studentLocation) && (
-                                        <div>
-                                            <label className="text-sm text-gray-400">Location</label>
-                                            <div className="font-semibold">
-                                                {[selectedRequest.studentCity, selectedRequest.studentLocation].filter(Boolean).join(', ')}
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div>
-                                        <label className="text-sm text-gray-400">Requested On</label>
-                                        <div className="font-semibold">{formatDate(selectedRequest.created_at)}</div>
-                                    </div>
+                                    ))}
                                 </div>
                             </CardContent>
                         </Card>
 
                         {/* Internship Info */}
-                        <Card className="mb-4">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Internship Details</CardTitle>
-                            </CardHeader>
+                        <Card className="mb-3">
+                            <CardHeader><CardTitle className="text-base">Internship Details</CardTitle></CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-sm text-gray-400">Program</label>
-                                        <div className="font-semibold">{selectedRequest.internshipTitle}</div>
-                                    </div>
-                                    <div>
-                                        <label className="text-sm text-gray-400">Domain</label>
-                                        <div className="font-semibold">{selectedRequest.internshipDomain}</div>
-                                    </div>
-                                    <div>
-                                        <label className="text-sm text-gray-400">Duration</label>
-                                        <div className="font-semibold">{selectedRequest.internshipDuration}</div>
-                                    </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div><p className="text-xs text-gray-400">Program</p><p className="text-sm font-medium">{selectedRequest.internshipTitle}</p></div>
+                                    <div><p className="text-xs text-gray-400">Domain</p><p className="text-sm font-medium">{selectedRequest.internshipDomain}</p></div>
+                                    <div><p className="text-xs text-gray-400">Duration</p><p className="text-sm font-medium">{selectedRequest.internshipDuration}</p></div>
                                 </div>
                             </CardContent>
                         </Card>
 
                         {/* Student Message */}
                         {selectedRequest.message && (
-                            <Card className="mb-4">
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Student's Message</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-gray-300">{selectedRequest.message}</p>
-                                </CardContent>
+                            <Card className="mb-3">
+                                <CardHeader><CardTitle className="text-base">Student's Message</CardTitle></CardHeader>
+                                <CardContent><p className="text-sm text-gray-300">{selectedRequest.message}</p></CardContent>
                             </Card>
                         )}
 
                         {/* Resume Section */}
                         {hasResume(selectedRequest) && (
-                            <Card className="mb-4 border-blue-500/30">
+                            <Card className="mb-3 border-blue-500/30">
                                 <CardHeader>
-                                    <CardTitle className="text-lg text-blue-400">
-                                        <FileUp size={18} className="inline mr-2" />
-                                        Student's Resume
-                                    </CardTitle>
+                                    <CardTitle className="text-base text-blue-400"><FileUp size={15} className="inline mr-1.5" />Student's Resume</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
-                                        <div className="flex items-center gap-3">
-                                            <FileText size={24} className="text-blue-400" />
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white/5 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <FileText size={20} className="text-blue-400 shrink-0" />
                                             <div>
-                                                <p className="font-semibold">{selectedRequest.resumeOriginalName || 'Resume'}</p>
-                                                <p className="text-xs text-gray-400">Attached with enrollment request</p>
+                                                <p className="text-sm font-medium">{selectedRequest.resumeOriginalName || 'Resume'}</p>
+                                                <p className="text-xs text-gray-400">Attached with request</p>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleViewResume(selectedRequest.id)}
-                                            >
-                                                <Eye size={14} className="mr-1" />
-                                                View
-                                            </Button>
-                                            <Button
-                                                variant="primary"
-                                                size="sm"
-                                                onClick={() => handleDownloadResume(selectedRequest.id, selectedRequest.studentName)}
-                                            >
-                                                <Download size={14} className="mr-1" />
-                                                Download
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleClearResume(selectedRequest.id)}
-                                                className="text-red-400 border-red-400/30 hover:bg-red-500/10"
-                                            >
-                                                <Trash2 size={14} className="mr-1" />
-                                                Clear
-                                            </Button>
+                                        <div className="flex gap-2 flex-wrap">
+                                            <Button variant="outline" size="sm" onClick={() => handleViewResume(selectedRequest.id)}><Eye size={13} className="mr-1" />View</Button>
+                                            <Button variant="primary" size="sm" onClick={() => handleDownloadResume(selectedRequest.id, selectedRequest.studentName)}><Download size={13} className="mr-1" />Download</Button>
+                                            <Button variant="outline" size="sm" onClick={() => handleClearResume(selectedRequest.id)} className="text-red-400 border-red-400/30 hover:bg-red-500/10"><Trash2 size={13} className="mr-1" />Clear</Button>
                                         </div>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">
-                                        Note: Use "Clear" if the resume file is missing or corrupt to remove the broken reference.
-                                    </p>
                                 </CardContent>
                             </Card>
                         )}
 
-                        {/* Admin Note for approved/rejected */}
+                        {/* Admin Note */}
                         {selectedRequest.adminNote && selectedRequest.status !== 'pending' && (
-                            <Card className="mb-4">
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Admin Note</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-gray-300">{selectedRequest.adminNote}</p>
-                                </CardContent>
+                            <Card className="mb-3">
+                                <CardHeader><CardTitle className="text-base">Admin Note</CardTitle></CardHeader>
+                                <CardContent><p className="text-sm text-gray-300">{selectedRequest.adminNote}</p></CardContent>
                             </Card>
                         )}
 
-                        {/* Action Section for Pending Requests */}
+                        {/* Action Section */}
                         {selectedRequest.status === 'pending' && (
-                            <Card className="mb-4 border-yellow-500/30">
-                                <CardHeader>
-                                    <CardTitle className="text-lg text-yellow-400">Take Action</CardTitle>
-                                </CardHeader>
+                            <Card className="mb-3 border-yellow-500/30">
+                                <CardHeader><CardTitle className="text-base text-yellow-400">Take Action</CardTitle></CardHeader>
                                 <CardContent>
-                                    <div className="mb-4">
-                                        <label className="block text-sm text-gray-400 mb-2">
-                                            Note (optional - will be saved with decision)
-                                        </label>
-                                        <textarea
-                                            value={actionNote}
-                                            onChange={(e) => setActionNote(e.target.value)}
-                                            placeholder="Add a note for this action..."
-                                            rows={3}
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-brand-500"
-                                        />
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <Button
-                                            variant="primary"
-                                            className="flex-1"
-                                            onClick={() => handleApprove(selectedRequest.id)}
-                                            disabled={isProcessing}
-                                        >
-                                            {isProcessing ? (
-                                                'Processing...'
-                                            ) : (
-                                                <>
-                                                    <CheckCircle size={18} className="mr-2" />
-                                                    Approve & Generate Documents
-                                                </>
-                                            )}
+                                    <textarea
+                                        value={actionNote}
+                                        onChange={(e) => setActionNote(e.target.value)}
+                                        placeholder="Optional note for this decision..."
+                                        rows={3}
+                                        className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-gray-400 focus:outline-none focus:border-brand-500 mb-3"
+                                    />
+                                    <div className="flex gap-2">
+                                        <Button variant="primary" className="flex-1" onClick={() => handleApprove(selectedRequest.id)} disabled={isProcessing}>
+                                            {isProcessing ? 'Processing...' : <><CheckCircle size={15} className="mr-1.5" />Approve</>}
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            className="flex-1 text-red-400 hover:text-red-300 border border-red-500/30"
-                                            onClick={() => handleReject(selectedRequest.id)}
-                                            disabled={isProcessing}
-                                        >
-                                            <XCircle size={18} className="mr-2" />
-                                            Reject
+                                        <Button variant="ghost" className="flex-1 text-red-400 border border-red-500/30 hover:bg-red-500/10" onClick={() => handleReject(selectedRequest.id)} disabled={isProcessing}>
+                                            <XCircle size={15} className="mr-1.5" />Reject
                                         </Button>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-3 text-center">
-                                        Approving will automatically generate MOU and Offer Letter for the student.
-                                    </p>
+                                    <p className="text-xs text-gray-500 mt-2 text-center">Approval auto-generates MOU & Offer Letter.</p>
                                 </CardContent>
                             </Card>
                         )}
 
                         {/* Approved Info */}
                         {selectedRequest.status === 'approved' && (
-                            <Card className="mb-4 border-green-500/30">
-                                <CardHeader>
-                                    <CardTitle className="text-lg text-green-400">Approved</CardTitle>
-                                </CardHeader>
+                            <Card className="mb-3 border-green-500/30">
+                                <CardHeader><CardTitle className="text-base text-green-400">Approved</CardTitle></CardHeader>
                                 <CardContent>
-                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div className="grid grid-cols-2 gap-3 mb-3">
                                         {selectedRequest.startDate && (
-                                            <div>
-                                                <label className="text-sm text-gray-400">Start Date</label>
-                                                <div className="font-semibold">{formatDate(selectedRequest.startDate)}</div>
-                                            </div>
+                                            <div><p className="text-xs text-gray-400">Start Date</p><p className="text-sm font-medium">{formatDate(selectedRequest.startDate)}</p></div>
                                         )}
                                         {selectedRequest.endDate && (
-                                            <div>
-                                                <label className="text-sm text-gray-400">End Date</label>
-                                                <div className="font-semibold">{formatDate(selectedRequest.endDate)}</div>
-                                            </div>
+                                            <div><p className="text-xs text-gray-400">End Date</p><p className="text-sm font-medium">{formatDate(selectedRequest.endDate)}</p></div>
                                         )}
                                     </div>
-                                    
-                                    {/* Document Status Badges */}
-                                    <div className="flex gap-2 mb-4">
-                                        {selectedRequest.mouGenerated && (
-                                            <Badge variant="success">
-                                                <FileText size={12} className="mr-1" />
-                                                MOU Generated
-                                            </Badge>
-                                        )}
-                                        {selectedRequest.offerLetterGenerated && (
-                                            <Badge variant="success">
-                                                <FileText size={12} className="mr-1" />
-                                                Offer Letter Generated
-                                            </Badge>
-                                        )}
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        {selectedRequest.mouGenerated && <Badge variant="success"><FileText size={11} className="mr-1" />MOU Generated</Badge>}
+                                        {selectedRequest.offerLetterGenerated && <Badge variant="success"><FileText size={11} className="mr-1" />Offer Letter Generated</Badge>}
                                     </div>
-
-                                    {/* Download Documents Section */}
-                                    <div className="p-4 bg-white/5 rounded-lg border border-green-500/20">
-                                        <h4 className="text-sm font-semibold text-gray-300 mb-3">Download Student Documents</h4>
-                                        <div className="flex flex-wrap gap-3">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleDownloadMOU(selectedRequest.id, selectedRequest.studentName)}
-                                                className="border-brand-500/50 hover:bg-brand-500/20"
-                                            >
-                                                <Download size={14} className="mr-2" />
-                                                Download MOU
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleDownloadOfferLetter(selectedRequest.id, selectedRequest.studentName)}
-                                                className="border-blue-500/50 hover:bg-blue-500/20"
-                                            >
-                                                <Download size={14} className="mr-2" />
-                                                Download Offer Letter
-                                            </Button>
-                                        </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        <Button variant="outline" size="sm" onClick={() => handleDownloadMOU(selectedRequest.id, selectedRequest.studentName)}>
+                                            <Download size={13} className="mr-1" />Download MOU
+                                        </Button>
+                                        <Button variant="outline" size="sm" onClick={() => handleDownloadOfferLetter(selectedRequest.id, selectedRequest.studentName)}>
+                                            <Download size={13} className="mr-1" />Download Offer Letter
+                                        </Button>
                                     </div>
                                 </CardContent>
                             </Card>
                         )}
 
-                        {/* Close Button */}
                         <div className="flex justify-end">
-                            <Button
-                                variant="outline"
-                                onClick={() => {
-                                    setShowDetailModal(false);
-                                    setSelectedRequest(null);
-                                    setActionNote('');
-                                }}
-                            >
+                            <Button variant="outline" size="sm" onClick={() => { setShowDetailModal(false); setSelectedRequest(null); setActionNote(''); }}>
                                 Close
                             </Button>
                         </div>

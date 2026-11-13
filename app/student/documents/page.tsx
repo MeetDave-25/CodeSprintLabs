@@ -68,7 +68,7 @@ export default function StudentDocumentsPage() {
     const [documents, setDocuments] = useState<Document[]>([]);
     const [requests, setRequests] = useState<EnrollmentRequest[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'documents' | 'requests'>('documents');
+    const [activeTab, setActiveTab] = useState<'documents' | 'requests'>('requests');
     const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -279,52 +279,47 @@ export default function StudentDocumentsPage() {
 
     if (isLoading) {
         return (
-            <div className="p-6 flex items-center justify-center min-h-[400px]">
+            <div className="p-4 flex items-center justify-center min-h-[400px]">
                 <div className="text-gray-400">Loading your documents...</div>
             </div>
         );
     }
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex items-center gap-4">
-                <Button variant="ghost" onClick={() => router.push('/student/dashboard')}>
-                    <ArrowLeft size={18} className="mr-2" />
-                    Dashboard
-                </Button>
-            </div>
-
             <div>
-                <h1 className="text-4xl font-bold mb-2">My Documents</h1>
-                <p className="text-gray-400">View and download your internship documents</p>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-1">My Documents</h1>
+                <p className="text-sm text-gray-400">View and download your internship documents</p>
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-2 border-b border-white/10 pb-2">
+            {/* Tabs — full width on mobile */}
+            <div className="grid grid-cols-2 gap-2 border-b border-white/10 pb-2">
                 <button
                     onClick={() => setActiveTab('documents')}
-                    className={`px-4 py-2 rounded-t-lg transition-all ${
+                    className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
                         activeTab === 'documents'
-                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
+                            ? 'bg-brand-400 text-white shadow-sm'
                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                 >
-                    <FileText size={16} className="inline mr-2" />
-                    Documents ({documents.length})
+                    <FileText size={15} />
+                    <span>Documents</span>
+                    <span className="ml-0.5 opacity-70">({documents.length})</span>
                 </button>
                 <button
                     onClick={() => setActiveTab('requests')}
-                    className={`px-4 py-2 rounded-t-lg transition-all relative ${
+                    className={`relative flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
                         activeTab === 'requests'
-                            ? 'bg-brand-400 on-neon hover:bg-brand-300 text-white'
+                            ? 'bg-brand-400 text-white shadow-sm'
                             : 'bg-white/5 text-gray-400 hover:bg-white/10'
                     }`}
                 >
-                    <Clock size={16} className="inline mr-2" />
-                    Enrollment Requests ({requests.length})
+                    <Clock size={15} />
+                    <span>Applications</span>
+                    <span className="ml-0.5 opacity-70">({requests.length})</span>
                     {pendingCount > 0 && (
-                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full text-xs flex items-center justify-center text-black font-bold">
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full text-[10px] flex items-center justify-center text-black font-bold">
                             {pendingCount}
                         </span>
                     )}
@@ -333,13 +328,13 @@ export default function StudentDocumentsPage() {
 
             {/* Documents Tab */}
             {activeTab === 'documents' && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {documents.length === 0 ? (
                         <Card>
-                            <CardContent className="p-12 text-center">
-                                <FileText size={48} className="mx-auto mb-4 text-gray-600" />
-                                <h3 className="text-xl font-bold mb-2">No Documents Yet</h3>
-                                <p className="text-gray-400 mb-4">
+                            <CardContent className="p-8 text-center">
+                                <FileText size={40} className="mx-auto mb-3 text-gray-600" />
+                                <h3 className="text-lg font-bold mb-2">No Documents Yet</h3>
+                                <p className="text-gray-400 text-sm mb-4">
                                     Once your enrollment is approved, your MOU and Offer Letter will appear here.
                                 </p>
                                 <Button variant="primary" onClick={() => router.push('/internships')}>
@@ -349,157 +344,78 @@ export default function StudentDocumentsPage() {
                         </Card>
                     ) : (
                         documents.map((doc, index) => (
-                            <motion.div
-                                key={doc.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <Card hover3d className={`${
-                                    doc.isWithdrawn 
-                                        ? 'border-orange-500/30 bg-gradient-to-br from-orange-900/10 to-red-900/10' 
-                                        : doc.hasCertificate 
-                                            ? 'border-green-500/30' 
-                                            : 'border-brand-500/20'
+                            <motion.div key={doc.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.07 }}>
+                                <Card className={`${
+                                    doc.isWithdrawn ? 'border-orange-500/30' : doc.hasCertificate ? 'border-green-500/30' : 'border-brand-500/20'
                                 }`}>
-                                    <CardContent className="p-6">
-                                        <div className="flex flex-col gap-4">
-                                            {/* Header */}
-                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                                <div>
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        {doc.isWithdrawn ? (
-                                                            <LogOut size={20} className="text-orange-400" />
-                                                        ) : (
-                                                            <Briefcase size={20} className="text-brand-400" />
-                                                        )}
-                                                        <h3 className="text-xl font-bold">{doc.internshipTitle}</h3>
-                                                    </div>
-                                                    <div className="flex items-center gap-3 text-gray-400 mb-2">
-                                                        <span>{doc.internshipDomain}</span>
-                                                        {getCompletionStatusBadge(doc.completionStatus)}
-                                                    </div>
-                                                    <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-                                                        <span className="flex items-center gap-1">
-                                                            <Calendar size={14} />
-                                                            Approved: {formatDate(doc.approvedAt)}
-                                                        </span>
-                                                        {doc.startDate && (
-                                                            <span>
-                                                                Start: {formatDate(doc.startDate)}
-                                                            </span>
-                                                        )}
-                                                        {doc.endDate && (
-                                                            <span>
-                                                                End: {formatDate(doc.endDate)}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                {/* Grade Display */}
-                                                {doc.hasCompletionLetter && doc.marks && (
-                                                    <div className="text-center p-4 bg-gradient-to-br from-brand-600/20 to-brand-600/20 rounded-lg border border-brand-500/30">
-                                                        <div className="text-3xl font-bold gradient-text">{doc.grade}</div>
-                                                        <div className="text-sm text-gray-400">{doc.marks}/50 marks</div>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Documents Section */}
-                                            <div className="border-t border-white/10 pt-4">
-                                                <div className="text-sm text-gray-400 mb-3">Available Documents:</div>
-                                                <div className="flex flex-wrap gap-3">
-                                                    {/* Enrollment Documents */}
-                                                    {doc.hasMOU && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => handleDownloadMOU(doc.id, doc.internshipTitle)}
-                                                            isLoading={downloadingId === doc.id + '-mou'}
-                                                        >
-                                                            <Download size={14} className="mr-2" />
-                                                            MOU
-                                                        </Button>
-                                                    )}
-                                                    {doc.hasOfferLetter && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => handleDownloadOfferLetter(doc.id, doc.internshipTitle)}
-                                                            isLoading={downloadingId === doc.id + '-offer'}
-                                                        >
-                                                            <Download size={14} className="mr-2" />
-                                                            Offer Letter
-                                                        </Button>
-                                                    )}
-
-                                                    {/* Completion Documents */}
-                                                    {doc.hasCompletionLetter && (
-                                                        <Button
-                                                            variant="primary"
-                                                            size="sm"
-                                                            onClick={() => handleDownloadCompletionLetter(doc.id, doc.internshipTitle)}
-                                                            isLoading={downloadingId === doc.id + '-completion'}
-                                                        >
-                                                            <GraduationCap size={14} className="mr-2" />
-                                                            Completion Letter
-                                                        </Button>
-                                                    )}
-                                                    {doc.hasCertificate && doc.certificateId && (
-                                                        <Button
-                                                            variant="primary"
-                                                            size="sm"
-                                                            className="bg-gradient-to-r from-green-500 to-emerald-500"
-                                                            onClick={() => handleDownloadCertificate(doc.certificateId!, doc.internshipTitle)}
-                                                            isLoading={downloadingId === doc.certificateId + '-cert'}
-                                                        >
-                                                            <Award size={14} className="mr-2" />
-                                                            Certificate
-                                                        </Button>
-                                                    )}
-
-                                                    {/* Withdrawal Documents */}
-                                                    {doc.hasPartialCompletionLetter && (
-                                                        <button
-                                                            className="inline-flex items-center justify-center px-3 py-1.5 text-sm rounded-lg font-medium bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30 transition-all disabled:opacity-50"
-                                                            onClick={() => handleDownloadPartialCompletionLetter(doc.id, doc.internshipTitle)}
-                                                            disabled={downloadingId === doc.id + '-partial'}
-                                                        >
-                                                            <FileText size={14} className="mr-2" />
-                                                            Partial Completion
-                                                        </button>
-                                                    )}
-                                                    {doc.hasRelievingLetter && (
-                                                        <button
-                                                            className="inline-flex items-center justify-center px-3 py-1.5 text-sm rounded-lg font-medium bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30 transition-all disabled:opacity-50"
-                                                            onClick={() => handleDownloadRelievingLetter(doc.id, doc.internshipTitle)}
-                                                            disabled={downloadingId === doc.id + '-relieving'}
-                                                        >
-                                                            <FileText size={14} className="mr-2" />
-                                                            Relieving Letter
-                                                        </button>
-                                                    )}
+                                    <CardContent className="p-4">
+                                        {/* Title row */}
+                                        <div className="flex items-start gap-2 mb-2">
+                                            {doc.isWithdrawn
+                                                ? <LogOut size={18} className="text-orange-400 mt-0.5 shrink-0" />
+                                                : <Briefcase size={18} className="text-brand-400 mt-0.5 shrink-0" />}
+                                            <div className="min-w-0">
+                                                <h3 className="font-bold text-base leading-tight">{doc.internshipTitle}</h3>
+                                                <div className="flex flex-wrap items-center gap-2 mt-1">
+                                                    {doc.internshipDomain && <span className="text-xs text-gray-400">{doc.internshipDomain}</span>}
+                                                    {getCompletionStatusBadge(doc.completionStatus)}
                                                 </div>
                                             </div>
-
-                                            {/* Withdrawal info */}
-                                            {doc.isWithdrawn && doc.withdrawalApprovedAt && (
-                                                <div className="text-xs text-orange-400">
-                                                    Withdrawn on: {formatDate(doc.withdrawalApprovedAt)}
-                                                    {doc.withdrawalReason && (
-                                                        <span className="text-gray-500 ml-2">• {doc.withdrawalReason}</span>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            {/* Completion info */}
-                                            {!doc.isWithdrawn && doc.reviewedAt && (
-                                                <div className="text-xs text-gray-500">
-                                                    Reviewed on: {formatDate(doc.reviewedAt)}
+                                            {doc.hasCompletionLetter && doc.marks && (
+                                                <div className="ml-auto text-center shrink-0 px-3 py-1.5 bg-brand-500/10 rounded-lg border border-brand-500/30">
+                                                    <div className="text-lg font-bold gradient-text">{doc.grade}</div>
+                                                    <div className="text-[10px] text-gray-400">{doc.marks}/50</div>
                                                 </div>
                                             )}
                                         </div>
+
+                                        {/* Dates */}
+                                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mb-3">
+                                            <span><Calendar size={11} className="inline mr-1" />Approved: {formatDate(doc.approvedAt)}</span>
+                                            {doc.startDate && <span>Start: {formatDate(doc.startDate)}</span>}
+                                            {doc.endDate && <span>End: {formatDate(doc.endDate)}</span>}
+                                        </div>
+
+                                        {/* Download buttons */}
+                                        <div className="border-t border-white/10 pt-3">
+                                            <p className="text-xs text-gray-500 mb-2">Available documents:</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {doc.hasMOU && (
+                                                    <Button variant="outline" size="sm" onClick={() => handleDownloadMOU(doc.id, doc.internshipTitle)} isLoading={downloadingId === doc.id + '-mou'}>
+                                                        <Download size={13} className="mr-1" />MOU
+                                                    </Button>
+                                                )}
+                                                {doc.hasOfferLetter && (
+                                                    <Button variant="outline" size="sm" onClick={() => handleDownloadOfferLetter(doc.id, doc.internshipTitle)} isLoading={downloadingId === doc.id + '-offer'}>
+                                                        <Download size={13} className="mr-1" />Offer Letter
+                                                    </Button>
+                                                )}
+                                                {doc.hasCompletionLetter && (
+                                                    <Button variant="primary" size="sm" onClick={() => handleDownloadCompletionLetter(doc.id, doc.internshipTitle)} isLoading={downloadingId === doc.id + '-completion'}>
+                                                        <GraduationCap size={13} className="mr-1" />Completion
+                                                    </Button>
+                                                )}
+                                                {doc.hasCertificate && doc.certificateId && (
+                                                    <Button variant="primary" size="sm" className="bg-gradient-to-r from-green-500 to-emerald-500" onClick={() => handleDownloadCertificate(doc.certificateId!, doc.internshipTitle)} isLoading={downloadingId === doc.certificateId + '-cert'}>
+                                                        <Award size={13} className="mr-1" />Certificate
+                                                    </Button>
+                                                )}
+                                                {doc.hasPartialCompletionLetter && (
+                                                    <button className="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30 disabled:opacity-50" onClick={() => handleDownloadPartialCompletionLetter(doc.id, doc.internshipTitle)} disabled={downloadingId === doc.id + '-partial'}>
+                                                        <FileText size={13} className="mr-1" />Partial
+                                                    </button>
+                                                )}
+                                                {doc.hasRelievingLetter && (
+                                                    <button className="inline-flex items-center px-3 py-1.5 text-xs rounded-lg font-medium bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30 disabled:opacity-50" onClick={() => handleDownloadRelievingLetter(doc.id, doc.internshipTitle)} disabled={downloadingId === doc.id + '-relieving'}>
+                                                        <FileText size={13} className="mr-1" />Relieving
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {doc.isWithdrawn && doc.withdrawalApprovedAt && (
+                                            <p className="text-xs text-orange-400 mt-2">Withdrawn: {formatDate(doc.withdrawalApprovedAt)}{doc.withdrawalReason && ` • ${doc.withdrawalReason}`}</p>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </motion.div>
@@ -510,14 +426,14 @@ export default function StudentDocumentsPage() {
 
             {/* Requests Tab */}
             {activeTab === 'requests' && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {requests.length === 0 ? (
                         <Card>
-                            <CardContent className="p-12 text-center">
-                                <Clock size={48} className="mx-auto mb-4 text-gray-600" />
-                                <h3 className="text-xl font-bold mb-2">No Enrollment Requests</h3>
-                                <p className="text-gray-400 mb-4">
-                                    You haven't submitted any enrollment requests yet.
+                            <CardContent className="p-8 text-center">
+                                <Clock size={40} className="mx-auto mb-3 text-gray-600" />
+                                <h3 className="text-lg font-bold mb-2">No Applications Yet</h3>
+                                <p className="text-gray-400 text-sm mb-4">
+                                    You haven't applied to any internships yet.
                                 </p>
                                 <Button variant="primary" onClick={() => router.push('/internships')}>
                                     Browse Internships
@@ -526,79 +442,56 @@ export default function StudentDocumentsPage() {
                         </Card>
                     ) : (
                         requests.map((request, index) => (
-                            <motion.div
-                                key={request.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <Card className={`
-                                    ${request.status === 'pending' ? 'border-yellow-500/30' : ''}
-                                    ${request.status === 'approved' ? 'border-green-500/30' : ''}
-                                    ${request.status === 'rejected' ? 'border-red-500/30' : ''}
-                                `}>
-                                    <CardContent className="p-6">
-                                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <h3 className="text-lg font-bold">{request.internshipTitle}</h3>
-                                                    {getStatusBadge(request.status)}
-                                                </div>
-                                                <div className="text-gray-400 text-sm mb-2">
-                                                    {request.internshipDomain} • {request.internshipDuration}
-                                                </div>
-                                                <div className="text-xs text-gray-500">
-                                                    Requested: {formatDate(request.created_at)}
-                                                </div>
-
-                                                {request.message && (
-                                                    <div className="mt-3 p-3 bg-white/5 rounded-lg">
-                                                        <div className="text-xs text-gray-400 mb-1">Your Message:</div>
-                                                        <div className="text-sm">{request.message}</div>
-                                                    </div>
-                                                )}
-
-                                                {request.adminNote && request.status !== 'pending' && (
-                                                    <div className={`mt-3 p-3 rounded-lg ${
-                                                        request.status === 'approved' ? 'bg-green-500/10' : 'bg-red-500/10'
-                                                    }`}>
-                                                        <div className="text-xs text-gray-400 mb-1">Admin Note:</div>
-                                                        <div className="text-sm">{request.adminNote}</div>
-                                                    </div>
-                                                )}
-
-                                                {/* Resume Badge */}
-                                                {request.resumePath && (
-                                                    <div className="mt-3">
-                                                        <Badge variant="info">
-                                                            <FileUp size={12} className="mr-1" />
-                                                            Resume: {request.resumeOriginalName || 'Attached'}
-                                                        </Badge>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            <div className="text-right">
-                                                {request.status === 'pending' && (
-                                                    <div className="text-yellow-400 text-sm">
-                                                        <Clock size={16} className="inline mr-1" />
-                                                        Awaiting Review
-                                                    </div>
-                                                )}
-                                                {request.status === 'approved' && request.approvedAt && (
-                                                    <div className="text-green-400 text-sm">
-                                                        <CheckCircle size={16} className="inline mr-1" />
-                                                        Approved on {formatDate(request.approvedAt)}
-                                                    </div>
-                                                )}
-                                                {request.status === 'rejected' && request.rejectedAt && (
-                                                    <div className="text-red-400 text-sm">
-                                                        <AlertCircle size={16} className="inline mr-1" />
-                                                        Rejected on {formatDate(request.rejectedAt)}
-                                                    </div>
-                                                )}
-                                            </div>
+                            <motion.div key={request.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.07 }}>
+                                <Card className={`${
+                                    request.status === 'pending' ? 'border-yellow-500/30' :
+                                    request.status === 'approved' ? 'border-green-500/30' :
+                                    'border-red-500/30'
+                                }`}>
+                                    <CardContent className="p-4">
+                                        {/* Title + badge */}
+                                        <div className="flex items-start justify-between gap-2 mb-2">
+                                            <h3 className="font-bold text-base leading-tight flex-1 min-w-0 pr-2">{request.internshipTitle || 'Internship'}</h3>
+                                            {getStatusBadge(request.status)}
                                         </div>
+
+                                        {/* Meta */}
+                                        <div className="text-xs text-gray-400 mb-1">
+                                            {[request.internshipDomain, request.internshipDuration].filter(Boolean).join(' • ')}
+                                        </div>
+                                        <div className="text-xs text-gray-500 mb-3">
+                                            Applied: {request.created_at ? formatDate(request.created_at) : '—'}
+                                        </div>
+
+                                        {/* Status line */}
+                                        {request.status === 'pending' && (
+                                            <div className="flex items-center gap-1.5 text-xs text-yellow-400 mb-2">
+                                                <Clock size={13} />Awaiting admin review
+                                            </div>
+                                        )}
+                                        {request.status === 'approved' && request.approvedAt && (
+                                            <div className="flex items-center gap-1.5 text-xs text-green-400 mb-2">
+                                                <CheckCircle size={13} />Approved on {formatDate(request.approvedAt)}
+                                            </div>
+                                        )}
+                                        {request.status === 'rejected' && request.rejectedAt && (
+                                            <div className="flex items-center gap-1.5 text-xs text-red-400 mb-2">
+                                                <AlertCircle size={13} />Rejected on {formatDate(request.rejectedAt)}
+                                            </div>
+                                        )}
+
+                                        {request.message && (
+                                            <div className="mt-2 p-2.5 bg-white/5 rounded-lg">
+                                                <p className="text-xs text-gray-400 mb-1 font-medium">Your message:</p>
+                                                <p className="text-sm text-gray-300">{request.message}</p>
+                                            </div>
+                                        )}
+                                        {request.adminNote && request.status !== 'pending' && (
+                                            <div className={`mt-2 p-2.5 rounded-lg ${request.status === 'approved' ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
+                                                <p className="text-xs text-gray-400 mb-1 font-medium">Admin note:</p>
+                                                <p className="text-sm">{request.adminNote}</p>
+                                            </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </motion.div>
