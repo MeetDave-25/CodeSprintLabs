@@ -17,6 +17,7 @@ import {
     UserMinus,
     UsersRound,
     ShieldCheck,
+    BarChart2,
 } from 'lucide-react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import PortalShell, { type NavSection } from '@/components/layout/PortalShell';
@@ -50,6 +51,7 @@ const sections: NavSection[] = [
         title: 'People',
         links: [
             { href: '/admin/students', label: 'Students', icon: Users },
+            { href: '/admin/students/analytics', label: 'Student Analytics', icon: BarChart2 },
             { href: '/admin/team', label: 'Team Members', icon: UsersRound },
         ],
     },

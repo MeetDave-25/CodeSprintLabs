@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, UserCheck, UserX, Mail, Phone, Calendar, Award, Eye, X, Loader2, Trash2 } from 'lucide-react';
+import { Search, Filter, UserCheck, UserX, Mail, Phone, Calendar, Award, Eye, X, Loader2, Trash2, BarChart2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -31,6 +32,7 @@ interface Stats {
 }
 
 export default function AdminStudentsPage() {
+    const router = useRouter();
     const [students, setStudents] = useState<Student[]>([]);
     const [stats, setStats] = useState<Stats>({ total: 0, active: 0, inactive: 0, avgPoints: 0 });
     const [isLoading, setIsLoading] = useState(true);
@@ -124,10 +126,16 @@ export default function AdminStudentsPage() {
                     <h1 className="text-4xl font-bold mb-2">Student Management</h1>
                     <p className="text-gray-400">View and manage all enrolled students</p>
                 </div>
+                <div className="flex gap-3">
+                <Button variant="outline" onClick={() => router.push('/admin/students/analytics')}>
+                    <BarChart2 size={18} className="mr-2" />
+                    Analytics
+                </Button>
                 <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
                     <Filter size={18} className="mr-2" />
                     {showFilters ? 'Hide Filters' : 'Show Filters'}
                 </Button>
+                </div>
             </div>
 
             {/* Stats Cards */}
