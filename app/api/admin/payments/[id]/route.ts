@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             const rows = await sql`
                 SELECT p.*, u.name as "studentName", u.email as "studentEmail", c.title as "courseTitle"
                 FROM payments p
-                LEFT JOIN users u ON u.id::text = p."userId"::text
+                LEFT JOIN users u ON u.id::text = p."studentId"::text
                 LEFT JOIN courses c ON c.id::text = p."courseId"::text
                 WHERE p.id = ${params.id} LIMIT 1
             `;

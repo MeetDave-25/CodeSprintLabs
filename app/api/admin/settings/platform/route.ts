@@ -4,6 +4,44 @@ import { getAuthUser } from '@/lib/auth-server';
 
 export const runtime = 'nodejs';
 
+const DEFAULTS = {
+    siteName: 'CodeSprint Labs',
+    siteEmail: 'codesprintlabs@gmail.com',
+    supportEmail: 'codesprintlabs@gmail.com',
+    phone: '+91 81609 01481',
+    address: 'Ahmedabad, Gujarat, India',
+    enableNotifications: true,
+    enableEmailAlerts: true,
+    maintenanceMode: false,
+    allowRegistration: true,
+};
+
+type Settings = typeof DEFAULTS;
+
+const KEYS: Record<keyof Settings, string> = {
+    siteName: 'site_name',
+    siteEmail: 'site_email',
+    supportEmail: 'support_email',
+    phone: 'phone',
+    address: 'address',
+    enableNotifications: 'enable_notifications',
+    enableEmailAlerts: 'enable_email_alerts',
+    maintenanceMode: 'maintenance_mode',
+    allowRegistration: 'allow_registration',
+};
+
+async function readSettings(): Promise<Settings> {
+    const rows = await sql`SELECT key, value FROM settings`;
+    const stored = new Map<string, string>(rows.map((r: any) => [r.key, r.value]));
+    const out: any = { ...DEFAULTS };
+    for (const name of Object.keys(KEYS) as (keyof Settings)[]) {
+        const raw = stored.get(KEYS[name]);
+        if (raw === undefined || raw === null) continue;
+        out[name] = typeof DEFAULTS[name] === 'boolean' ? raw === 'true' : raw;
+    }
+    return out;
+}
+
 // GET /api/admin/settings/platform
 export async function GET(request: NextRequest) {
     try {
@@ -12,43 +50,9 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        // Try to get from settings table, fallback to defaults
-        try {
-            const rows = await sql`SELECT * FROM settings LIMIT 1`;
-            if (rows && rows.length > 0) {
-                const r = rows[0];
-                return NextResponse.json({
-                    status: 'success',
-                    data: {
-                        siteName: r.siteName || r.platformName || 'CodeSprint Labs',
-                        siteEmail: r.siteEmail || r.platformEmail || 'codesprintlabs@gmail.com',
-                        supportEmail: r.supportEmail || 'codesprintlabs@gmail.com',
-                        phone: r.phone || '+91 81609 01481',
-                        address: r.address || 'Ahmedabad, Gujarat, India',
-                        enableNotifications: r.enableNotifications ?? true,
-                        enableEmailAlerts: r.enableEmailAlerts ?? true,
-                        maintenanceMode: r.maintenanceMode ?? false,
-                        allowRegistration: r.allowRegistration ?? r.allowRegistrations ?? true,
-                    },
-                });
-            }
-        } catch {}
-
-        return NextResponse.json({
-            status: 'success',
-            data: {
-                siteName: 'CodeSprint Labs',
-                siteEmail: 'codesprintlabs@gmail.com',
-                supportEmail: 'codesprintlabs@gmail.com',
-                phone: '+91 81609 01481',
-                address: 'Ahmedabad, Gujarat, India',
-                enableNotifications: true,
-                enableEmailAlerts: true,
-                maintenanceMode: false,
-                allowRegistration: true,
-            },
-        });
+        return NextResponse.json({ status: 'success', data: await readSettings() });
     } catch (error: any) {
+        console.error('GET /api/admin/settings/platform error:', error);
         return NextResponse.json({ message: 'Internal server error', error: error?.message }, { status: 500 });
     }
 }
@@ -62,74 +66,30 @@ export async function PUT(request: NextRequest) {
         }
 
         const body = await request.json().catch(() => ({}));
-        const {
-            siteName, siteEmail, supportEmail,
-            enableNotifications, enableEmailAlerts,
-            maintenanceMode, allowRegistration,
-            platformName, platformEmail,
-        } = body;
+        // Some callers send platformName/platformEmail instead of siteName/siteEmail.
+        const incoming: Partial<Settings> = {
+            ...body,
+            siteName: body.siteName ?? body.platformName,
+            siteEmail: body.siteEmail ?? body.platformEmail,
+        };
 
-        // Normalize field names (page sends siteName/siteEmail, some callers send platformName/platformEmail)
-        const resolvedSiteName = siteName ?? platformName ?? null;
-        const resolvedSiteEmail = siteEmail ?? platformEmail ?? null;
-
-        try {
-            // Ensure table exists first
+        for (const name of Object.keys(KEYS) as (keyof Settings)[]) {
+            const value = incoming[name];
+            if (value === undefined || value === null) continue;
             await sql`
-                CREATE TABLE IF NOT EXISTS settings (
-                    id SERIAL PRIMARY KEY,
-                    "siteName" TEXT,
-                    "siteEmail" TEXT,
-                    "supportEmail" TEXT,
-                    "phone" TEXT,
-                    "address" TEXT,
-                    "enableNotifications" BOOLEAN DEFAULT true,
-                    "enableEmailAlerts" BOOLEAN DEFAULT true,
-                    "maintenanceMode" BOOLEAN DEFAULT false,
-                    "allowRegistration" BOOLEAN DEFAULT true,
-                    "updatedAt" TIMESTAMPTZ DEFAULT NOW()
-                )
+                INSERT INTO settings (key, value, created_at, updated_at)
+                VALUES (${KEYS[name]}, ${String(value)}, NOW(), NOW())
+                ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()
             `;
-
-            // Add columns if table existed without them
-            await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS "phone" TEXT`.catch(() => {});
-            await sql`ALTER TABLE settings ADD COLUMN IF NOT EXISTS "address" TEXT`.catch(() => {});
-
-            const existing = await sql`SELECT id FROM settings LIMIT 1`;
-
-            if (existing && existing.length > 0) {
-                await sql`
-                    UPDATE settings SET
-                        "siteName" = COALESCE(${resolvedSiteName}, "siteName"),
-                        "siteEmail" = COALESCE(${resolvedSiteEmail}, "siteEmail"),
-                        "supportEmail" = COALESCE(${supportEmail ?? null}, "supportEmail"),
-                        "phone" = COALESCE(${body.phone ?? null}, "phone"),
-                        "address" = COALESCE(${body.address ?? null}, "address"),
-                        "enableNotifications" = COALESCE(${enableNotifications ?? null}, "enableNotifications"),
-                        "enableEmailAlerts" = COALESCE(${enableEmailAlerts ?? null}, "enableEmailAlerts"),
-                        "maintenanceMode" = COALESCE(${maintenanceMode ?? null}, "maintenanceMode"),
-                        "allowRegistration" = COALESCE(${allowRegistration ?? null}, "allowRegistration"),
-                        "updatedAt" = NOW()
-                    WHERE id = ${existing[0].id}
-                `;
-            } else {
-                await sql`
-                    INSERT INTO settings ("siteName", "siteEmail", "supportEmail", "phone", "address", "enableNotifications", "enableEmailAlerts", "maintenanceMode", "allowRegistration", "updatedAt")
-                    VALUES (${resolvedSiteName}, ${resolvedSiteEmail}, ${supportEmail ?? null}, ${body.phone ?? null}, ${body.address ?? null}, ${enableNotifications ?? true}, ${enableEmailAlerts ?? true}, ${maintenanceMode ?? false}, ${allowRegistration ?? true}, NOW())
-                `;
-            }
-        } catch (dbError: any) {
-            console.error('DB error saving platform settings:', dbError?.message);
-            // Return success anyway so the UI doesn't show an error on schema issues
         }
 
         return NextResponse.json({
             status: 'success',
             message: 'Platform settings updated successfully',
-            data: body,
+            data: await readSettings(),
         });
     } catch (error: any) {
+        console.error('PUT /api/admin/settings/platform error:', error);
         return NextResponse.json({ message: 'Internal server error', error: error?.message }, { status: 500 });
     }
 }
-

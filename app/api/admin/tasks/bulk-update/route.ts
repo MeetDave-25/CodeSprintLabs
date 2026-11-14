@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
                     UPDATE tasks
                     SET title = COALESCE(${task.title ?? null}, title),
                         description = COALESCE(${task.description ?? null}, description),
-                        "order" = COALESCE(${task.order ?? null}, "order"),
+                        "dayNumber" = COALESCE(${task.dayNumber ?? task.order ?? null}, "dayNumber"),
                         "isActive" = COALESCE(${task.isActive ?? null}, "isActive"),
                         updated_at = NOW()
                     WHERE id = ${task.id}

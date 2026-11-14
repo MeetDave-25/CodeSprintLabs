@@ -21,7 +21,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
         const existing = await sql`
             SELECT id FROM certificates
-            WHERE "studentId" = ${uid} AND "courseId" = ${courseId} AND type = 'course'
+            WHERE "studentId" = ${uid} AND "courseId" = ${courseId}
             LIMIT 1
         `;
         if (existing && existing.length > 0) {
@@ -30,8 +30,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
         const verificationCode = `CERT-${new Date().getFullYear()}-${generateCode(8)}`;
         const cert = await sql`
-            INSERT INTO certificates ("studentId", "courseId", type, "verificationCode", "issueDate", status, created_at)
-            VALUES (${uid}, ${courseId}, 'course', ${verificationCode}, NOW(), 'active', NOW())
+            INSERT INTO certificates ("studentId", "courseId", "verificationCode", "issueDate", created_at, updated_at)
+            VALUES (${uid}, ${courseId}, ${verificationCode}, NOW(), NOW(), NOW())
             RETURNING *
         `;
 

@@ -18,21 +18,22 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: 'Payment ID is required' }, { status: 422 });
         }
 
-        try {
-            await sql`
-                INSERT INTO payments (
-                    "userId", "orderId", "paymentId", "signature", "courseId",
-                    amount, status, created_at
-                ) VALUES (
-                    ${String(authUser.id)}, ${razorpay_order_id || ''}, ${razorpay_payment_id},
-                    ${razorpay_signature || ''}, ${courseId || null},
-                    ${amount || 0}, 'paid', NOW()
-                )
-            `;
-        } catch (dbErr: any) {
-            // payments table may have different schema — log and continue
-            console.error('Payment insert error:', dbErr?.message);
-        }
+        const courseRows = courseId
+            ? await sql`SELECT title FROM courses WHERE id::text = ${String(courseId)} LIMIT 1`
+            : [];
+
+        await sql`
+            INSERT INTO payments (
+                "studentId", "studentName", "courseId", "courseTitle", amount, currency, status,
+                "paymentMethod", "razorpayOrderId", "razorpayPaymentId", "razorpaySignature",
+                "paymentDate", created_at, updated_at
+            ) VALUES (
+                ${String(authUser.id)}, ${authUser.name || ''}, ${courseId ? String(courseId) : null},
+                ${courseRows[0]?.title || null}, ${Number(amount) || 0}, 'INR', 'completed',
+                'razorpay', ${razorpay_order_id || null}, ${razorpay_payment_id}, ${razorpay_signature || null},
+                NOW(), NOW(), NOW()
+            )
+        `;
 
         return NextResponse.json({ status: 'success', message: 'Payment verified and recorded' });
     } catch (error: any) {

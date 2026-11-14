@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
                 rows = await sql`
                     SELECT p.*, u.name as "studentName", u.email as "studentEmail", c.title as "courseTitle"
                     FROM payments p
-                    LEFT JOIN users u ON u.id::text = p."userId"::text
+                    LEFT JOIN users u ON u.id::text = p."studentId"::text
                     LEFT JOIN courses c ON c.id::text = p."courseId"::text
                     WHERE p.status = ${status}
                     ORDER BY p.created_at DESC
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
                 rows = await sql`
                     SELECT p.*, u.name as "studentName", u.email as "studentEmail", c.title as "courseTitle"
                     FROM payments p
-                    LEFT JOIN users u ON u.id::text = p."userId"::text
+                    LEFT JOIN users u ON u.id::text = p."studentId"::text
                     LEFT JOIN courses c ON c.id::text = p."courseId"::text
                     ORDER BY p.created_at DESC
                 `;

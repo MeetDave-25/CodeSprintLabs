@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
 
         await sql`
             UPDATE users SET
-                "emailVerificationCode" = ${code},
-                "emailVerificationExpiry" = ${expiry.toISOString()},
+                verification_code = ${code},
+                verification_code_expires_at = ${expiry.toISOString()},
                 updated_at = NOW()
             WHERE id = ${users[0].id}
         `;

@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
             const rows = await sql`
                 SELECT
                     COUNT(*) as total,
-                    COALESCE(SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END), 0) as "totalRevenue",
-                    COUNT(CASE WHEN status = 'paid' THEN 1 END) as "paidCount",
+                    COALESCE(SUM(CASE WHEN status IN ('paid', 'completed') THEN amount ELSE 0 END), 0) as "totalRevenue",
+                    COUNT(CASE WHEN status IN ('paid', 'completed') THEN 1 END) as "paidCount",
                     COUNT(CASE WHEN status = 'refunded' THEN 1 END) as "refundedCount"
                 FROM payments
             `;

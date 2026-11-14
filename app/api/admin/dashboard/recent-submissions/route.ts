@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
             SELECT s.*, u.name as "studentName", u.email as "studentEmail",
                 t.title as "taskTitle", t."internshipId"
             FROM submissions s
-            LEFT JOIN users u ON u.id::text = s."userId"::text
+            LEFT JOIN users u ON u.id::text = s."studentId"::text
             LEFT JOIN tasks t ON t.id::text = s."taskId"::text
             ORDER BY s.created_at DESC
             LIMIT ${limit}

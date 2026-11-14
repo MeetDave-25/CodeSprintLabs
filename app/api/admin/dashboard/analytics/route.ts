@@ -23,16 +23,17 @@ export async function GET(request: NextRequest) {
             const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
             const monthName = start.toLocaleString('en-US', { month: 'short' });
 
-            const [studentsRes, submissionsRes] = await Promise.all([
+            const [studentsRes, submissionsRes, revenueRes] = await Promise.all([
                 sql`SELECT COUNT(*) as count FROM users WHERE role = 'student' AND created_at BETWEEN ${start.toISOString()} AND ${end.toISOString()}`,
                 sql`SELECT COUNT(*) as count FROM submissions WHERE created_at BETWEEN ${start.toISOString()} AND ${end.toISOString()}`,
+                sql`SELECT COALESCE(SUM(amount), 0) as total FROM payments WHERE status IN ('paid', 'completed') AND COALESCE("paymentDate", created_at) BETWEEN ${start.toISOString()} AND ${end.toISOString()}`,
             ]);
 
             monthlyData.push({
                 month: monthName,
                 students: Number(studentsRes[0]?.count) || 0,
                 submissions: Number(submissionsRes[0]?.count) || 0,
-                revenue: 0, // No payments table yet
+                revenue: Number(revenueRes[0]?.total) || 0,
             });
         }
 

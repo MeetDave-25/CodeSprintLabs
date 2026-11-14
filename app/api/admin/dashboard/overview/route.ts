@@ -11,12 +11,13 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const [studentsRes, internshipsRes, submissionsRes, certificatesRes, enrollmentsRes] = await Promise.all([
+        const [studentsRes, internshipsRes, submissionsRes, certificatesRes, enrollmentsRes, revenueRes] = await Promise.all([
             sql`SELECT COUNT(*) as total, COUNT(*) FILTER (WHERE status = 'active') as active FROM users WHERE role = 'student'`,
             sql`SELECT COUNT(*) as total, COUNT(*) FILTER (WHERE "isActive" = true) as active FROM internships`,
             sql`SELECT COUNT(*) as pending FROM submissions WHERE status = 'pending'`,
             sql`SELECT COUNT(*) as total FROM certificates`,
             sql`SELECT COUNT(*) as pending FROM enrollment_requests WHERE status = 'pending'`,
+            sql`SELECT COALESCE(SUM(amount), 0) as total FROM payments WHERE status IN ('paid', 'completed')`,
         ]);
 
         return NextResponse.json({
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
                 pendingSubmissions: Number(submissionsRes[0]?.pending) || 0,
                 totalCertificates: Number(certificatesRes[0]?.total) || 0,
                 pendingEnrollments: Number(enrollmentsRes[0]?.pending) || 0,
-                totalRevenue: 0,
+                totalRevenue: Number(revenueRes[0]?.total) || 0,
                 studentsGrowth: 0,
                 submissionsGrowth: 0,
                 revenueGrowth: 0,

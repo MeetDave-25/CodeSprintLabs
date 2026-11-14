@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
         }
 
         const users = await sql`
-            SELECT id, "emailVerificationCode", "emailVerificationExpiry"
+            SELECT id, verification_code, verification_code_expires_at
             FROM users WHERE email = ${email} LIMIT 1
         `;
         if (!users || users.length === 0) {
@@ -20,18 +20,18 @@ export async function POST(request: NextRequest) {
         }
 
         const user = users[0];
-        if (user.emailVerificationCode !== code) {
+        if (user.verification_code !== code) {
             return NextResponse.json({ message: 'Invalid verification code' }, { status: 422 });
         }
-        if (user.emailVerificationExpiry && new Date(user.emailVerificationExpiry) < new Date()) {
+        if (user.verification_code_expires_at && new Date(user.verification_code_expires_at) < new Date()) {
             return NextResponse.json({ message: 'Verification code has expired' }, { status: 422 });
         }
 
         await sql`
             UPDATE users SET
-                "emailVerified" = true,
-                "emailVerificationCode" = NULL,
-                "emailVerificationExpiry" = NULL,
+                email_verified_at = NOW(),
+                verification_code = NULL,
+                verification_code_expires_at = NULL,
                 updated_at = NOW()
             WHERE id = ${user.id}
         `;

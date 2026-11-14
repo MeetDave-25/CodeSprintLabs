@@ -23,7 +23,7 @@ export async function DELETE(request: NextRequest) {
             return NextResponse.json({ message: 'No task IDs provided' }, { status: 400 });
         }
 
-        await sql`DELETE FROM tasks WHERE id = ANY(${ids}::uuid[])`;
+        await sql`DELETE FROM tasks WHERE id = ANY(${ids}::bigint[])`;
 
         return NextResponse.json({ status: 'success', message: `${ids.length} task(s) deleted` });
     } catch (error: any) {
