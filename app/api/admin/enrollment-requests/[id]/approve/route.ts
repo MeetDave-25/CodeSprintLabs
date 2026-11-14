@@ -43,9 +43,17 @@ export async function POST(
 
         // Calculate start and end dates from internship duration
         const startDate = new Date();
-        const durationMatch = String(enrollment.internshipDuration || enrollment.duration || '4 weeks').match(/\d+/);
-        const durationWeeks = durationMatch ? parseInt(durationMatch[0]) : 4;
-        const endDate = new Date(startDate.getTime() + durationWeeks * 7 * 24 * 60 * 60 * 1000);
+        const durationText = String(enrollment.internshipDuration || enrollment.duration || '4 weeks');
+        const durationMatch = durationText.match(/\d+/);
+        const durationCount = durationMatch ? parseInt(durationMatch[0]) : 4;
+        const endDate = new Date(startDate);
+        if (/month/i.test(durationText)) {
+            endDate.setMonth(endDate.getMonth() + durationCount);
+        } else if (/day/i.test(durationText)) {
+            endDate.setDate(endDate.getDate() + durationCount);
+        } else {
+            endDate.setDate(endDate.getDate() + durationCount * 7);
+        }
 
         const updated = await sql`
             UPDATE enrollment_requests SET

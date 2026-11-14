@@ -1,183 +1,308 @@
 /**
- * Minimal PDF generator — no external dependencies.
- * Produces PDF 1.4 documents with Helvetica (built-in font) and basic layout.
+ * Zero-dependency PDF writer (PDF 1.4, built-in Helvetica) with a small flow-layout engine:
+ * word-wrapping with real font metrics, justified text, bullets, numbered lists,
+ * shaded boxes, rules and automatic page breaks.
  */
 
-type Line = { text: string; x: number; y: number; size?: number; bold?: boolean };
+const W = 595.28;
+const H = 841.89;
+const MARGIN = 56;
+const BOTTOM = 60;
+const CONTENT_W = W - 2 * MARGIN;
 
-function escPdf(str: string): string {
-    return str
+export type Color = [number, number, number];
+export const CYAN: Color = [0.0, 0.78, 0.95];
+export const INK: Color = [0.07, 0.07, 0.09];
+export const MUTED: Color = [0.4, 0.43, 0.5];
+export const RULE: Color = [0.85, 0.87, 0.9];
+
+// Helvetica glyph widths (1/1000 em) for ASCII 32..126
+const REG = [
+    278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278,
+    556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556,
+    1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778,
+    667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556,
+    333, 556, 556, 500, 556, 556, 278, 556, 556, 222, 222, 500, 222, 833, 556, 556,
+    556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584,
+];
+const BOLD = [
+    278, 333, 474, 556, 556, 889, 722, 238, 333, 333, 389, 584, 278, 333, 278, 278,
+    556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 333, 333, 584, 584, 584, 611,
+    975, 722, 722, 722, 722, 667, 611, 778, 722, 278, 556, 722, 611, 833, 722, 778,
+    667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 333, 278, 333, 584, 556,
+    333, 556, 611, 556, 611, 556, 333, 611, 611, 278, 278, 556, 278, 889, 611, 611,
+    611, 611, 389, 556, 333, 611, 556, 778, 556, 556, 500, 389, 280, 389, 584,
+];
+
+function clean(s: string): string {
+    return String(s ?? '')
+        .replace(/[–—]/g, '-')
+        .replace(/[‘’]/g, "'")
+        .replace(/[“”]/g, '"')
+        .replace(/•/g, '-')
+        .replace(/€/g, 'EUR')
+        .replace(/ /g, ' ')
+        .replace(/[\r\n\t]+/g, ' ')
+        .replace(/[^\x20-\x7E\xA1-\xFF]/g, '?');
+}
+
+function esc(s: string): string {
+    return s
         .replace(/\\/g, '\\\\')
         .replace(/\(/g, '\\(')
         .replace(/\)/g, '\\)')
-        .replace(/[^\x20-\x7E]/g, (c) => {
-            const code = c.charCodeAt(0);
-            return `\\${code.toString(8).padStart(3, '0')}`;
-        });
+        .replace(/[\x80-\xFF]/g, (c) => `\\${c.charCodeAt(0).toString(8).padStart(3, '0')}`);
 }
 
-export interface PdfSection {
-    type: 'title' | 'heading' | 'subheading' | 'body' | 'spacer' | 'divider' | 'kv';
-    text?: string;
-    key?: string;
-    value?: string;
+function textWidth(s: string, size: number, bold: boolean): number {
+    const table = bold ? BOLD : REG;
+    let w = 0;
+    for (let i = 0; i < s.length; i++) {
+        const c = s.charCodeAt(i);
+        w += c >= 32 && c <= 126 ? table[c - 32] : 556;
+    }
+    return (w * size) / 1000;
 }
 
-export function buildPdf(sections: PdfSection[], title: string): Buffer<ArrayBuffer> {
-    const W = 595, H = 842; // A4 points
-    const margin = 60;
-    const lineHeight = 18;
-    let y = H - margin;
-
-    const lines: Line[] = [];
-
-    function addLine(text: string, x: number, size: number, bold: boolean) {
-        lines.push({ text, x, y, size, bold });
-        y -= lineHeight * (size / 11);
-    }
-
-    // Header bar (blue rect drawn via PDF graphics)
-    const headerRects: string[] = [];
-    headerRects.push(`${margin} ${H - margin - 60} ${W - 2 * margin} 60 re f`);
-
-    // Company name in header
-    lines.push({ text: 'CodeSprint Labs', x: margin + 10, y: H - margin - 15, size: 20, bold: true });
-    lines.push({ text: 'codesprintlabs@gmail.com | Ahmedabad, Gujarat, India', x: margin + 10, y: H - margin - 35, size: 9, bold: false });
-    lines.push({ text: title, x: W - margin - 10, y: H - margin - 25, size: 14, bold: true });
-
-    y = H - margin - 80;
-
-    for (const sec of sections) {
-        if (y < margin + 40) {
-            y = H - margin - 20;
-        }
-        switch (sec.type) {
-            case 'title':
-                addLine(sec.text!, margin, 18, true);
-                y -= 6;
-                break;
-            case 'heading':
-                y -= 4;
-                addLine(sec.text!, margin, 13, true);
-                y -= 4;
-                break;
-            case 'subheading':
-                addLine(sec.text!, margin, 11, true);
-                break;
-            case 'body':
-                // Word-wrap at ~95 chars wide
-                const words = (sec.text || '').split(' ');
-                let line = '';
-                for (const w of words) {
-                    if ((line + ' ' + w).trim().length > 90) {
-                        addLine(line.trim(), margin, 10, false);
-                        line = w;
-                    } else {
-                        line = line ? line + ' ' + w : w;
-                    }
-                }
-                if (line) addLine(line.trim(), margin, 10, false);
-                y -= 4;
-                break;
-            case 'kv':
-                lines.push({ text: `${sec.key}:`, x: margin, y, size: 10, bold: true });
-                lines.push({ text: sec.value || '', x: margin + 180, y, size: 10, bold: false });
-                y -= lineHeight;
-                break;
-            case 'spacer':
-                y -= 14;
-                break;
-            case 'divider':
-                // drawn as a horizontal line in graphics
-                headerRects.push(`${margin} ${y + 4} ${W - 2 * margin} 0.5 re f`);
-                y -= 10;
-                break;
-        }
-    }
-
-    // Build PDF objects
-    const objs: string[] = [];
-
-    // Object 1: Catalog
-    objs.push('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj');
-
-    // Object 2: Pages
-    objs.push('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj');
-
-    // Build stream: graphics + text
-    const streamParts: string[] = [];
-
-    // Header background (blue)
-    streamParts.push('q');
-    streamParts.push('0.098 0.302 0.761 rg'); // brand blue
-    streamParts.push(`${margin} ${H - margin - 65} ${W - 2 * margin} 65 re f`);
-    streamParts.push('Q');
-
-    // Dividers (grey lines)
-    for (const r of headerRects.slice(1)) {
-        streamParts.push('q 0.7 0.7 0.7 rg');
-        streamParts.push(r);
-        streamParts.push('Q');
-    }
-
-    // Text
-    streamParts.push('BT');
-    for (const l of lines) {
-        const font = l.bold ? '/F2' : '/F1';
-        const size = l.size ?? 10;
-        // Header text in white, rest in dark
-        const isHeader = l.y > H - margin - 70;
-        if (isHeader) {
-            streamParts.push('1 1 1 rg');
+function wrap(text: string, size: number, bold: boolean, maxW: number): string[] {
+    const words = clean(text).split(' ').filter(Boolean);
+    const lines: string[] = [];
+    let line = '';
+    for (const word of words) {
+        const trial = line ? `${line} ${word}` : word;
+        if (textWidth(trial, size, bold) <= maxW || !line) {
+            line = trial;
         } else {
-            streamParts.push('0.1 0.1 0.1 rg');
+            lines.push(line);
+            line = word;
         }
-        streamParts.push(`${font} ${size} Tf`);
-        streamParts.push(`${l.x} ${l.y} Td`);
-        streamParts.push(`(${escPdf(l.text)}) Tj`);
-        streamParts.push(`${-l.x} ${-l.y} Td`);
     }
-    streamParts.push('ET');
+    if (line) lines.push(line);
+    return lines.length ? lines : [''];
+}
 
-    const stream = streamParts.join('\n');
+const rgb = (c: Color) => `${c[0]} ${c[1]} ${c[2]}`;
 
-    // Object 3: Page
-    objs.push(
-        `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Contents 4 0 R\n   /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>\nendobj`
-    );
+export interface TextOpts {
+    size?: number;
+    bold?: boolean;
+    color?: Color;
+    align?: 'left' | 'center' | 'right' | 'justify';
+    x?: number;
+    width?: number;
+    gap?: number;
+    underline?: boolean;
+}
 
-    // Object 4: Content stream
-    const streamBytes = Buffer.from(stream, 'latin1');
-    objs.push(`4 0 obj\n<< /Length ${streamBytes.length} >>\nstream\n${stream}\nendstream\nendobj`);
+export class PdfDoc {
+    private pages: string[][] = [];
+    private ops: string[] = [];
+    y = H - MARGIN;
 
-    // Object 5: Regular font
-    objs.push('5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>\nendobj');
-
-    // Object 6: Bold font
-    objs.push('6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>\nendobj');
-
-    // Build the PDF byte array
-    const header = '%PDF-1.4\n';
-    const offsets: number[] = [];
-    let body = header;
-
-    for (let i = 0; i < objs.length; i++) {
-        offsets.push(body.length);
-        body += objs[i] + '\n';
+    constructor() {
+        this.newPage();
     }
 
-    const xrefOffset = body.length;
-    body += 'xref\n';
-    body += `0 ${objs.length + 1}\n`;
-    body += '0000000000 65535 f \n';
-    for (const off of offsets) {
-        body += String(off).padStart(10, '0') + ' 00000 n \n';
+    newPage() {
+        if (this.ops.length) this.pages.push(this.ops);
+        this.ops = [];
+        this.y = H - MARGIN;
     }
-    body += 'trailer\n';
-    body += `<< /Size ${objs.length + 1} /Root 1 0 R >>\n`;
-    body += 'startxref\n';
-    body += `${xrefOffset}\n`;
-    body += '%%EOF\n';
 
-    return Buffer.from(body, 'latin1');
+    ensure(h: number) {
+        if (this.y - h < BOTTOM) this.newPage();
+    }
+
+    spacer(h = 10) {
+        this.y -= h;
+    }
+
+    private put(
+        s: string, x: number, y: number, size: number, bold: boolean, color: Color, wordSpace = 0
+    ) {
+        this.ops.push(
+            `BT /${bold ? 'F2' : 'F1'} ${size} Tf ${rgb(color)} rg ${wordSpace.toFixed(3)} Tw ${x.toFixed(2)} ${y.toFixed(2)} Td (${esc(s)}) Tj ET`
+        );
+    }
+
+    /** Wrapped paragraph; returns nothing, advances y. */
+    text(text: string, o: TextOpts = {}) {
+        const size = o.size ?? 10.5;
+        const bold = !!o.bold;
+        const color = o.color ?? INK;
+        const x0 = o.x ?? MARGIN;
+        const width = o.width ?? CONTENT_W - (x0 - MARGIN);
+        const lead = size * 1.5;
+        const lines = wrap(text, size, bold, width);
+        lines.forEach((line, i) => {
+            this.ensure(lead);
+            this.y -= lead;
+            const w = textWidth(line, size, bold);
+            let x = x0;
+            let ws = 0;
+            if (o.align === 'center') x = x0 + (width - w) / 2;
+            else if (o.align === 'right') x = x0 + width - w;
+            else if (o.align === 'justify' && i < lines.length - 1) {
+                const gaps = (line.match(/ /g) || []).length;
+                if (gaps) ws = (width - w) / gaps;
+            }
+            this.put(line, x, this.y, size, bold, color, ws);
+            if (o.underline) {
+                this.ops.push(`${rgb(color)} RG 0.7 w ${x.toFixed(2)} ${(this.y - 2).toFixed(2)} m ${(x + w).toFixed(2)} ${(this.y - 2).toFixed(2)} l S`);
+            }
+        });
+        this.y -= o.gap ?? 4;
+    }
+
+    rule(color: Color = RULE, weight = 0.8, gap = 8) {
+        this.ensure(gap * 2);
+        this.y -= gap;
+        this.ops.push(`${rgb(color)} RG ${weight} w ${MARGIN} ${this.y.toFixed(2)} m ${(W - MARGIN).toFixed(2)} ${this.y.toFixed(2)} l S`);
+        this.y -= gap;
+    }
+
+    heading(text: string, size = 12) {
+        this.ensure(size * 3);
+        this.spacer(4);
+        this.text(text, { size, bold: true, gap: 4 });
+    }
+
+    /** "Label:  value" pairs in a two-column layout. */
+    kv(rows: [string, string][], labelW = 150) {
+        for (const [k, v] of rows) {
+            const lines = wrap(v || '-', 10.5, false, CONTENT_W - labelW);
+            const lead = 10.5 * 1.55;
+            this.ensure(lead * lines.length);
+            this.y -= lead;
+            this.put(clean(k) + ':', MARGIN, this.y, 10.5, true, INK);
+            lines.forEach((line, i) => {
+                if (i > 0) this.y -= lead;
+                this.put(line, MARGIN + labelW, this.y, 10.5, false, INK);
+            });
+        }
+        this.y -= 4;
+    }
+
+    bullets(items: string[], size = 10.5) {
+        for (const item of items) {
+            const lines = wrap(item, size, false, CONTENT_W - 22);
+            const lead = size * 1.5;
+            this.ensure(lead);
+            lines.forEach((line, i) => {
+                if (i > 0) this.ensure(lead);
+                this.y -= lead;
+                if (i === 0) {
+                    this.ops.push(`${rgb(INK)} rg ${(MARGIN + 6).toFixed(2)} ${(this.y + size * 0.3).toFixed(2)} 3 3 re f`);
+                }
+                this.put(line, MARGIN + 20, this.y, size, false, INK);
+            });
+        }
+        this.y -= 4;
+    }
+
+    numbered(items: string[], size = 10.5) {
+        items.forEach((item, n) => {
+            const lines = wrap(item, size, false, CONTENT_W - 24);
+            const lead = size * 1.5;
+            lines.forEach((line, i) => {
+                this.ensure(lead);
+                this.y -= lead;
+                if (i === 0) this.put(`${n + 1}.`, MARGIN + 4, this.y, size, false, INK);
+                this.put(line, MARGIN + 24, this.y, size, false, INK);
+            });
+        });
+        this.y -= 4;
+    }
+
+    /** Shaded, bordered box with a title and label/value rows. */
+    box(title: string, rows: [string, string][]) {
+        const pad = 14;
+        const lead = 10.5 * 1.7;
+        const labelW = 130;
+        const laid = rows.map(([k, v]) => ({ k, lines: wrap(v || '-', 10.5, false, CONTENT_W - 2 * pad - labelW) }));
+        const height = pad * 2 + 18 + laid.reduce((a, r) => a + lead * r.lines.length, 0);
+        this.ensure(height + 6);
+        const top = this.y;
+        const bottom = top - height;
+        this.ops.push(`0.972 0.977 0.985 rg ${RULE.join(' ')} RG 0.8 w ${MARGIN} ${bottom.toFixed(2)} ${CONTENT_W} ${height.toFixed(2)} re B`);
+        let y = top - pad - 10;
+        this.put(clean(title), MARGIN + pad, y, 11.5, true, INK);
+        y -= 6;
+        for (const r of laid) {
+            r.lines.forEach((line, i) => {
+                y -= lead;
+                if (i === 0) this.put(clean(r.k) + ':', MARGIN + pad, y, 10.5, true, INK);
+                this.put(line, MARGIN + pad + labelW, y, 10.5, false, INK);
+            });
+        }
+        this.y = bottom - 12;
+    }
+
+    /** Two labelled signature lines side by side. */
+    signatures(left: string, right: string) {
+        this.ensure(70);
+        this.y -= 40;
+        const mid = MARGIN + CONTENT_W / 2 + 20;
+        this.ops.push(`${rgb(INK)} RG 0.7 w ${MARGIN} ${this.y} m ${MARGIN + 190} ${this.y} l S`);
+        this.ops.push(`${rgb(INK)} RG 0.7 w ${mid} ${this.y} m ${mid + 190} ${this.y} l S`);
+        this.y -= 13;
+        this.put(clean(left), MARGIN, this.y, 10, false, INK);
+        this.put(clean(right), mid, this.y, 10, false, INK);
+        this.y -= 8;
+    }
+
+    /** Centered brand header used at the top of the first page. */
+    letterhead() {
+        this.text('CodeSprint Labs', { size: 28, bold: true, color: CYAN, align: 'center', gap: 0 });
+        this.text('Empowering Future Tech Leaders', { size: 11.5, color: MUTED, align: 'center', gap: 0 });
+        this.text('Email: info@codesprintlabs.in  |  Phone: +91-8160901481', { size: 9.5, color: MUTED, align: 'center', gap: 2 });
+        this.rule(CYAN, 1.6, 6);
+        this.spacer(4);
+    }
+
+    footer(lines: string[]) {
+        this.ensure(60);
+        this.spacer(6);
+        this.rule(RULE, 0.8, 5);
+        for (const l of lines) this.text(l, { size: 9, color: MUTED, align: 'center', gap: 0 });
+    }
+
+    build(): Buffer<ArrayBuffer> {
+        if (this.ops.length) this.pages.push(this.ops);
+        this.ops = [];
+
+        const n = this.pages.length;
+        const objs: string[] = [];
+        const fontReg = 3 + n * 2;
+        const fontBold = fontReg + 1;
+        const kids = this.pages.map((_, i) => `${3 + i * 2} 0 R`).join(' ');
+
+        objs.push('<< /Type /Catalog /Pages 2 0 R >>');
+        objs.push(`<< /Type /Pages /Kids [${kids}] /Count ${n} >>`);
+        this.pages.forEach((ops, i) => {
+            const contentId = 4 + i * 2;
+            objs.push(
+                `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Contents ${contentId} 0 R /Resources << /Font << /F1 ${fontReg} 0 R /F2 ${fontBold} 0 R >> >> >>`
+            );
+            const stream = ops.join('\n');
+            objs.push(`<< /Length ${Buffer.byteLength(stream, 'latin1')} >>\nstream\n${stream}\nendstream`);
+        });
+        objs.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+        objs.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+
+        const chunks: Buffer[] = [Buffer.from('%PDF-1.4\n', 'latin1')];
+        const offsets: number[] = [];
+        let pos = chunks[0].length;
+        objs.forEach((o, i) => {
+            offsets.push(pos);
+            const b = Buffer.from(`${i + 1} 0 obj\n${o}\nendobj\n`, 'latin1');
+            chunks.push(b);
+            pos += b.length;
+        });
+        let xref = `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n`;
+        for (const off of offsets) xref += `${String(off).padStart(10, '0')} 00000 n \n`;
+        xref += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${pos}\n%%EOF\n`;
+        chunks.push(Buffer.from(xref, 'latin1'));
+        return Buffer.concat(chunks) as Buffer<ArrayBuffer>;
+    }
 }
