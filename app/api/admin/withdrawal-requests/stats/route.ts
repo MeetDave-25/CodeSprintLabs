@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
 import { getAuthUser } from '@/lib/auth-server';
+import { ensureLifecycleSchema } from '@/lib/enrollment-lifecycle';
 
 export const runtime = 'nodejs';
 
@@ -11,6 +12,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
+        await ensureLifecycleSchema();
         const [pending, approved, rejected, total] = await Promise.all([
             sql`SELECT COUNT(*) as count FROM enrollment_requests WHERE "withdrawalStatus" = 'pending'`,
             sql`SELECT COUNT(*) as count FROM enrollment_requests WHERE "withdrawalStatus" = 'approved'`,

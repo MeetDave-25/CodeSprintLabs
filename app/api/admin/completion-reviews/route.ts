@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
 import { getAuthUser } from '@/lib/auth-server';
+import { loadReviews } from '@/lib/enrollment-lifecycle';
 
 export const runtime = 'nodejs';
 
@@ -13,32 +13,17 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url);
         const status = searchParams.get('status');
-        const search = searchParams.get('search');
+        const search = (searchParams.get('search') || '').trim().toLowerCase();
 
-        let rows;
-        if (status && status !== 'all') {
-            rows = await sql`
-                SELECT e.*, u.name as "studentName", u.email as "studentEmail", u.avatar as "studentAvatar",
-                       i.title as "internshipTitle"
-                FROM enrollment_requests e
-                LEFT JOIN users u ON u.id::text = e."userId"::text
-                LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-                WHERE e.status = ${status}
-                ORDER BY e."updatedAt" DESC NULLS LAST, e."createdAt" DESC
-            `;
-        } else {
-            rows = await sql`
-                SELECT e.*, u.name as "studentName", u.email as "studentEmail", u.avatar as "studentAvatar",
-                       i.title as "internshipTitle"
-                FROM enrollment_requests e
-                LEFT JOIN users u ON u.id::text = e."userId"::text
-                LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-                WHERE e.status IN ('completion_requested', 'completed')
-                ORDER BY e."updatedAt" DESC NULLS LAST, e."createdAt" DESC
-            `;
+        let rows = await loadReviews({ statuses: ['completion_requested', 'completed'] });
+        if (status && status !== 'all') rows = rows.filter((r) => r.completionStatus === status);
+        if (search) {
+            rows = rows.filter((r) =>
+                [r.studentName, r.studentEmail, r.internshipTitle].some((v) => v.toLowerCase().includes(search))
+            );
         }
 
-        return NextResponse.json({ status: 'success', data: rows || [] });
+        return NextResponse.json({ status: 'success', data: rows });
     } catch (error: any) {
         console.error('GET /api/admin/completion-reviews error:', error);
         return NextResponse.json({ message: 'Internal server error', error: error?.message }, { status: 500 });

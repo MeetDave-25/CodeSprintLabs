@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
                 ) as "completedTasks"
             FROM enrollment_requests e
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-            WHERE e."userId"::text = ${String(authUser.id)} AND e.status = 'approved'
+            WHERE e."userId"::text = ${String(authUser.id)}
+              AND e.status IN ('approved', 'completion_requested', 'completed')
             ORDER BY e."approvedAt" DESC
         `;
 

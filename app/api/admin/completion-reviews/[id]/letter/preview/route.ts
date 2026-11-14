@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
 import { getAuthUser } from '@/lib/auth-server';
+import { fetchEnrollment, completionLetterData } from '@/lib/enrollment-documents';
 
 export const runtime = 'nodejs';
 
@@ -11,26 +11,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const rows = await sql`
-            SELECT e.*, u.name as "studentName", i.title as "internshipTitle"
-            FROM enrollment_requests e
-            LEFT JOIN users u ON u.id::text = e."userId"::text
-            LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-            WHERE e.id = ${params.id}
-            LIMIT 1
-        `;
-
-        if (!rows || rows.length === 0) {
-            return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
+        const e = await fetchEnrollment(params.id, { statuses: ['completed'], progress: true });
+        if (!e) {
+            return NextResponse.json({ message: 'Review the internship first to generate the completion letter' }, { status: 404 });
         }
 
-        return NextResponse.json({
-            status: 'success',
-            data: {
-                available: rows[0].status === 'completed',
-                enrollment: rows[0]
-            }
-        });
+        return NextResponse.json({ status: 'success', data: completionLetterData(e) });
     } catch (error: any) {
         return NextResponse.json({ message: 'Internal server error', error: error?.message }, { status: 500 });
     }

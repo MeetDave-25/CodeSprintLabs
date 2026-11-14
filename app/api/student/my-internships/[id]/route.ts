@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
 import { getAuthUser } from '@/lib/auth-server';
+import { DOC_STATUSES, ensureLifecycleSchema } from '@/lib/enrollment-lifecycle';
 
 export const runtime = 'nodejs';
 
@@ -14,6 +15,10 @@ export async function GET(
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
+        await ensureLifecycleSchema();
+        const uid = String(authUser.id);
+        const iid = String(params.id);
+
         const rows = await sql`
             SELECT
                 e.id as "enrollmentId", e.status as "enrollmentStatus",
@@ -22,7 +27,10 @@ export async function GET(
                 i.location, i.stipend, i.duration, i.tags
             FROM enrollment_requests e
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-            WHERE e."userId" = ${authUser.id} AND e.status = 'approved' AND i.id = ${params.id}
+            WHERE e."userId"::text = ${uid}
+              AND e.status = ANY(${DOC_STATUSES})
+              AND i.id::text = ${iid}
+            ORDER BY e.created_at DESC
             LIMIT 1
         `;
 
@@ -30,24 +38,31 @@ export async function GET(
             return NextResponse.json({ message: 'Internship not found or not enrolled' }, { status: 404 });
         }
 
-        const internship = rows[0];
-
-        // Get tasks for this internship
         const tasks = await sql`
-            SELECT t.*,
-                s.id as "submissionId", s.status as "submissionStatus", s."submittedAt"
+            SELECT t.*, s.id as "submissionId", s.status as "submissionStatus", s."submittedAt"
             FROM tasks t
-            LEFT JOIN submissions s ON s."taskId" = t.id::text AND s."userId" = ${authUser.id}
-            WHERE t."internshipId" = ${params.id}::text AND t."isActive" = true
-            ORDER BY t."order" ASC
+            LEFT JOIN LATERAL (
+                SELECT id, status, "submittedAt" FROM submissions
+                WHERE "taskId"::text = t.id::text AND "studentId"::text = ${uid}
+                ORDER BY "submittedAt" DESC NULLS LAST
+                LIMIT 1
+            ) s ON true
+            WHERE t."internshipId"::text = ${iid} AND t."isActive" = true
+            ORDER BY t."dayNumber" ASC NULLS LAST, t.id ASC
         `;
+
+        const mapped = tasks.map((t: any) => ({
+            ...t,
+            submitted: !!t.submissionId,
+            completed: t.submissionStatus === 'approved',
+        }));
 
         return NextResponse.json({
             status: 'success',
-            data: { ...internship, tasks },
+            data: { ...rows[0], tasks: mapped },
         });
     } catch (error: any) {
+        console.error('GET /api/student/my-internships/[id] error:', error);
         return NextResponse.json({ message: 'Internal server error', error: error?.message }, { status: 500 });
     }
 }
-

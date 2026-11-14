@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
 import { getAuthUser } from '@/lib/auth-server';
+import { loadReviews } from '@/lib/enrollment-lifecycle';
 
 export const runtime = 'nodejs';
 
@@ -11,19 +11,24 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        try {
-            const rows = await sql`
-                SELECT
-                    COUNT(CASE WHEN status = 'completion_requested' THEN 1 END) as "pendingReviews",
-                    COUNT(CASE WHEN status = 'completed' THEN 1 END) as "completedReviews",
-                    COUNT(CASE WHEN status IN ('completion_requested', 'completed') THEN 1 END) as "totalReviews"
-                FROM enrollment_requests
-            `;
-            return NextResponse.json({ status: 'success', data: rows[0] || { pendingReviews: 0, completedReviews: 0, totalReviews: 0 } });
-        } catch {
-            return NextResponse.json({ status: 'success', data: { pendingReviews: 0, completedReviews: 0, totalReviews: 0 } });
-        }
+        const rows = await loadReviews({ statuses: ['completion_requested', 'completed'] });
+        const graded = rows.filter((r) => r.marks !== null);
+        const avgMarks = graded.length
+            ? Math.round((graded.reduce((sum, r) => sum + (r.marks as number), 0) / graded.length) * 10) / 10
+            : 0;
+
+        return NextResponse.json({
+            status: 'success',
+            data: {
+                total: rows.length,
+                pending: rows.filter((r) => r.completionStatus === 'pending_review').length,
+                reviewed: rows.filter((r) => r.completionStatus === 'reviewed').length,
+                certificateIssued: rows.filter((r) => r.completionStatus === 'certificate_issued').length,
+                avgMarks,
+            },
+        });
     } catch (error: any) {
+        console.error('GET /api/admin/completion-reviews/stats error:', error);
         return NextResponse.json({ message: 'Internal server error', error: error?.message }, { status: 500 });
     }
 }

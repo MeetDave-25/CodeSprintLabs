@@ -1,14 +1,12 @@
 /**
  * Zero-dependency PDF writer (PDF 1.4, built-in Helvetica) with a small flow-layout engine:
  * word-wrapping with real font metrics, justified text, bullets, numbered lists,
- * shaded boxes, rules and automatic page breaks.
+ * shaded boxes, rules and automatic page breaks. Supports landscape pages and
+ * absolute-position helpers for certificates.
  */
 
-const W = 595.28;
-const H = 841.89;
 const MARGIN = 56;
 const BOTTOM = 60;
-const CONTENT_W = W - 2 * MARGIN;
 
 export type Color = [number, number, number];
 export const CYAN: Color = [0.0, 0.78, 0.95];
@@ -54,7 +52,7 @@ function esc(s: string): string {
         .replace(/[\x80-\xFF]/g, (c) => `\\${c.charCodeAt(0).toString(8).padStart(3, '0')}`);
 }
 
-function textWidth(s: string, size: number, bold: boolean): number {
+export function textWidth(s: string, size: number, bold: boolean): number {
     const table = bold ? BOLD : REG;
     let w = 0;
     for (let i = 0; i < s.length; i++) {
@@ -95,18 +93,25 @@ export interface TextOpts {
 }
 
 export class PdfDoc {
+    readonly pw: number;
+    readonly ph: number;
+    private readonly cw: number;
     private pages: string[][] = [];
     private ops: string[] = [];
-    y = H - MARGIN;
+    y: number;
 
-    constructor() {
+    constructor(opts: { landscape?: boolean } = {}) {
+        this.pw = opts.landscape ? 841.89 : 595.28;
+        this.ph = opts.landscape ? 595.28 : 841.89;
+        this.cw = this.pw - 2 * MARGIN;
+        this.y = this.ph - MARGIN;
         this.newPage();
     }
 
     newPage() {
         if (this.ops.length) this.pages.push(this.ops);
         this.ops = [];
-        this.y = H - MARGIN;
+        this.y = this.ph - MARGIN;
     }
 
     ensure(h: number) {
@@ -125,13 +130,13 @@ export class PdfDoc {
         );
     }
 
-    /** Wrapped paragraph; returns nothing, advances y. */
+    /** Wrapped paragraph; advances y. */
     text(text: string, o: TextOpts = {}) {
         const size = o.size ?? 10.5;
         const bold = !!o.bold;
         const color = o.color ?? INK;
         const x0 = o.x ?? MARGIN;
-        const width = o.width ?? CONTENT_W - (x0 - MARGIN);
+        const width = o.width ?? this.cw - (x0 - MARGIN);
         const lead = size * 1.5;
         const lines = wrap(text, size, bold, width);
         lines.forEach((line, i) => {
@@ -157,7 +162,7 @@ export class PdfDoc {
     rule(color: Color = RULE, weight = 0.8, gap = 8) {
         this.ensure(gap * 2);
         this.y -= gap;
-        this.ops.push(`${rgb(color)} RG ${weight} w ${MARGIN} ${this.y.toFixed(2)} m ${(W - MARGIN).toFixed(2)} ${this.y.toFixed(2)} l S`);
+        this.ops.push(`${rgb(color)} RG ${weight} w ${MARGIN} ${this.y.toFixed(2)} m ${(this.pw - MARGIN).toFixed(2)} ${this.y.toFixed(2)} l S`);
         this.y -= gap;
     }
 
@@ -170,7 +175,7 @@ export class PdfDoc {
     /** "Label:  value" pairs in a two-column layout. */
     kv(rows: [string, string][], labelW = 150) {
         for (const [k, v] of rows) {
-            const lines = wrap(v || '-', 10.5, false, CONTENT_W - labelW);
+            const lines = wrap(v || '-', 10.5, false, this.cw - labelW);
             const lead = 10.5 * 1.55;
             this.ensure(lead * lines.length);
             this.y -= lead;
@@ -185,7 +190,7 @@ export class PdfDoc {
 
     bullets(items: string[], size = 10.5) {
         for (const item of items) {
-            const lines = wrap(item, size, false, CONTENT_W - 22);
+            const lines = wrap(item, size, false, this.cw - 22);
             const lead = size * 1.5;
             this.ensure(lead);
             lines.forEach((line, i) => {
@@ -202,7 +207,7 @@ export class PdfDoc {
 
     numbered(items: string[], size = 10.5) {
         items.forEach((item, n) => {
-            const lines = wrap(item, size, false, CONTENT_W - 24);
+            const lines = wrap(item, size, false, this.cw - 24);
             const lead = size * 1.5;
             lines.forEach((line, i) => {
                 this.ensure(lead);
@@ -219,12 +224,12 @@ export class PdfDoc {
         const pad = 14;
         const lead = 10.5 * 1.7;
         const labelW = 130;
-        const laid = rows.map(([k, v]) => ({ k, lines: wrap(v || '-', 10.5, false, CONTENT_W - 2 * pad - labelW) }));
+        const laid = rows.map(([k, v]) => ({ k, lines: wrap(v || '-', 10.5, false, this.cw - 2 * pad - labelW) }));
         const height = pad * 2 + 18 + laid.reduce((a, r) => a + lead * r.lines.length, 0);
         this.ensure(height + 6);
         const top = this.y;
         const bottom = top - height;
-        this.ops.push(`0.972 0.977 0.985 rg ${RULE.join(' ')} RG 0.8 w ${MARGIN} ${bottom.toFixed(2)} ${CONTENT_W} ${height.toFixed(2)} re B`);
+        this.ops.push(`0.972 0.977 0.985 rg ${RULE.join(' ')} RG 0.8 w ${MARGIN} ${bottom.toFixed(2)} ${this.cw} ${height.toFixed(2)} re B`);
         let y = top - pad - 10;
         this.put(clean(title), MARGIN + pad, y, 11.5, true, INK);
         y -= 6;
@@ -238,11 +243,24 @@ export class PdfDoc {
         this.y = bottom - 12;
     }
 
+    /** Large grade badge + headline marks, used in completion letters. */
+    highlight(grade: string, caption: string) {
+        const h = 62;
+        this.ensure(h + 12);
+        const top = this.y;
+        const bottom = top - h;
+        this.ops.push(`0.93 0.98 1 rg ${CYAN.join(' ')} RG 1 w ${MARGIN} ${bottom.toFixed(2)} ${this.cw} ${h} re B`);
+        const gw = textWidth(grade, 26, true);
+        this.put(clean(grade), MARGIN + 28, top - 40, 26, true, [0.0, 0.45, 0.62]);
+        this.put(clean(caption), MARGIN + 28 + gw + 24, top - 37, 14, true, INK);
+        this.y = bottom - 12;
+    }
+
     /** Two labelled signature lines side by side. */
     signatures(left: string, right: string) {
         this.ensure(70);
         this.y -= 40;
-        const mid = MARGIN + CONTENT_W / 2 + 20;
+        const mid = MARGIN + this.cw / 2 + 20;
         this.ops.push(`${rgb(INK)} RG 0.7 w ${MARGIN} ${this.y} m ${MARGIN + 190} ${this.y} l S`);
         this.ops.push(`${rgb(INK)} RG 0.7 w ${mid} ${this.y} m ${mid + 190} ${this.y} l S`);
         this.y -= 13;
@@ -267,6 +285,35 @@ export class PdfDoc {
         for (const l of lines) this.text(l, { size: 9, color: MUTED, align: 'center', gap: 0 });
     }
 
+    // ---- absolute-position helpers (certificates) ----
+
+    frame(color: Color, inset: number, weight: number) {
+        this.ops.push(
+            `${rgb(color)} RG ${weight} w ${inset} ${inset} ${(this.pw - 2 * inset).toFixed(2)} ${(this.ph - 2 * inset).toFixed(2)} re S`
+        );
+    }
+
+    centerText(text: string, y: number, size: number, bold = false, color: Color = INK) {
+        const t = clean(text);
+        const w = textWidth(t, size, bold);
+        this.put(t, (this.pw - w) / 2, y, size, bold, color);
+    }
+
+    hline(x1: number, x2: number, y: number, color: Color = INK, weight = 0.8) {
+        this.ops.push(`${rgb(color)} RG ${weight} w ${x1.toFixed(2)} ${y.toFixed(2)} m ${x2.toFixed(2)} ${y.toFixed(2)} l S`);
+    }
+
+    leftText(text: string, x: number, y: number, size: number, bold = false, color: Color = INK) {
+        this.put(clean(text), x, y, size, bold, color);
+    }
+
+    fitSize(text: string, maxW: number, size: number, bold = false, min = 12): number {
+        const t = clean(text);
+        let s = size;
+        while (s > min && textWidth(t, s, bold) > maxW) s -= 1;
+        return s;
+    }
+
     build(): Buffer<ArrayBuffer> {
         if (this.ops.length) this.pages.push(this.ops);
         this.ops = [];
@@ -282,7 +329,7 @@ export class PdfDoc {
         this.pages.forEach((ops, i) => {
             const contentId = 4 + i * 2;
             objs.push(
-                `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Contents ${contentId} 0 R /Resources << /Font << /F1 ${fontReg} 0 R /F2 ${fontBold} 0 R >> >> >>`
+                `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${this.pw} ${this.ph}] /Contents ${contentId} 0 R /Resources << /Font << /F1 ${fontReg} 0 R /F2 ${fontBold} 0 R >> >> >>`
             );
             const stream = ops.join('\n');
             objs.push(`<< /Length ${Buffer.byteLength(stream, 'latin1')} >>\nstream\n${stream}\nendstream`);

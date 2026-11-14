@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth-server';
-import { fetchApprovedEnrollment, buildMouPdf } from '@/lib/enrollment-documents';
+import { fetchEnrollment, buildMouPdf } from '@/lib/enrollment-documents';
 
 export const runtime = 'nodejs';
 
@@ -14,7 +14,7 @@ export async function GET(
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const e = await fetchApprovedEnrollment(params.id);
+        const e = await fetchEnrollment(params.id);
         if (!e) {
             return NextResponse.json({ message: 'Enrollment not found or not approved' }, { status: 404 });
         }
