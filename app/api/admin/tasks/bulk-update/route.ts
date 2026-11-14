@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
                         description = COALESCE(${task.description ?? null}, description),
                         "order" = COALESCE(${task.order ?? null}, "order"),
                         "isActive" = COALESCE(${task.isActive ?? null}, "isActive"),
-                        "updatedAt" = NOW()
+                        updated_at = NOW()
                     WHERE id = ${task.id}
                 `;
                 updated.push(task.id);

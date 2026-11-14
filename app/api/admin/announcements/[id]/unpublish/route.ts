@@ -15,7 +15,7 @@ export async function POST(
         }
 
         const updated = await sql`
-            UPDATE announcements SET "isActive" = false, "updatedAt" = NOW()
+            UPDATE announcements SET "isActive" = false, updated_at = NOW()
             WHERE id = ${params.id} RETURNING *
         `;
 

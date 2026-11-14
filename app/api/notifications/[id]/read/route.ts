@@ -16,7 +16,7 @@ export async function PUT(
 
         await sql`
             UPDATE notifications
-            SET "isRead" = true
+            SET "read" = true
             WHERE id = ${params.id} AND "userId" = ${authUser.id}
         `;
 

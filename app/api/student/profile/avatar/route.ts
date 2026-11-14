@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
         }
 
         const updated = await sql`
-            UPDATE users SET avatar = ${avatarUrl}, "updatedAt" = NOW()
+            UPDATE users SET avatar = ${avatarUrl}, updated_at = NOW()
             WHERE id = ${authUser.id}
             RETURNING id, name, email, role, avatar
         `;

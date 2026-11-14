@@ -16,7 +16,7 @@ export async function GET(
 
         const users = await sql`
             SELECT id, name, email, role, avatar, status,
-                "totalPoints", "tasksCompleted", "coursesCompleted", "createdAt"
+                "totalPoints", "tasksCompleted", "coursesCompleted", created_at as "createdAt"
             FROM users
             WHERE id = ${params.id} AND role = 'student'
             LIMIT 1
@@ -34,7 +34,7 @@ export async function GET(
             FROM enrollment_requests e
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
             WHERE e."userId" = ${params.id}
-            ORDER BY e."createdAt" DESC
+            ORDER BY e.created_at DESC
         `;
 
         return NextResponse.json({
@@ -73,7 +73,7 @@ export async function PUT(
 
         const updated = await sql`
             UPDATE users
-            SET status = ${status}, "updatedAt" = NOW()
+            SET status = ${status}, updated_at = NOW()
             WHERE id = ${params.id} AND role = 'student'
             RETURNING id, name, email, role, status
         `;

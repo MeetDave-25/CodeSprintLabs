@@ -72,7 +72,7 @@ export async function POST(
 
         // Send notification to student
         await sql`
-            INSERT INTO notifications ("userId", title, message, type, "isRead", "createdAt")
+            INSERT INTO notifications ("userId", title, message, type, "read", "createdAt")
             VALUES (
                 ${enrollment.userId},
                 'Enrollment Approved',

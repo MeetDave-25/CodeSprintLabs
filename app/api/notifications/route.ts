@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
         const offset = (page - 1) * limit;
 
         const notifications = await sql`
-            SELECT id, title, message, type, "isRead", "createdAt"
+            SELECT id, title, message, type, "read" as "isRead", "createdAt"
             FROM notifications
             WHERE "userId" = ${authUser.id}
             ORDER BY "createdAt" DESC

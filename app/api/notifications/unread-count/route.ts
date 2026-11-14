@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         const result = await sql`
             SELECT COUNT(*) as count
             FROM notifications
-            WHERE "userId" = ${authUser.id} AND "isRead" = false
+            WHERE "userId" = ${authUser.id} AND "read" = false
         `;
 
         return NextResponse.json({

@@ -24,12 +24,12 @@ export async function GET(request: NextRequest) {
         if (search) {
             students = await sql`
                 SELECT id, name, email, role, avatar, status,
-                    "totalPoints", "tasksCompleted", "coursesCompleted", "createdAt"
+                    "totalPoints", "tasksCompleted", "coursesCompleted", created_at as "createdAt"
                 FROM users
                 WHERE role = 'student'
                 AND (LOWER(name) LIKE ${'%' + search.toLowerCase() + '%'} OR LOWER(email) LIKE ${'%' + search.toLowerCase() + '%'})
                 ${status ? sql`AND status = ${status}` : sql``}
-                ORDER BY "createdAt" DESC
+                ORDER BY created_at DESC
                 LIMIT ${limit} OFFSET ${offset}
             `;
             countResult = await sql`
@@ -41,11 +41,11 @@ export async function GET(request: NextRequest) {
         } else {
             students = await sql`
                 SELECT id, name, email, role, avatar, status,
-                    "totalPoints", "tasksCompleted", "coursesCompleted", "createdAt"
+                    "totalPoints", "tasksCompleted", "coursesCompleted", created_at as "createdAt"
                 FROM users
                 WHERE role = 'student'
                 ${status ? sql`AND status = ${status}` : sql``}
-                ORDER BY "createdAt" DESC
+                ORDER BY created_at DESC
                 LIMIT ${limit} OFFSET ${offset}
             `;
             countResult = await sql`

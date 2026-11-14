@@ -18,13 +18,13 @@ export async function GET(request: NextRequest) {
         const priority = searchParams.get('priority');
 
         let announcements = await sql`
-            SELECT id, title, content, "targetAudience", priority, "isActive", "createdBy", "createdAt", "updatedAt"
+            SELECT id, title, content, "targetAudience", priority, "isActive", "createdBy", created_at as "createdAt", updated_at as "updatedAt"
             FROM announcements
             WHERE 1=1
             ${status === 'published' ? sql`AND "isActive" = true` : status === 'draft' ? sql`AND "isActive" = false` : sql``}
             ${audience ? sql`AND "targetAudience" = ${audience}` : sql``}
             ${priority ? sql`AND priority = ${priority}` : sql``}
-            ORDER BY "createdAt" DESC
+            ORDER BY created_at DESC
         `;
 
         return NextResponse.json({ status: 'success', data: announcements });
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         const publish = isActive === true;
 
         const result = await sql`
-            INSERT INTO announcements (title, content, "targetAudience", priority, "isActive", "createdBy", "createdAt", "updatedAt")
+            INSERT INTO announcements (title, content, "targetAudience", priority, "isActive", "createdBy", created_at, updated_at)
             VALUES (${title}, ${content}, ${targetAudience}, ${priority}, ${publish}, ${authUser.id}, NOW(), NOW())
             RETURNING *
         `;
@@ -95,7 +95,7 @@ async function sendAnnouncementNotifications(announcement: any) {
 
         for (const user of users) {
             await sql`
-                INSERT INTO notifications ("userId", title, message, type, "isRead", "createdAt")
+                INSERT INTO notifications ("userId", title, message, type, "read", "createdAt")
                 VALUES (${user.id}, ${announcement.title}, ${announcement.content.substring(0, 100) + '...'}, 'announcement', false, NOW())
             `.catch(() => {}); // Ignore individual notification errors
         }

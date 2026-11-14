@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         }
 
         const result = await sql`
-            INSERT INTO team_members (name, role, bio, image, linkedin, github, twitter, gradient, "order", "isActive", "createdAt", "updatedAt")
+            INSERT INTO team_members (name, role, bio, image, linkedin, github, twitter, gradient, "order", "isActive", created_at, updated_at)
             VALUES (
                 ${name}, ${role}, ${bio || null}, ${image || null},
                 ${linkedin || null}, ${github || null}, ${twitter || null},

@@ -29,30 +29,6 @@ export async function ensureLifecycleSchema() {
                 ADD COLUMN IF NOT EXISTS "withdrawalApprovedBy" TEXT,
                 ADD COLUMN IF NOT EXISTS "withdrawalAdminNote" TEXT
         `;
-        await sql`
-            CREATE TABLE IF NOT EXISTS certificates (
-                id SERIAL PRIMARY KEY,
-                "studentId" TEXT,
-                "internshipId" TEXT,
-                type TEXT,
-                "verificationCode" TEXT,
-                "issueDate" TIMESTAMPTZ DEFAULT NOW(),
-                status TEXT DEFAULT 'active',
-                created_at TIMESTAMPTZ DEFAULT NOW()
-            )
-        `;
-        await sql`
-            ALTER TABLE certificates
-                ADD COLUMN IF NOT EXISTS "studentName" TEXT,
-                ADD COLUMN IF NOT EXISTS "internshipTitle" TEXT,
-                ADD COLUMN IF NOT EXISTS "courseId" TEXT,
-                ADD COLUMN IF NOT EXISTS "courseTitle" TEXT,
-                ADD COLUMN IF NOT EXISTS "certificateUrl" TEXT,
-                ADD COLUMN IF NOT EXISTS "issuedBy" TEXT,
-                ADD COLUMN IF NOT EXISTS marks INTEGER,
-                ADD COLUMN IF NOT EXISTS grade TEXT,
-                ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ
-        `;
         ensured = true;
     } catch (error) {
         console.error('ensureLifecycleSchema failed:', error);
@@ -176,7 +152,7 @@ export async function issueCertificate(enrollmentId: string): Promise<{ cert: an
 
     const existing = await sql`
         SELECT * FROM certificates
-        WHERE "studentId"::text = ${uid} AND "internshipId"::text = ${iid} AND type = 'internship'
+        WHERE "studentId"::text = ${uid} AND "internshipId"::text = ${iid}
         LIMIT 1
     `;
     let cert = existing && existing[0];
@@ -185,12 +161,12 @@ export async function issueCertificate(enrollmentId: string): Promise<{ cert: an
         const marks = e.marks ?? null;
         const created = await sql`
             INSERT INTO certificates (
-                "studentId", "studentName", "internshipId", "internshipTitle", type,
-                "verificationCode", "issueDate", marks, grade, "issuedBy", status, created_at, updated_at
+                "studentId", "studentName", "internshipId", "internshipTitle",
+                "verificationCode", "issueDate", marks, grade, "issuedBy", created_at, updated_at
             ) VALUES (
-                ${uid}, ${e.studentName || ''}, ${iid}, ${e.internshipTitle || ''}, 'internship',
+                ${uid}, ${e.studentName || ''}, ${iid}, ${e.internshipTitle || ''},
                 ${`CERT-${new Date().getFullYear()}-${code(8)}`}, NOW(), ${marks},
-                ${marks !== null ? gradeFor(Number(marks)) : null}, 'CodeSprint Labs', 'active', NOW(), NOW()
+                ${marks !== null ? gradeFor(Number(marks)) : null}, 'CodeSprint Labs', NOW(), NOW()
             )
             RETURNING *
         `;
@@ -204,7 +180,7 @@ export async function issueCertificate(enrollmentId: string): Promise<{ cert: an
     `;
 
     await sql`
-        INSERT INTO notifications ("userId", title, message, type, "isRead", "createdAt")
+        INSERT INTO notifications ("userId", title, message, type, "read", "createdAt")
         VALUES (${uid}, 'Certificate Issued', ${`Your certificate for ${e.internshipTitle || 'your internship'} is ready to download.`}, 'certificate', false, NOW())
     `.catch(() => {});
 
@@ -313,7 +289,7 @@ export async function reviewEnrollment(
     }
 
     await sql`
-        INSERT INTO notifications ("userId", title, message, type, "isRead", "createdAt")
+        INSERT INTO notifications ("userId", title, message, type, "read", "createdAt")
         VALUES (${String(e.userId)}, 'Internship Reviewed', 'Your internship has been reviewed. Your completion letter is ready to download.', 'completion', false, NOW())
     `.catch(() => {});
 

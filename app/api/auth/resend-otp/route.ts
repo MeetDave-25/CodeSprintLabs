@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
             UPDATE users SET
                 "emailVerificationCode" = ${code},
                 "emailVerificationExpiry" = ${expiry.toISOString()},
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${users[0].id}
         `;
 

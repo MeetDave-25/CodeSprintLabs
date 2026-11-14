@@ -52,7 +52,7 @@ export async function PUT(
                 "targetAudience" = COALESCE(${targetAudience ?? null}, "targetAudience"),
                 priority = COALESCE(${priority ?? null}, priority),
                 "isActive" = COALESCE(${isActive ?? null}, "isActive"),
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${params.id}
             RETURNING *
         `;
@@ -64,7 +64,7 @@ export async function PUT(
             const users = await sql`SELECT id FROM users WHERE status = 'active'`;
             for (const user of users) {
                 await sql`
-                    INSERT INTO notifications ("userId", title, message, type, "isRead", "createdAt")
+                    INSERT INTO notifications ("userId", title, message, type, "read", "createdAt")
                     VALUES (${user.id}, ${announcement.title}, ${announcement.content.substring(0, 100) + '...'}, 'announcement', false, NOW())
                 `.catch(() => {});
             }

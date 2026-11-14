@@ -42,7 +42,7 @@ export async function POST(
         `;
 
         await sql`
-            INSERT INTO notifications ("userId", title, message, type, "isRead", "createdAt")
+            INSERT INTO notifications ("userId", title, message, type, "read", "createdAt")
             VALUES (${String(enrollment.userId)}, 'Withdrawal Approved', 'Your withdrawal request has been approved. Your partial completion and relieving letters are ready to download.', 'enrollment', false, NOW())
         `.catch(() => {});
 

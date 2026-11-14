@@ -56,13 +56,13 @@ export async function GET(request: NextRequest) {
             // Student registrations per month (last 6 months)
             sql`
                 SELECT
-                    TO_CHAR(DATE_TRUNC('month', "createdAt"), 'Mon YY') as month,
+                    TO_CHAR(DATE_TRUNC('month', created_at), 'Mon YY') as month,
                     COUNT(*) as "newStudents"
                 FROM users
                 WHERE role = 'student'
-                  AND "createdAt" >= NOW() - INTERVAL '6 months'
-                GROUP BY DATE_TRUNC('month', "createdAt")
-                ORDER BY DATE_TRUNC('month', "createdAt")
+                  AND created_at >= NOW() - INTERVAL '6 months'
+                GROUP BY DATE_TRUNC('month', created_at)
+                ORDER BY DATE_TRUNC('month', created_at)
             `.catch(() => []),
 
             // Top performing students by points

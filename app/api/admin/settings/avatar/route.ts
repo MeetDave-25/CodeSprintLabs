@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
         }
 
         await sql`
-            UPDATE users SET avatar = ${avatarUrl}, "updatedAt" = NOW()
+            UPDATE users SET avatar = ${avatarUrl}, updated_at = NOW()
             WHERE id = ${authUser.id}
         `;
 

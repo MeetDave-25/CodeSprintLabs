@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
         }
 
         const hashed = await hashPassword(password);
-        await sql`UPDATE users SET password = ${hashed}, "updatedAt" = NOW() WHERE id = ${authUser.id}`;
+        await sql`UPDATE users SET password = ${hashed}, updated_at = NOW() WHERE id = ${authUser.id}`;
 
         return NextResponse.json({ status: 'success', message: 'Password updated successfully' });
     } catch (error: any) {

@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
             const monthName = start.toLocaleString('en-US', { month: 'short' });
 
             const [studentsRes, submissionsRes] = await Promise.all([
-                sql`SELECT COUNT(*) as count FROM users WHERE role = 'student' AND "createdAt" BETWEEN ${start.toISOString()} AND ${end.toISOString()}`,
-                sql`SELECT COUNT(*) as count FROM submissions WHERE "createdAt" BETWEEN ${start.toISOString()} AND ${end.toISOString()}`,
+                sql`SELECT COUNT(*) as count FROM users WHERE role = 'student' AND created_at BETWEEN ${start.toISOString()} AND ${end.toISOString()}`,
+                sql`SELECT COUNT(*) as count FROM submissions WHERE created_at BETWEEN ${start.toISOString()} AND ${end.toISOString()}`,
             ]);
 
             monthlyData.push({

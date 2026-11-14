@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         }
 
         const rows = await sql`
-            SELECT id, name, email, avatar, role, "createdAt"
+            SELECT id, name, email, avatar, role, created_at as "createdAt"
             FROM users WHERE id = ${authUser.id} LIMIT 1
         `;
 
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
         const updated = await sql`
             UPDATE users SET
                 name = COALESCE(${name ?? null}, name),
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${authUser.id}
             RETURNING id, name, email, avatar, role
         `;

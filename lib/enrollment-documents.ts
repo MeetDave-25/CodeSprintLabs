@@ -18,11 +18,15 @@ export async function fetchEnrollment(enrollmentId: string, opts: FetchOpts = {}
     const userId = opts.userId ?? null;
     const rows = await sql`
         SELECT e.*,
-            u.name as "studentName", u.email as "studentEmail", u.phone as "studentPhone",
-            u."collegeName" as "studentCollege", u.course as "studentCourse",
-            u."enrollmentNumber" as "studentEnrollmentNo",
-            i.title as "internshipTitle", i.domain as "internshipDomain",
-            i.duration as "internshipDuration", i.type as "internshipType",
+            COALESCE(NULLIF(u.name, ''), e."studentName") as "studentName",
+            COALESCE(NULLIF(u.email, ''), e."studentEmail") as "studentEmail",
+            COALESCE(NULLIF(u.phone, ''), e."studentPhone") as "studentPhone",
+            COALESCE(NULLIF(u."collegeName", ''), e."studentCollegeName") as "studentCollege",
+            COALESCE(NULLIF(u.course, ''), e."studentCourse") as "studentCourse",
+            COALESCE(NULLIF(u."enrollmentNumber", ''), e."studentEnrollmentNumber") as "studentEnrollmentNo",
+            COALESCE(i.title, e."internshipTitle") as "internshipTitle",
+            COALESCE(i.domain, e."internshipDomain") as "internshipDomain",
+            COALESCE(i.duration, e."internshipDuration") as "internshipDuration", i.type as "internshipType",
             i.location as "internshipLocation", i.stipend as "internshipStipend",
             i.responsibilities as "internshipResponsibilities", i.skills as "internshipSkills"
         FROM enrollment_requests e

@@ -50,7 +50,7 @@ export async function PUT(
                 gradient = COALESCE(${gradient ?? null}, gradient),
                 "order" = COALESCE(${order ?? null}, "order"),
                 "isActive" = COALESCE(${isActive ?? null}, "isActive"),
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${params.id}
             RETURNING *
         `;

@@ -14,12 +14,12 @@ export async function GET(request: NextRequest) {
         const uid = String(authUser.id);
 
         const [taskStats, internshipStats, certStats, userRow] = await Promise.all([
-            sql`SELECT COUNT(*) as count, COALESCE(SUM(points),0) as points
-                FROM submissions WHERE "userId" = ${uid} AND status = 'approved'`,
+            sql`SELECT COUNT(*) as count, COALESCE(SUM("pointsAwarded"), 0) as points
+                FROM submissions WHERE "studentId"::text = ${uid} AND status = 'approved'`,
             sql`SELECT COUNT(*) as count FROM enrollment_requests
-                WHERE "userId" = ${uid} AND status = 'approved'`,
-            sql`SELECT COUNT(*) as count FROM certificates WHERE "studentId" = ${uid}`,
-            sql`SELECT "totalPoints", "tasksCompleted" FROM users WHERE id = ${authUser.id} LIMIT 1`,
+                WHERE "userId"::text = ${uid} AND status IN ('approved', 'completion_requested')`,
+            sql`SELECT COUNT(*) as count FROM certificates WHERE "studentId"::text = ${uid}`,
+            sql`SELECT "totalPoints", "tasksCompleted" FROM users WHERE id::text = ${uid} LIMIT 1`,
         ]);
 
         return NextResponse.json({

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
         try {
             await sql`
-                UPDATE payments SET status = 'refunded', "refundReason" = ${body.reason || ''}, "updatedAt" = NOW()
+                UPDATE payments SET status = 'refunded', "refundReason" = ${body.reason || ''}, updated_at = NOW()
                 WHERE id = ${params.id}
             `;
         } catch {

@@ -8,10 +8,10 @@ export async function GET(request: NextRequest) {
         const courses = await sql`
             SELECT
                 id, title, description, instructor, duration, level,
-                thumbnail, price, "isActive", "isFeatured", "enrolledCount", "createdAt"
+                thumbnail, price, "isActive", enrolled as "enrolledCount", rating, created_at as "createdAt"
             FROM courses
             WHERE "isActive" = true
-            ORDER BY "enrolledCount" DESC, "createdAt" DESC
+            ORDER BY enrolled DESC, created_at DESC
             LIMIT 6
         `;
 

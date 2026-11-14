@@ -13,9 +13,9 @@ export async function GET(request: NextRequest) {
         }
 
         const admins = await sql`
-            SELECT id, name, email, avatar, status, "createdAt"
+            SELECT id, name, email, avatar, status, created_at as "createdAt"
             FROM users WHERE role = 'admin'
-            ORDER BY "createdAt" ASC
+            ORDER BY created_at ASC
         `;
 
         return NextResponse.json({ status: 'success', data: admins });
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         const hashed = await hashPassword(password);
 
         const result = await sql`
-            INSERT INTO users (name, email, password, role, status, "createdAt", "updatedAt")
+            INSERT INTO users (name, email, password, role, status, created_at, updated_at)
             VALUES (${name}, ${email.toLowerCase()}, ${hashed}, 'admin', 'active', NOW(), NOW())
             RETURNING id, name, email, role, status
         `;

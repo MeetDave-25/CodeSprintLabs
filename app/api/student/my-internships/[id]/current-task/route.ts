@@ -11,27 +11,27 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
+        const uid = String(authUser.id);
         const enrollment = await sql`
             SELECT * FROM enrollment_requests
-            WHERE id = ${params.id} AND "userId" = ${authUser.id} LIMIT 1
+            WHERE id::text = ${String(params.id)} AND "userId"::text = ${uid} LIMIT 1
         `;
         if (!enrollment || enrollment.length === 0) {
             return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
         }
 
         const internshipId = String(enrollment[0].internshipId);
-        const uid = String(authUser.id);
 
-        // Find the next active task not yet approved for this student
+        // Next active task not yet approved for this student
         const tasks = await sql`
             SELECT t.* FROM tasks t
-            WHERE t."internshipId" = ${internshipId}
+            WHERE t."internshipId"::text = ${internshipId}
               AND t."isActive" = true
               AND t.id::text NOT IN (
                   SELECT s."taskId"::text FROM submissions s
-                  WHERE s."userId" = ${uid} AND s.status = 'approved'
+                  WHERE s."studentId"::text = ${uid} AND s.status = 'approved'
               )
-            ORDER BY t."order" ASC NULLS LAST, t.created_at ASC
+            ORDER BY t."dayNumber" ASC NULLS LAST, t.id ASC
             LIMIT 1
         `;
 

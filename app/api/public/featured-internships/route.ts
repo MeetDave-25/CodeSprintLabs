@@ -9,10 +9,10 @@ export async function GET(request: NextRequest) {
             SELECT
                 id, title, description, "companyName", location, type,
                 stipend, duration, "applicationDeadline", "startDate", "endDate",
-                "isActive", "isFeatured", "maxStudents", tags, "createdAt"
+                "isActive", "isFeatured", "maxStudents", domain, skills, created_at
             FROM internships
             WHERE "isFeatured" = true AND "isActive" = true
-            ORDER BY "createdAt" DESC
+            ORDER BY created_at DESC
             LIMIT 6
         `;
 

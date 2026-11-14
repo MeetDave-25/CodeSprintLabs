@@ -13,8 +13,8 @@ export async function PUT(request: NextRequest) {
 
         await sql`
             UPDATE notifications
-            SET "isRead" = true
-            WHERE "userId" = ${authUser.id} AND "isRead" = false
+            SET "read" = true
+            WHERE "userId" = ${authUser.id} AND "read" = false
         `;
 
         return NextResponse.json({ message: 'All notifications marked as read' });

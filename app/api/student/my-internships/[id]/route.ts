@@ -24,7 +24,7 @@ export async function GET(
                 e.id as "enrollmentId", e.status as "enrollmentStatus",
                 e."startDate", e."endDate", e."approvedAt",
                 i.id, i.title, i.description, i."companyName", i.type,
-                i.location, i.stipend, i.duration, i.tags
+                i.location, i.stipend, i.duration, i.domain
             FROM enrollment_requests e
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
             WHERE e."userId"::text = ${uid}

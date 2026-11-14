@@ -54,7 +54,7 @@ export async function DELETE(
                 "resumeOriginalName" = NULL,
                 "resumeCloudinaryUrl" = NULL,
                 "resumeGoogleDriveUrl" = NULL,
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${params.id}
         `;
 

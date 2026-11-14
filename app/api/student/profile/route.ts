@@ -119,7 +119,7 @@ export async function PUT(request: NextRequest) {
                 location = COALESCE(${location ?? null}, location),
                 city = COALESCE(${city ?? null}, city),
                 bio = COALESCE(${bio ?? null}, bio),
-                skills = COALESCE(${skills !== undefined ? skills : null}, skills),
+                skills = COALESCE(${Array.isArray(skills) ? JSON.stringify(skills) : null}::json, skills),
                 "collegeName" = COALESCE(${collegeName ?? null}, "collegeName"),
                 course = COALESCE(${course ?? null}, course),
                 "enrollmentNumber" = COALESCE(${enrollmentNumber ?? null}, "enrollmentNumber"),

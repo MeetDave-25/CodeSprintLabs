@@ -22,7 +22,7 @@ export async function PUT(
         }
 
         const updated = await sql`
-            UPDATE users SET status = ${status}, "updatedAt" = NOW()
+            UPDATE users SET status = ${status}, updated_at = NOW()
             WHERE id = ${params.id} AND role = 'student'
             RETURNING id, name, email, role, status
         `;

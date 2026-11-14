@@ -42,7 +42,7 @@ export async function POST(
 
         // Notify student
         await sql`
-            INSERT INTO notifications ("userId", title, message, type, "isRead", "createdAt")
+            INSERT INTO notifications ("userId", title, message, type, "read", "createdAt")
             VALUES (${enrollment.userId}, 'Enrollment Request Update', ${note}, 'enrollment', false, NOW())
         `.catch(() => {});
 

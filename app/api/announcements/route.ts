@@ -15,13 +15,13 @@ export async function GET(request: NextRequest) {
         const audience = authUser.role === 'admin' ? 'admins' : 'students';
 
         const announcements = await sql`
-            SELECT id, title, content, "targetAudience", priority, "isActive", "createdAt"
+            SELECT id, title, content, "targetAudience", priority, "isActive", created_at as "createdAt"
             FROM announcements
             WHERE "isActive" = true
             AND "targetAudience" IN (${audience}, 'all')
             ORDER BY
                 CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END ASC,
-                "createdAt" DESC
+                created_at DESC
             LIMIT 10
         `;
 

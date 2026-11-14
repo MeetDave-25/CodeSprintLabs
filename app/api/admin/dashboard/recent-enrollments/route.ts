@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
             FROM enrollment_requests e
             LEFT JOIN users u ON u.id::text = e."userId"::text
             LEFT JOIN internships i ON i.id::text = e."internshipId"::text
-            ORDER BY e."createdAt" DESC
+            ORDER BY e.created_at DESC
             LIMIT ${limit}
         `;
 

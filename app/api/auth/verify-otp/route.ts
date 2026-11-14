@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
                 "emailVerified" = true,
                 "emailVerificationCode" = NULL,
                 "emailVerificationExpiry" = NULL,
-                "updatedAt" = NOW()
+                updated_at = NOW()
             WHERE id = ${user.id}
         `;
 
