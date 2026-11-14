@@ -69,7 +69,7 @@ function studentBlock(doc: PdfDoc, e: any, compact = false) {
 
 const COMPUTER_FOOTER = [
     'This is a computer-generated document and does not require a physical signature from CodeSprint Labs.',
-    'For queries: info@codesprintlabs.in  |  +91-8160901481',
+    'For queries: codesprintlabs@gmail.com  |  +91-8160901481',
 ];
 
 export function buildOfferLetterPdf(e: any): Buffer<ArrayBuffer> {
@@ -160,7 +160,7 @@ export function buildMouPdf(e: any): Buffer<ArrayBuffer> {
     doc.box('Party 1 - Organization', [
         ['Name', 'CodeSprint Labs'],
         ['Address', 'Ahmedabad, Gujarat, India'],
-        ['Email', 'info@codesprintlabs.in'],
+        ['Email', 'codesprintlabs@gmail.com'],
         ['Phone', '+91-8160901481'],
     ]);
     doc.box('Party 2 - Intern', [
@@ -197,7 +197,7 @@ export function buildMouPdf(e: any): Buffer<ArrayBuffer> {
 
     doc.footer([
         'This is a computer-generated document issued by CodeSprint Labs.',
-        'For queries: info@codesprintlabs.in  |  +91-8160901481',
+        'For queries: codesprintlabs@gmail.com  |  +91-8160901481',
     ]);
     return doc.build();
 }

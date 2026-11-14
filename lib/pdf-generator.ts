@@ -273,7 +273,7 @@ export class PdfDoc {
     letterhead() {
         this.text('CodeSprint Labs', { size: 28, bold: true, color: CYAN, align: 'center', gap: 0 });
         this.text('Empowering Future Tech Leaders', { size: 11.5, color: MUTED, align: 'center', gap: 0 });
-        this.text('Email: info@codesprintlabs.in  |  Phone: +91-8160901481', { size: 9.5, color: MUTED, align: 'center', gap: 2 });
+        this.text('Email: codesprintlabs@gmail.com  |  Phone: +91-8160901481', { size: 9.5, color: MUTED, align: 'center', gap: 2 });
         this.rule(CYAN, 1.6, 6);
         this.spacer(4);
     }
